@@ -9,14 +9,16 @@ typedef char String20[21];
 
 struct EntryPair
 {
+  int EntryPairKey;
   String20 language;
   String20 translation;
 };
 
 struct EntryList
 {
+  int EntryListKey;
   EntryPair entries[MAXPAIRS];
-  int nEntryPairs = 0;
+  int nEntryPairs;
 };
 
 int SearchEntryPair(EntryList *Entry, String20 language, String20 translation, int *nEntry)
@@ -36,7 +38,9 @@ int SearchEntryPair(EntryList *Entry, String20 language, String20 translation, i
       for (j = 0; j < Entry[i].nEntryPairs; j++)
       {
         if (strcmp(language, Entry[i].entries[j].language) == 0 && strcmp(translation, Entry[i].entries[j].translation) == 0)
-          printf("\nENTRY ALREADY EXISTS!\n");
+          isValid = 0;
+        else
+          isValid = 1;
       }
     }
   }
@@ -57,10 +61,38 @@ void AddEntry(EntryList *Entry, int *nEntry)
   {
     strcpy(Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].language, language);
     strcpy(Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].translation, translation);
+    Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].EntryPairKey = (Entry[*nEntry].nEntryPairs + 1);
+    Entry[*nEntry].EntryListKey = (*nEntry + 1);
     Entry[*nEntry].nEntryPairs++;
     (*nEntry)++;
     printf("\n");
   }
+  else
+  {
+    printf("\nENTRY ALREADY EXISTS!\n");
+  }
+}
+
+void AddTranslation(EntryList *Entry, int *nEntry)
+{
+  String20 language;
+  String20 translation;
+
+  printf("Input Language: ");
+  scanf("%s", language);
+  printf("Input Translation: ");
+  scanf("%s", translation);
+  if (SearchEntryPair(Entry, language, translation, nEntry))
+  {
+    printf("You need to add entry first before adding translation\n\n");
+  }
+  else
+  {
+  }
+}
+
+void DisplaySpecificEntries()
+{
 }
 
 void DisplayEntries(EntryList *Entry, int nEntry)
@@ -69,10 +101,12 @@ void DisplayEntries(EntryList *Entry, int nEntry)
   int j = 0;
   for (i = 0; i < nEntry; i++)
   {
+    printf("%d: \n", Entry[i].EntryListKey);
     for (j = 0; j < Entry[i].nEntryPairs; j++)
     {
-      printf("%s: %s\n", Entry[i].entries[j].language, Entry[i].entries[j].translation);
+      printf("%d: %s: %s\n", Entry[i].entries[j].EntryPairKey, Entry[i].entries[j].language, Entry[i].entries[j].translation);
     }
+    printf("\n");
   }
   printf("\n");
 }
@@ -82,7 +116,7 @@ int main()
   int input = 0;
   int nEntries = 0;
 
-  EntryList Entry[MAXENTRY];
+  EntryList Entry[MAXENTRY] = {0};
 
   do
   {
@@ -117,6 +151,11 @@ int main()
         {
           printf("Going to Add Entry\n");
           AddEntry(Entry, &nEntries);
+        }
+        else if (input == 2)
+        {
+          printf("Going to Add Translations\n");
+          AddTranslation(Entry, &nEntries);
         }
         else if (input == 5)
         {
