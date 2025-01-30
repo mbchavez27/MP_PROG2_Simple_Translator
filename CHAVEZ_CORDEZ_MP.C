@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #define MAXLETTERS 20
 
 typedef char String20[21];
@@ -6,25 +7,70 @@ typedef char String20[21];
 #define MAXPAIRS 10
 #define MAXENTRY 150
 
-struct EntryPair {
+struct EntryPair
+{
   String20 language;
   String20 translation;
 };
 
-struct EntryList {
+struct EntryList
+{
   EntryPair entries[MAXPAIRS];
+  int nEntryPairs = 0;
 };
 
-void AddEntry(struct EntryList *entry) {}
+int SearchEntryPair(EntryList *Entry, String20 language, String20 translation)
+{
+  int isValid = 1;
+  // if (Entry->nEntryPairs == 0)
+  // {
+  //   isValid = 1;
+  // }
+  return isValid;
+}
 
-int SearchEntryPair(struct EntryPair *entryPair) {}
+void AddEntry(EntryList *Entry, int *nEntry)
+{
+  String20 language;
+  String20 translation;
 
-int main() {
+  printf("Input Language: ");
+  scanf("%s", language);
+  printf("Input Translation: ");
+  scanf("%s", translation);
+  if (SearchEntryPair(Entry, language, translation))
+  {
+    strcpy(Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].language, language);
+    strcpy(Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].translation, translation);
+    Entry[*nEntry].nEntryPairs++;
+    (*nEntry)++;
+    printf("\n");
+  }
+}
+
+void DisplayEntries(EntryList *Entry, int nEntry)
+{
+  int i = 0;
+  int j = 0;
+  for (i = 0; i < nEntry; i++)
+  {
+    for (j = 0; j < Entry[i].nEntryPairs; j++)
+    {
+      printf("%s: %s\n", Entry[i].entries[j].language, Entry[i].entries[j].translation);
+    }
+  }
+  printf("\n");
+}
+
+int main()
+{
   int input = 0;
+  int nEntries = 0;
 
   EntryList Entry[MAXENTRY];
 
-  do {
+  do
+  {
     printf("Translator:\n");
     printf("1.) Translate Menu \n");
     printf("2.) Manage Data \n");
@@ -32,10 +78,12 @@ int main() {
     printf("Choose Option: ");
     scanf("%d", &input);
 
-    if (input == 2) {
+    if (input == 2)
+    {
       printf("\nGoing to Manage Data\n\n");
       int input = 0;
-      do {
+      do
+      {
         printf("Manage Data:\n");
         printf("1.) Add Entry\n");
         printf("2.) Add Translations\n");
@@ -50,18 +98,27 @@ int main() {
         printf("Choose Option: ");
         scanf("%d", &input);
 
-        if (input == 1) {
+        if (input == 1)
+        {
           printf("Going to Add Entry\n");
-          AddEntry(Entry);
+          AddEntry(Entry, &nEntries);
         }
-
-        if (input == 10)
+        else if (input == 5)
+        {
+          printf("Displaying Entries\n");
+          printf("\n");
+          DisplayEntries(Entry, nEntries);
+        }
+        else if (input == 10)
           printf("\nGoing Back to Main Menu\n");
       } while (input != 10);
     }
-    if (input == 3) {
+    if (input == 3)
+    {
       printf("\nQuitting the Program\n");
-    } else {
+    }
+    else
+    {
       printf("\nInvalid Option\n");
     }
   } while (input != 3);
