@@ -19,13 +19,28 @@ struct EntryList
   int nEntryPairs = 0;
 };
 
-int SearchEntryPair(EntryList *Entry, String20 language, String20 translation)
+int SearchEntryPair(EntryList *Entry, String20 language, String20 translation, int *nEntry)
 {
-  int isValid = 1;
-  // if (Entry->nEntryPairs == 0)
-  // {
-  //   isValid = 1;
-  // }
+  int isValid = 0;
+  int entryNumber = *nEntry;
+  if (Entry->nEntryPairs == 0)
+  {
+    isValid = 1;
+  }
+  else
+  {
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < entryNumber; i++)
+    {
+      for (j = 0; j < Entry[i].nEntryPairs; j++)
+      {
+        if (strcmp(language, Entry[i].entries[j].language) == 0 && strcmp(translation, Entry[i].entries[j].translation) == 0)
+          printf("\nENTRY ALREADY EXISTS!\n");
+      }
+    }
+  }
+  printf("\n");
   return isValid;
 }
 
@@ -38,7 +53,7 @@ void AddEntry(EntryList *Entry, int *nEntry)
   scanf("%s", language);
   printf("Input Translation: ");
   scanf("%s", translation);
-  if (SearchEntryPair(Entry, language, translation))
+  if (SearchEntryPair(Entry, language, translation, nEntry))
   {
     strcpy(Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].language, language);
     strcpy(Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].translation, translation);
