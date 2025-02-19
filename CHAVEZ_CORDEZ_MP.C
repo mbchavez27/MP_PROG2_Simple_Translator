@@ -48,10 +48,17 @@ int SearchEntryPair(EntryList *Entry, String20 language, String20 translation, i
   return isValid;
 }
 
+int SearchSpecificEntryPair()
+{
+}
+
 void AddEntry(EntryList *Entry, int *nEntry)
 {
   String20 language;
   String20 translation;
+
+  EntryList *entry = &Entry[*nEntry];
+  int nEntryPairs = entry->nEntryPairs;
 
   printf("Input Language: ");
   scanf("%s", language);
@@ -59,11 +66,11 @@ void AddEntry(EntryList *Entry, int *nEntry)
   scanf("%s", translation);
   if (SearchEntryPair(Entry, language, translation, nEntry))
   {
-    strcpy(Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].language, language);
-    strcpy(Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].translation, translation);
-    Entry[*nEntry].entries[Entry[*nEntry].nEntryPairs].EntryPairKey = (Entry[*nEntry].nEntryPairs + 1);
-    Entry[*nEntry].EntryListKey = (*nEntry + 1);
-    Entry[*nEntry].nEntryPairs++;
+    strcpy(entry->entries[nEntryPairs].language, language);
+    strcpy(entry->entries[nEntryPairs].translation, translation);
+    entry->entries[nEntryPairs].EntryPairKey = (entry->nEntryPairs + 1);
+    entry->EntryListKey = (*nEntry + 1);
+    entry->nEntryPairs++;
     (*nEntry)++;
     printf("\n");
   }
@@ -89,10 +96,6 @@ void AddTranslation(EntryList *Entry, int *nEntry)
   else
   {
   }
-}
-
-void DisplaySpecificEntries()
-{
 }
 
 void DisplayEntries(EntryList *Entry, int nEntry)
