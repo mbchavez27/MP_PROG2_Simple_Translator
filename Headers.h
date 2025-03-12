@@ -5,6 +5,7 @@ typedef char String20[21];
 
 typedef struct
 {
+    int EntryPairKey;
     String20 language;
     String20 translation;
 } EntryPairTag;
@@ -12,6 +13,7 @@ typedef struct
 typedef struct
 {
     int nEntryPairs;
+    int EntryKey;
     EntryPairTag EntryPair[MAXPAIRS];
 } EntryTag;
 
