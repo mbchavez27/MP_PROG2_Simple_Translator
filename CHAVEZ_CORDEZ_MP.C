@@ -8,25 +8,47 @@ void DisplayPairs(EntryTag Entry)
 
   for (i = 0; i < Entry.nEntryPairs; i++)
   {
-    printf("%s: %s\n", Entry.EntryPair[i].language, Entry.EntryPair[i].translation);
+    printf("%d: %s: %s\n", Entry.EntryPair[i].EntryPairKey, Entry.EntryPair[i].language, Entry.EntryPair[i].translation);
   }
+  printf("\n\n");
+}
+
+void DisplayPair(EntryPairTag EntryPair)
+{
+  printf("%d: %s: %s\n", EntryPair.EntryPairKey, EntryPair.language, EntryPair.translation);
+  printf("\n");
 }
 
 void DisplayAllEntries(EntryTag Entry[], int nEntry)
 {
   int i = 0;
+
+  for (i = 0; i < nEntry; i++)
+  {
+    printf("%d: \n", Entry[i].EntryKey);
+    DisplayPairs(Entry[i]);
+  }
+  printf("\n\n");
+}
+void SearchWord(EntryTag Entries[], int nEntry)
+{
+  String20 word;
+  printf("Search word: ");
+  scanf("%s", word);
+  int i = 0;
   int j = 0;
 
   for (i = 0; i < nEntry; i++)
   {
-    int nEntryPairs = Entry[i].nEntryPairs;
-    for (j = 0; j < nEntryPairs; j++)
+    for (j = 0; j < Entries[i].nEntryPairs; j++)
     {
-      printf("%d: \n", Entry[i].EntryKey);
-      printf("%s: %s\n\n", Entry[i].EntryPair[j].language, Entry[i].EntryPair[j].translation);
+      if (strcmp(word, Entries[i].EntryPair[j].translation) == 0)
+      {
+        printf("%d:\n", Entries[i].EntryKey);
+        DisplayPair(Entries[i].EntryPair[j]);
+      }
     }
   }
-  printf("\n\n");
 }
 
 int SearchEntryPair(EntryPairTag EntryPair[], int nEntryPairs, String20 language, String20 translation)
@@ -59,9 +81,30 @@ int SearchEntry(EntryTag Entries[], int nEntry, String20 language, String20 tran
   return SearchEntryPairIndex;
 }
 
-void AddTranslation(EntryTag *Entry, int *nEntry, EntryTag Entries[])
+void SearchTranslation(EntryTag Entries[], int nEntry)
 {
-  int nEntryPairs = Entry->nEntryPairs;
+  String20 language, translation;
+  printf("Search Language: ");
+  scanf("%s", language);
+  printf("Search Translation: ");
+  scanf("%s", translation);
+  printf("\n\n");
+  int EntryIndex = 0;
+  int numOfSameEntry = 0;
+
+  int sameEntry = SearchEntry(Entries, nEntry, language, translation, &EntryIndex, &numOfSameEntry);
+  int i = 0;
+  for (i = 0; i < Entries[sameEntry].nEntryPairs; i++)
+  {
+    if (strcmp(language, Entries[sameEntry].EntryPair[i].language) != 0 && strcmp(translation, Entries[sameEntry].EntryPair[i].translation) != 0)
+    {
+      DisplayPair(Entries[sameEntry].EntryPair[i]);
+    }
+  }
+}
+
+void AddTranslation(int *nEntry, EntryTag Entries[])
+{
   int numOfSameEntries = 0;
   String20 language, translation;
 
@@ -85,8 +128,10 @@ void AddTranslation(EntryTag *Entry, int *nEntry, EntryTag Entries[])
       printf("Add Translation: ");
       scanf("%s", translation);
       printf("\n\n");
-      strcpy(Entries[sameEntry].EntryPair[nEntryPairs].language, language);
-      strcpy(Entries[sameEntry].EntryPair[nEntryPairs].translation, translation);
+      strcpy(Entries[sameEntry].EntryPair[Entries->nEntryPairs].language, language);
+      strcpy(Entries[sameEntry].EntryPair[Entries->nEntryPairs].translation, translation);
+      Entries[sameEntry].EntryPair[Entries->nEntryPairs].EntryPairKey = Entries[sameEntry].nEntryPairs + 1;
+      Entries[sameEntry].nEntryPairs++;
     }
     else
     {
@@ -125,18 +170,20 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
     {
       strcpy(Entry->EntryPair[nEntryPairs].translation, translation);
       strcpy(Entry->EntryPair[nEntryPairs].language, language);
-      Entry->EntryKey = (*nEntry + 1);
       Entry->nEntryPairs++;
       (*nEntry)++;
+      Entry->EntryKey = (*nEntry);
+      Entry->EntryPair[nEntryPairs].EntryPairKey = Entry->nEntryPairs;
     }
   }
   else
   {
     strcpy(Entry->EntryPair[nEntryPairs].translation, translation);
     strcpy(Entry->EntryPair[nEntryPairs].language, language);
-    Entry->EntryKey = (*nEntry + 1);
     Entry->nEntryPairs++;
     (*nEntry)++;
+    Entry->EntryKey = (*nEntry);
+    Entry->EntryPair[nEntryPairs].EntryPairKey = Entry->nEntryPairs;
   }
 }
 
@@ -181,11 +228,20 @@ int main()
         }
         if (input == 2)
         {
-          AddTranslation(&Entries[nEntry], &nEntry, Entries);
+          AddTranslation(&nEntry, Entries);
         }
         if (input == 5)
         {
           DisplayAllEntries(Entries, nEntry);
+        }
+        if (input == 6)
+        {
+          SearchWord(Entries, nEntry);
+        }
+        if (input == 7)
+        {
+          SearchTranslation(Entries, nEntry);
+          printf("\n");
         }
       }
     }
