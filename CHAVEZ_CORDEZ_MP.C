@@ -87,10 +87,26 @@ void SearchTranslation(EntryTag Entries[], int nEntry) {
   int sameEntry = SearchEntry(Entries, nEntry, language, translation,
                               EntryPairIndex, &numOfSameEntry);
   int i = 0;
-  for (i = 0; i < Entries[sameEntry].nEntryPairs; i++) {
-    if (strcmp(language, Entries[sameEntry].EntryPair[i].language) != 0 &&
-        strcmp(translation, Entries[sameEntry].EntryPair[i].translation) != 0) {
-      DisplayPair(Entries[sameEntry].EntryPair[i]);
+  int j = 0;
+
+  if (numOfSameEntry > 1) {
+    for (i = 0; i < numOfSameEntry; i++) {
+      for (j = 0; j < Entries[EntryPairIndex[i]].nEntryPairs; j++) {
+        if (strcmp(language,
+                   Entries[EntryPairIndex[i]].EntryPair[j].language) == 0 &&
+            strcmp(translation,
+                   Entries[EntryPairIndex[i]].EntryPair[j].translation) == 0) {
+          DisplayPair(Entries[EntryPairIndex[i]].EntryPair[j]);
+        }
+      }
+    }
+  } else {
+    for (i = 0; i < Entries[sameEntry].nEntryPairs; i++) {
+      if (strcmp(language, Entries[sameEntry].EntryPair[i].language) != 0 &&
+          strcmp(translation, Entries[sameEntry].EntryPair[i].translation) !=
+              0) {
+        DisplayPair(Entries[sameEntry].EntryPair[i]);
+      }
     }
   }
 }
@@ -171,17 +187,16 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
   scanf("%s", translation);
   printf("\n\n");
 
-  int EntryPairIndex = 0;
+  int EntryPairIndex[MAXPAIRS];
   int sameEntry = SearchEntry(Entries, *nEntry, language, translation,
-                              &EntryPairIndex, &numOfSameEntries);
-
+                              EntryPairIndex, &numOfSameEntries);
+  int samePair =
+      SearchEntryPair(Entry[sameEntry].EntryPair, Entry[sameEntry].nEntryPairs,
+                      language, translation);
   if (sameEntry != -1) {
     int input;
-    printf("Given Entry: %s: %s\n", language, translation);
-    printf("Entry Exists: %s: %s\n",
-           Entry[sameEntry].EntryPair[EntryPairIndex].language,
-           Entry[sameEntry].EntryPair[EntryPairIndex].translation);
 
+    printf("Given Entry:\n%s: %s\n", language, translation);
     printf("New Entry?[0/1]: ");
     scanf("%d", &input);
     if (input == 1) {
