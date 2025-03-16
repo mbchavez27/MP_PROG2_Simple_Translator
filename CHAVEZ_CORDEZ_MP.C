@@ -146,12 +146,12 @@ void AddTranslation(int *nEntry, EntryTag Entries[]) {
       int input = -1;
       do {
         for (i = 0; i < numOfSameEntries; i++) {
-          printf("Entry #%d:\n", Entries[EntryPairIndex[i]].EntryKey);
+          printf("Entry #%d:\n", i + 1);
           DisplayPairs(Entries[EntryPairIndex[i]]);
         }
         printf("Pick a Entry to add translations...: ");
         scanf("%d", &input);
-      } while (input < 0 && input > numOfSameEntries);
+      } while (input < 0 || input > numOfSameEntries);
       printf("Chosen Entry #%d\n", input);
       printf("Add Language: ");
       scanf("%s", language);
@@ -190,9 +190,11 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
   int EntryPairIndex[MAXPAIRS];
   int sameEntry = SearchEntry(Entries, *nEntry, language, translation,
                               EntryPairIndex, &numOfSameEntries);
-  int samePair =
-      SearchEntryPair(Entry[sameEntry].EntryPair, Entry[sameEntry].nEntryPairs,
-                      language, translation);
+  /*int samePair =*/
+  /*    SearchEntryPair(Entry[sameEntry].EntryPair,
+   * Entry[sameEntry].nEntryPairs,*/
+  /*                    language, translation);*/
+
   if (sameEntry != -1) {
     int input;
 
