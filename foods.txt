@@ -1,5 +1,8 @@
-English: Chicken
-Filipino: Manok
+English: Rice
+Filipino: Kanin
+Japanese: Gohan
 
-English: Pasta
+English: Bread
+
+English: Chicken
 

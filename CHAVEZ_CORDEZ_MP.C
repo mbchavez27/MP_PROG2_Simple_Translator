@@ -20,7 +20,7 @@ void Export(String20 filename, EntryTag Entries[], int nEntry) {
       fprintf(file, "\n");
     }
     fclose(file);
-    printf("File: %s successfully saved", filename);
+    printf("File: %s successfully saved\n", filename);
   }
 }
 
@@ -399,11 +399,12 @@ int main() {
           String30 fileName;
           printf("Give Filename for the Exported Data: ");
           scanf("%s", fileName);
+          printf("\n");
           if (strlen(fileName) > 26) {
             printf("Given file name %s exceeds max length!\n", fileName);
           } else {
             strcat(fileName, ".txt");
-            printf("Saving data to file name: %s\n", fileName);
+            printf("Saving data to file name: %s\n\n", fileName);
             Export(fileName, Entries, nEntry);
           }
           printf("\n");
