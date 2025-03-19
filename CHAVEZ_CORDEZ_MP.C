@@ -14,7 +14,6 @@ void DisplayPairs(EntryTag Entry) {
 
 void DisplayPair(EntryPairTag EntryPair) {
   printf("%s \t%s\n", EntryPair.language, EntryPair.translation);
-  printf("\n");
 }
 
 void DisplayAllEntries(EntryTag Entry[], int nEntry) {
@@ -42,6 +41,35 @@ void DeleteEntry(EntryTag Entries[], int *nEntry, int index) {
   }
   Entries[j].nEntryPairs--;
   (*nEntry)--;
+}
+
+void DeleteEntryPair(EntryTag Entries[], int index) {
+  int j = 0;
+  index = index - 1;
+  if (Entries[index].nEntryPairs > 1) {
+    printf("Given Entry Detals\n\n");
+    printf("Language\tTranslation\n");
+    for (j = 0; j < Entries[index].nEntryPairs; j++) {
+      printf("%d: ", j + 1);
+      DisplayPair(Entries[index].EntryPair[j]);
+    }
+
+    printf("\n");
+
+    int indexPair = 0;
+    int k = 0;
+    printf("Choose an Entry Pair Number to Delete: ");
+    scanf("%d", &indexPair);
+    indexPair = indexPair - 1;
+    for (k = indexPair; k < Entries[index].nEntryPairs - 1; k++) {
+      Entries[index].EntryPair[k] = Entries[index].EntryPair[k + 1];
+    }
+    Entries[index].nEntryPairs--;
+
+    printf("\n");
+  } else {
+    printf("Given Entry Index #%d has only one entry pair\n\n", index + 1);
+  }
 }
 
 void SearchWord(EntryTag Entries[], int nEntry) {
@@ -149,6 +177,8 @@ void AddTranslation(int *nEntry, EntryTag Entries[]) {
   if (strcmp(language, "STOP!") != 0 || strcmp(translation, "STOP!") != 0) {
     if (sameEntry != -1) {
       if (numOfSameEntries == 1) {
+        printf("Given Entry Detals\n\n");
+        printf("Language\tTranslation\n");
         DisplayPairs(Entries[sameEntry]);
         printf("Add Language (STOP! to terminate command): ");
         scanf("%s", language);
@@ -170,6 +200,8 @@ void AddTranslation(int *nEntry, EntryTag Entries[]) {
         int input = -1;
 
         do {
+          printf("Given Entry Detals\n\n");
+          printf("Language\tTranslation\n");
           for (i = 0; i < numOfSameEntries; i++) {
             printf("Entry #%d:\n", i + 1);
             DisplayPairs(Entries[EntryPairIndex[i]]);
@@ -301,6 +333,7 @@ int main() {
           DisplayAllEntries(Entries, nEntry);
           printf("Index: ");
           scanf("%d", &index);
+          DeleteEntryPair(Entries, index);
         }
         if (input == 5) {
           DisplayAllEntries(Entries, nEntry);
