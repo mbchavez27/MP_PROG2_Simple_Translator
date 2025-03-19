@@ -326,7 +326,11 @@ int main() {
         scanf("%d", &input);
         printf("\n");
         if (input == 1) {
-          AddEntry(&Entries[nEntry], &nEntry, Entries);
+          if (nEntry < 150) {
+            AddEntry(&Entries[nEntry], &nEntry, Entries);
+          } else {
+            printf("Already have max number of entries!\n");
+          }
         }
         if (input == 2) {
           AddTranslation(&nEntry, Entries);
