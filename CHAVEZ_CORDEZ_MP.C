@@ -272,10 +272,13 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
     if (sameEntry != -1) {
       int input;
 
-      printf("Entry Exists: %s: %s\n", language, translation);
+      printf("Entry Exists:\n");
+      printf("Language\tTranslation\n");
+      printf("%s \t%s\n\n", language, translation);
 
       printf("New Entry?[0/1]: ");
       scanf("%d", &input);
+      printf("\n");
       if (input == 1) {
         strcpy(Entry->EntryPair[nEntryPairs].translation, translation);
         strcpy(Entry->EntryPair[nEntryPairs].language, language);
@@ -290,6 +293,15 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
     }
   } else {
     printf("Cancelled Command\n");
+  }
+
+  int input = 0;
+  printf("Add another entry? [0/1]: ");
+  scanf("%d", &input);
+  printf("\n");
+  if (input == 1) {
+    AddEntry(&Entries[*nEntry], nEntry, Entries);
+    printf("\n");
   }
   printf("\n");
 }
