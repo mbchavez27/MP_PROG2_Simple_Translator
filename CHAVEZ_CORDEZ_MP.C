@@ -32,21 +32,16 @@ void DisplayAllEntries(EntryTag Entry[], int nEntry) {
 }
 
 void DeleteEntry(EntryTag Entries[], int *nEntry, int index) {
-  int i = 0;
   int j = 0;
 
   printf("Deleted Entry #%d\n\n", index);
   index = index - 1;
-  while (i < *nEntry) {
-    if (i == index) {
-      for (j = 0; j < *nEntry - 1; j++) {
-        Entries[j] = Entries[j + 1];
-      }
-      (*nEntry)--;
-    } else {
-      i++;
-    }
+
+  for (j = index; j < *nEntry - 1; j++) {
+    Entries[j] = Entries[j + 1];
   }
+  Entries[j].nEntryPairs--;
+  (*nEntry)--;
 }
 
 void SearchWord(EntryTag Entries[], int nEntry) {
@@ -299,6 +294,13 @@ int main() {
           printf("Index: ");
           scanf("%d", &index);
           DeleteEntry(Entries, &nEntry, index);
+        }
+        if (input == 4) {
+          int index = 0;
+          printf("Select Entry Number:\n");
+          DisplayAllEntries(Entries, nEntry);
+          printf("Index: ");
+          scanf("%d", &index);
         }
         if (input == 5) {
           DisplayAllEntries(Entries, nEntry);
