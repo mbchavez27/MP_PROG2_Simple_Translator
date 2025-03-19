@@ -1,19 +1,41 @@
 #include "Headers.h"
+#include <algorithm>
 #include <stdio.h>
 #include <string.h>
+
+void Export(String20 filename, EntryTag Entries[], int nEntry) {
+  FILE *file;
+  file = fopen(filename, "w");
+  int i = 0;
+  int j = 0;
+
+  if (file == NULL) {
+    printf("File: %s does not exist!!!\n", filename);
+  } else {
+    for (i = 0; i < nEntry; i++) {
+      for (j = 0; j < Entries[i].nEntryPairs; j++) {
+        fprintf(file, "%s: %s\n", Entries[i].EntryPair[j].language,
+                Entries[i].EntryPair[j].translation);
+      }
+      fprintf(file, "\n");
+    }
+    fclose(file);
+    printf("File: %s successfully saved", filename);
+  }
+}
 
 void DisplayPairs(EntryTag Entry) {
   int i = 0;
 
   for (i = 0; i < Entry.nEntryPairs; i++) {
-    printf("%s \t%s\n", Entry.EntryPair[i].language,
+    printf("%s: \t%s\n", Entry.EntryPair[i].language,
            Entry.EntryPair[i].translation);
   }
   printf("\n");
 }
 
 void DisplayPair(EntryPairTag EntryPair) {
-  printf("%s \t%s\n", EntryPair.language, EntryPair.translation);
+  printf("%s: \t%s\n", EntryPair.language, EntryPair.translation);
 }
 
 void DisplayAllEntries(EntryTag Entry[], int nEntry) {
@@ -372,6 +394,26 @@ int main() {
         if (input == 7) {
           SearchTranslation(Entries, nEntry);
           printf("\n");
+        }
+        if (input == 8) {
+          String30 fileName;
+          printf("Give Filename for the Exported Data: ");
+          scanf("%s", fileName);
+          if (strlen(fileName) > 26) {
+            printf("Given file name %s exceeds max length!\n", fileName);
+          } else {
+            strcat(fileName, ".txt");
+            printf("Saving data to file name: %s\n", fileName);
+            Export(fileName, Entries, nEntry);
+          }
+          printf("\n");
+        }
+        if (input == 10) {
+          printf("Exitting menu!\n");
+          for (int i = 0; i < MAXENTRIES; i++) {
+            Entries[i] = (EntryTag){0};
+          }
+          nEntry = 0;
         }
       }
     }

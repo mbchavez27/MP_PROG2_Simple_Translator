@@ -2,6 +2,7 @@
 #define MAXENTRIES 150
 
 typedef char String20[21];
+typedef char String30[31];
 
 typedef struct {
   String20 language;
