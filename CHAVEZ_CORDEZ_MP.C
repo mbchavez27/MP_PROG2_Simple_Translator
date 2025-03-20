@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void Split(char line[], String20 words[]) {
+void SplitEntryPair(char line[], String20 words[]) {
   int i = 0;
   int character = 0;
   int word = 0;
@@ -62,7 +62,7 @@ void Import(String20 filename, EntryTag Entries[], int *nEntry) {
           (*nEntry)++;
         }
       } else {
-        Split(buffer, words);
+        SplitEntryPair(buffer, words);
         if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
             words[1][0] != '\0') {
           strcpy(
@@ -140,14 +140,14 @@ void DeleteEntryPair(EntryTag Entries[], int index) {
     int k = 0;
     printf("Choose an Entry Pair Number to Delete: ");
     scanf("%d", &indexPair);
-    if (indexPair < 1 && indexPair > j - 1) {
-      printf("Cannot delete entry pair\n\n");
-    } else {
+    if (indexPair >= 1 && indexPair <= j - 1) {
       indexPair = indexPair - 1;
       for (k = indexPair; k < Entries[index].nEntryPairs - 1; k++) {
         Entries[index].EntryPair[k] = Entries[index].EntryPair[k + 1];
       }
       Entries[index].nEntryPairs--;
+    } else {
+      printf("Cannot delete entry pair\n\n");
     }
 
     printf("\n");
@@ -439,10 +439,10 @@ int main() {
             DisplayAllEntries(Entries, nEntry);
             printf("Index: ");
             scanf("%d", &index);
-            if (index < 1 && index > nEntry) {
-              printf("Cant delete given index %d\n\n", index);
-            } else {
+            if (index >= 1 && index <= (nEntry)) {
               DeleteEntry(Entries, &nEntry, index);
+            } else {
+              printf("Cant delete given index %d\n\n", index);
             }
           } else {
             printf("No Entries\n\n");
@@ -455,10 +455,10 @@ int main() {
             DisplayAllEntries(Entries, nEntry);
             printf("Index: ");
             scanf("%d", &index);
-            if (index < 1 && index > nEntry) {
-              printf("Cant delete given index %d\n\n", index);
-            } else {
+            if (index >= 1 && index <= (nEntry)) {
               DeleteEntryPair(Entries, index);
+            } else {
+              printf("Cant delete given index %d\n\n", index);
             }
           } else {
             printf("No Entries\n\n");
