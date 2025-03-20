@@ -98,12 +98,31 @@ void DisplayPair(EntryPairTag EntryPair) {
 
 void DisplayAllEntries(EntryTag Entry[], int nEntry) {
   int i = 0;
+  char input = '\0';
 
   printf("Language\tTranslation\n");
   if (nEntry > 0) {
-    for (i = 0; i < nEntry; i++) {
+    while (input != 'q' && input != 'Q') {
       printf("%d: ", i + 1);
       DisplayPairs(Entry[i]);
+      printf("Action (L->Move Left Index, R->Move Right Index,Q->Stop): ");
+      scanf(" %c", &input);
+      if (input == 'L' || input == 'l') {
+        if (i == 0)
+          printf("Already at the start index!\n");
+        else
+          i--;
+      }
+      if (input == 'R' || input == 'r') {
+        if (i >= nEntry - 1)
+          printf("Already at the end index!\n");
+        else
+          i++;
+      }
+      if (input == 'Q' || input == 'q') {
+        printf("Ending display!\n");
+      }
+      printf("\n");
     }
   } else {
     printf("No Entries\n\n");
