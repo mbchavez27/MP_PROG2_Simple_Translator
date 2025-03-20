@@ -1,9 +1,9 @@
 English: Rice
 Japanese: Gohan
 
+Bisaya: Brid
 English: Bread
 Japanese: Pan
-Bisaya: Brid
 
 English: Chicken
 Filipino: Manok

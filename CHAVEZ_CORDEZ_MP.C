@@ -26,11 +26,34 @@ void SplitEntryPair(char line[], String20 words[]) {
   }
 }
 
+void SortEntryPairs(EntryTag *Entry) {
+  int i = 0;
+  int j = 0;
+  int nEntryPairs = Entry->nEntryPairs;
+
+  for (i = 0; i < nEntryPairs - 1; i++) {
+    int minIndex = i;
+    for (j = i + 1; j < nEntryPairs; j++) {
+      if (strcmp(Entry->EntryPair[j].language,
+                 Entry->EntryPair[minIndex].language) < 0) {
+        minIndex = j;
+      }
+    }
+    EntryPairTag temp = Entry->EntryPair[i];
+    Entry->EntryPair[i] = Entry->EntryPair[minIndex];
+    Entry->EntryPair[minIndex] = temp;
+  }
+}
+
 void Export(String20 filename, EntryTag Entries[], int nEntry) {
   FILE *file;
   file = fopen(filename, "w");
   int i = 0;
   int j = 0;
+
+  for (i = 0; i < nEntry; i++) {
+    SortEntryPairs(&Entries[i]);
+  }
 
   if (file == NULL) {
     printf("File: %s does not exist!!!\n", filename);
@@ -104,6 +127,7 @@ void DisplayAllEntries(EntryTag Entry[], int nEntry) {
   if (nEntry > 0) {
     while (input != 'q' && input != 'Q') {
       printf("%d: ", i + 1);
+      SortEntryPairs(&Entry[i]);
       DisplayPairs(Entry[i]);
       printf("Action (L->Move Left Index, R->Move Right Index,Q->Stop): ");
       scanf(" %c", &input);
