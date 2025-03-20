@@ -140,11 +140,15 @@ void DeleteEntryPair(EntryTag Entries[], int index) {
     int k = 0;
     printf("Choose an Entry Pair Number to Delete: ");
     scanf("%d", &indexPair);
-    indexPair = indexPair - 1;
-    for (k = indexPair; k < Entries[index].nEntryPairs - 1; k++) {
-      Entries[index].EntryPair[k] = Entries[index].EntryPair[k + 1];
+    if (indexPair < 1 && indexPair > j - 1) {
+      printf("Cannot delete entry pair\n\n");
+    } else {
+      indexPair = indexPair - 1;
+      for (k = indexPair; k < Entries[index].nEntryPairs - 1; k++) {
+        Entries[index].EntryPair[k] = Entries[index].EntryPair[k + 1];
+      }
+      Entries[index].nEntryPairs--;
     }
-    Entries[index].nEntryPairs--;
 
     printf("\n");
   } else {
@@ -417,6 +421,7 @@ int main() {
         printf("Action: ");
         scanf("%d", &input);
         printf("\n");
+
         if (input == 1) {
           if (nEntry < 150) {
             AddEntry(&Entries[nEntry], &nEntry, Entries);
@@ -429,19 +434,35 @@ int main() {
         }
         if (input == 3) {
           int index = 0;
-          printf("Select Entry Number to Delete:\n");
-          DisplayAllEntries(Entries, nEntry);
-          printf("Index: ");
-          scanf("%d", &index);
-          DeleteEntry(Entries, &nEntry, index);
+          if (nEntry > 0) {
+            printf("Select Entry Number to Delete:\n");
+            DisplayAllEntries(Entries, nEntry);
+            printf("Index: ");
+            scanf("%d", &index);
+            if (index < 1 && index > nEntry) {
+              printf("Cant delete given index %d\n\n", index);
+            } else {
+              DeleteEntry(Entries, &nEntry, index);
+            }
+          } else {
+            printf("No Entries\n\n");
+          }
         }
         if (input == 4) {
           int index = 0;
-          printf("Select Entry Number:\n");
-          DisplayAllEntries(Entries, nEntry);
-          printf("Index: ");
-          scanf("%d", &index);
-          DeleteEntryPair(Entries, index);
+          if (nEntry > 0) {
+            printf("Select Entry Number:\n");
+            DisplayAllEntries(Entries, nEntry);
+            printf("Index: ");
+            scanf("%d", &index);
+            if (index < 1 && index > nEntry) {
+              printf("Cant delete given index %d\n\n", index);
+            } else {
+              DeleteEntryPair(Entries, index);
+            }
+          } else {
+            printf("No Entries\n\n");
+          }
         }
         if (input == 5) {
           DisplayAllEntries(Entries, nEntry);
@@ -493,6 +514,34 @@ int main() {
 
     // Translate Menu
     if (input == 2) {
+      String30 fileName;
+      printf("Give Filename to import Data: ");
+      scanf("%s", fileName);
+      printf("\n");
+      if (strlen(fileName) > (MAXFILENAMELENGTH - 4)) {
+        printf("Given file name %s exceeds max length!\n", fileName);
+      } else {
+        strcat(fileName, ".txt");
+        printf("Reading data from file name: %s\n\n", fileName);
+        Import(fileName, Entries, &nEntry);
+      }
+      while (input != 3) {
+        printf("\n");
+        printf("Translate Menu:\n");
+        printf("1. Translate Text Input\n");
+        printf("2. Translate Text File\n");
+        printf("3. Exit\n");
+        printf("Action: ");
+        scanf("%d", &input);
+
+        if (input == 3) {
+          printf("Exitting menu!\n");
+          for (int i = 0; i < MAXENTRIES; i++) {
+            Entries[i] = (EntryTag){0};
+          }
+          nEntry = 0;
+        }
+      }
     }
   }
 }

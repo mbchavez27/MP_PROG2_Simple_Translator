@@ -3,3 +3,9 @@ English: Rice
 English: Bread
 Japanese: Pan
 
+English: Chicken
+Filipino: Manok
+
+English: Steak
+Filipino: istik
+
