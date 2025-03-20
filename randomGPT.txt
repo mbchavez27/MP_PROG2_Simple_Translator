@@ -1,0 +1,19 @@
+English: Sun
+Filipino: Araw
+Japanese: Taiyō
+
+English: Moon
+Filipino: Buwan
+Japanese: Tsuki
+
+English: Star
+Filipino: Bituin
+Japanese: Hoshi
+
+English: Fire
+Filipino: Apoy
+Japanese: Hi
+
+English: Mountain
+Filipino: Bundok
+Japanese: Yama

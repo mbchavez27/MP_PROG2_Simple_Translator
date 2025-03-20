@@ -1,10 +1,13 @@
 English: Rice
+Japanese: Gohan
 
 English: Bread
 Japanese: Pan
+Bisaya: Brid
 
 English: Chicken
 Filipino: Manok
+Japanese: Tori
 
 English: Steak
 Filipino: istik

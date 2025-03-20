@@ -55,6 +55,7 @@ void Import(String20 filename, EntryTag Entries[], int *nEntry) {
   *nEntry = 0;
   if (file == NULL) {
     printf("File: %s does not exist!!!\n", filename);
+    fclose(file);
   } else {
     while (fgets(buffer, sizeof(buffer), file) != NULL) {
       if (buffer[0] == '\n' || buffer[0] == '\0') {
@@ -76,10 +77,9 @@ void Import(String20 filename, EntryTag Entries[], int *nEntry) {
         }
       }
     }
+    printf("Translation successfully loaded\n");
+    fclose(file);
   }
-
-  printf("Translation successfully loaded\n");
-  fclose(file);
 }
 
 void DisplayPairs(EntryTag Entry) {
@@ -159,14 +159,14 @@ void DeleteEntryPair(EntryTag Entries[], int index) {
     int k = 0;
     printf("Choose an Entry Pair Number to Delete: ");
     scanf("%d", &indexPair);
-    if (indexPair >= 1 && indexPair <= j - 1) {
+    if (indexPair >= 1 && indexPair <= Entries[index].nEntryPairs) {
       indexPair = indexPair - 1;
       for (k = indexPair; k < Entries[index].nEntryPairs - 1; k++) {
         Entries[index].EntryPair[k] = Entries[index].EntryPair[k + 1];
       }
       Entries[index].nEntryPairs--;
     } else {
-      printf("Cannot delete entry pair\n\n");
+      printf("Cannot delete entry pair %d\n\n", indexPair);
     }
 
     printf("\n");
