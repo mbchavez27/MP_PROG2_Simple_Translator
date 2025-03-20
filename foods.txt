@@ -1,8 +1,5 @@
 English: Rice
-Filipino: Kanin
-Japanese: Gohan
 
 English: Bread
-
-English: Chicken
+Japanese: Pan
 

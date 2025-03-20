@@ -1,7 +1,30 @@
 #include "Headers.h"
 #include <algorithm>
+#include <cinttypes>
+#include <cstddef>
 #include <stdio.h>
 #include <string.h>
+
+void Split(char line[], String20 words[]) {
+  int i = 0;
+  int character = 0;
+  int word = 0;
+  while (line[i] != '\0') {
+    if (line[i] == ' ' || line[i] == '\n') {
+      if (character > 0) {
+        words[word][character] = '\0';
+        word++;
+        character = 0;
+      }
+    } else if (line[i] != ':') {
+      words[word][character++] = line[i];
+    }
+    i++;
+  }
+  if (character > 0) {
+    words[word][character] = '\0';
+  }
+}
 
 void Export(String20 filename, EntryTag Entries[], int nEntry) {
   FILE *file;
@@ -22,6 +45,41 @@ void Export(String20 filename, EntryTag Entries[], int nEntry) {
     fclose(file);
     printf("File: %s successfully saved\n", filename);
   }
+}
+
+void Import(String20 filename, EntryTag Entries[], int *nEntry) {
+  FILE *file = fopen(filename, "r");
+  char buffer[255];
+  String20 words[2];
+
+  *nEntry = 0;
+  if (file == NULL) {
+    printf("File: %s does not exist!!!\n", filename);
+  } else {
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+      if (buffer[0] == '\n' || buffer[0] == '\0') {
+        if (*nEntry < MAXENTRIES) {
+          (*nEntry)++;
+        }
+      } else {
+        Split(buffer, words);
+        if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
+            words[1][0] != '\0') {
+          strcpy(
+              Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language,
+              words[0]);
+          strcpy(Entries[*nEntry]
+                     .EntryPair[Entries[*nEntry].nEntryPairs]
+                     .translation,
+                 words[1]);
+          Entries[*nEntry].nEntryPairs++;
+        }
+      }
+    }
+  }
+
+  printf("Translation successfully loaded\n");
+  fclose(file);
 }
 
 void DisplayPairs(EntryTag Entry) {
@@ -400,12 +458,26 @@ int main() {
           printf("Give Filename for the Exported Data: ");
           scanf("%s", fileName);
           printf("\n");
-          if (strlen(fileName) > 26) {
+          if (strlen(fileName) > (MAXFILENAMELENGTH - 4)) {
             printf("Given file name %s exceeds max length!\n", fileName);
           } else {
             strcat(fileName, ".txt");
             printf("Saving data to file name: %s\n\n", fileName);
             Export(fileName, Entries, nEntry);
+          }
+          printf("\n");
+        }
+        if (input == 9) {
+          String30 fileName;
+          printf("Give Filename to import Data: ");
+          scanf("%s", fileName);
+          printf("\n");
+          if (strlen(fileName) > (MAXFILENAMELENGTH - 4)) {
+            printf("Given file name %s exceeds max length!\n", fileName);
+          } else {
+            strcat(fileName, ".txt");
+            printf("Reading data from file name: %s\n\n", fileName);
+            Import(fileName, Entries, &nEntry);
           }
           printf("\n");
         }
