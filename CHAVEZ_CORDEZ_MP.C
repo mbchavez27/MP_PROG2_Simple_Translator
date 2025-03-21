@@ -38,6 +38,7 @@ void SplitEntryPair(char line[], String20 words[]) {
 
 void SortEntry(EntryTag Entries[], int nEntry) {
   int i = 0;
+  int j = 0;
   int end = nEntry;
 
   while (i < end) {
@@ -52,6 +53,21 @@ void SortEntry(EntryTag Entries[], int nEntry) {
       end--;
     } else {
       i++;
+    }
+  }
+
+  for (i = 0; i < end - 1; i++) {
+    for (j = i + 1; j < end; j++) {
+      int start = IncludesEnglish(Entries[i]);
+      if (start != -1 && end != -1) {
+        int next = IncludesEnglish((Entries[j]));
+        if (strcmp(Entries[i].EntryPair[start].translation,
+                   Entries[j].EntryPair[next].translation) > 0) {
+          EntryTag temp = Entries[i];
+          Entries[i] = Entries[j];
+          Entries[j] = temp;
+        }
+      }
     }
   }
 }
