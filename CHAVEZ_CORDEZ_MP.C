@@ -1,9 +1,20 @@
 #include "Headers.h"
-#include <algorithm>
-#include <cinttypes>
 #include <cstddef>
 #include <stdio.h>
 #include <string.h>
+
+int IncludesEnglish(EntryTag Entry) {
+  int i = 0;
+  int includes = -1;
+
+  for (i = 0; i < Entry.nEntryPairs; i++) {
+    if (strcmp(Entry.EntryPair[i].language, "English") == 0) {
+      includes = 1;
+    }
+  }
+
+  return includes;
+}
 
 void SplitEntryPair(char line[], String20 words[]) {
   int i = 0;
