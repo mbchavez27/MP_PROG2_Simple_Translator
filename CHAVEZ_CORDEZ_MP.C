@@ -169,12 +169,16 @@ void DisplayAllEntries(EntryTag Entry[], int nEntry) {
   int i = 0;
   char input = '\0';
 
-  printf("Language\tTranslation\n");
   if (nEntry > 0) {
     while (input != 'q' && input != 'Q') {
+      printf("----------------------------------------\n");
+      printf("\n");
+      printf("Language\tTranslation\n");
       printf("%d: ", i + 1);
       SortEntryPairs(&Entry[i]);
       DisplayPairs(Entry[i]);
+      printf("----------------------------------------\n");
+      printf("\n");
       printf("Action (L->Move Left Index, R->Move Right Index,Q->Stop): ");
       scanf(" %c", &input);
       if (input == 'L' || input == 'l') {
@@ -258,6 +262,7 @@ void SearchWord(EntryTag Entries[], int nEntry) {
     for (j = 0; j < Entries[i].nEntryPairs; j++) {
       if (strcmp(word, Entries[i].EntryPair[j].translation) == 0) {
         DisplayPair(Entries[i].EntryPair[j]);
+        printf("\n");
       }
     }
   }
@@ -431,11 +436,12 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
   int numOfSameEntries = 0;
   String20 language, translation;
 
+  printf("----------------------------------------------\n");
   printf("Add Language (STOP! to terminate command): ");
   scanf("%s", language);
   printf("Add Translation (STOP! to terminate command): ");
   scanf("%s", translation);
-  printf("\n");
+  printf("----------------------------------------------\n");
 
   int EntryPairIndex[MAXPAIRS];
   int sameEntry = SearchEntry(Entries, *nEntry, language, translation,
@@ -445,13 +451,17 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
     if (sameEntry != -1) {
       int input;
 
+      printf("----------------------------------------------\n");
       printf("Entry Exists:\n");
       printf("Language\tTranslation\n");
       printf("%s \t%s\n\n", language, translation);
+      printf("----------------------------------------------\n");
 
+      printf("----------------------------------------------\n");
       printf("New Entry?[0/1]: ");
       scanf("%d", &input);
       printf("\n");
+      printf("----------------------------------------------\n");
       if (input == 1) {
         strcpy(Entry->EntryPair[nEntryPairs].translation, translation);
         strcpy(Entry->EntryPair[nEntryPairs].language, language);
@@ -465,13 +475,16 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
       (*nEntry)++;
     }
   } else {
+    printf("----------------------------------------------\n");
     printf("Cancelled Command\n");
+    printf("----------------------------------------------\n");
   }
 
   int input = 0;
+  printf("----------------------------------------------\n");
   printf("Add another entry? [0/1]: ");
   scanf("%d", &input);
-  printf("\n");
+  printf("----------------------------------------------\n");
   if (input == 1) {
     AddEntry(&Entries[*nEntry], nEntry, Entries);
     printf("\n");
@@ -485,18 +498,24 @@ int main() {
   int nEntry = 0;
 
   while (input != 3) {
-    printf("Language Translator: \n");
+    printf("----------------------------------------\n");
+    printf("\tLanguage Translator:\t\n");
+    printf("----------------------------------------\n");
     printf("1. Manage Data\n");
     printf("2. Translate Menu\n");
     printf("3. Exit\n");
+    printf("----------------------------------------\n");
     printf("Action: ");
     scanf("%d", &input);
+    printf("----------------------------------------\n");
     printf("\n");
 
     // Manage Data
     if (input == 1) {
       while (input != 10) {
-        printf("Manage Data: \n");
+        printf("----------------------------------------\n");
+        printf("\tManage Data:\t\n");
+        printf("----------------------------------------\n");
         printf("1. Add Entry\n");
         printf("2. Add Translations\n");
         printf("3. Delete Entry\n");
@@ -507,8 +526,10 @@ int main() {
         printf("8. Export\n");
         printf("9. Import\n");
         printf("10. Exit\n");
+        printf("----------------------------------------\n");
         printf("Action: ");
         scanf("%d", &input);
+        printf("----------------------------------------\n");
         printf("\n");
 
         if (input == 1) {
@@ -593,7 +614,10 @@ int main() {
           printf("\n");
         }
         if (input == 10) {
+          printf("----------------------------------------\n");
           printf("Exitting menu!\n");
+          printf("----------------------------------------\n");
+          printf("\n");
           for (int i = 0; i < MAXENTRIES; i++) {
             Entries[i] = (EntryTag){0};
           }
@@ -617,15 +641,22 @@ int main() {
       }
       while (input != 3) {
         printf("\n");
-        printf("Translate Menu:\n");
+        printf("----------------------------------------\n");
+        printf("\tTranslate Menu:\t\n");
+        printf("----------------------------------------\n");
         printf("1. Translate Text Input\n");
         printf("2. Translate Text File\n");
         printf("3. Exit\n");
+        printf("----------------------------------------\n");
         printf("Action: ");
         scanf("%d", &input);
+        printf("----------------------------------------\n");
 
         if (input == 3) {
+          printf("----------------------------------------\n");
           printf("Exitting menu!\n");
+          printf("----------------------------------------\n");
+          printf("\n");
           for (int i = 0; i < MAXENTRIES; i++) {
             Entries[i] = (EntryTag){0};
           }
