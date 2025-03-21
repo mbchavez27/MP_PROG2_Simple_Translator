@@ -1,19 +1,18 @@
 #include "Headers.h"
+#include <cinttypes>
 #include <cstddef>
 #include <stdio.h>
 #include <string.h>
 
 int IncludesEnglish(EntryTag Entry) {
   int i = 0;
-  int includes = -1;
 
   for (i = 0; i < Entry.nEntryPairs; i++) {
     if (strcmp(Entry.EntryPair[i].language, "English") == 0) {
-      includes = 1;
+      return i;
     }
   }
-
-  return includes;
+  return -1;
 }
 
 void SplitEntryPair(char line[], String20 words[]) {
@@ -34,6 +33,26 @@ void SplitEntryPair(char line[], String20 words[]) {
   }
   if (character > 0) {
     words[word][character] = '\0';
+  }
+}
+
+void SortEntry(EntryTag Entries[], int nEntry) {
+  int i = 0;
+  int end = nEntry;
+
+  while (i < end) {
+    int start = IncludesEnglish(Entries[i]);
+    int last = IncludesEnglish((Entries[end]));
+    if (start == -1) {
+      if (last != -1) {
+        EntryTag temp = Entries[i];
+        Entries[i] = Entries[end];
+        Entries[end] = temp;
+      }
+      end--;
+    } else {
+      i++;
+    }
   }
 }
 
@@ -149,7 +168,7 @@ void DisplayAllEntries(EntryTag Entry[], int nEntry) {
           i--;
       }
       if (input == 'R' || input == 'r') {
-        if (i >= nEntry - 1)
+        if (i >= nEntry)
           printf("Already at the end index!\n");
         else
           i++;
@@ -519,6 +538,7 @@ int main() {
           }
         }
         if (input == 5) {
+          SortEntry(Entries, nEntry);
           DisplayAllEntries(Entries, nEntry);
         }
         if (input == 6) {
