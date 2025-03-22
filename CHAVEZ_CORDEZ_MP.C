@@ -4,6 +4,55 @@
 #include <stdio.h>
 #include <string.h>
 
+void TranslateText() {}
+
+void TranslateTextOption(EntryTag Entries[]) {
+  String150 sourceText;
+  String20 sourceLanguage;
+  String20 outputLanguage;
+  char input;
+
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Translating Input....\n\n");
+  printf("Give Language of Source Text: ");
+  scanf("%s", sourceLanguage);
+  printf("\n");
+  printf("Give Language of Output: ");
+  scanf("%s", outputLanguage);
+  printf("\n");
+
+  printf("Input the Text: ");
+  scanf(" %[^\n]", sourceText);
+  printf("\n");
+  printf("Text given is: %s\n", sourceText);
+  printf("\n");
+
+  printf("Translated Text given is: %s\n", sourceText);
+  printf("\n");
+  printf("----------------------------------------\n");
+  printf("\n");
+
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Do you want to input again? [y/n]: ");
+  scanf(" %c", &input);
+  if (input == 'y') {
+    printf("Ok!\n");
+    printf("\n");
+    printf("----------------------------------------\n");
+
+    printf("\n");
+    TranslateTextOption(Entries);
+  } else {
+    printf("Going Back to Menu\n");
+  }
+
+  printf("\n");
+  printf("----------------------------------------\n");
+}
+
+// Checks if Entry Has English Pair
 int IncludesEnglish(EntryTag Entry) {
   int i = 0;
 
@@ -15,6 +64,7 @@ int IncludesEnglish(EntryTag Entry) {
   return -1;
 }
 
+// Splits into Translation and Language
 void SplitEntryPair(char line[], String20 words[]) {
   int i = 0;
   int character = 0;
@@ -36,11 +86,13 @@ void SplitEntryPair(char line[], String20 words[]) {
   }
 }
 
+// Sorts Entry
 void SortEntry(EntryTag Entries[], int nEntry) {
   int i = 0;
   int j = 0;
   int end = nEntry;
 
+  // Puts non English Pairs first at the End
   while (i < end) {
     int start = IncludesEnglish(Entries[i]);
     int last = IncludesEnglish((Entries[end]));
@@ -56,6 +108,7 @@ void SortEntry(EntryTag Entries[], int nEntry) {
     }
   }
 
+  // Sorts All Englsh
   for (i = 0; i < end - 1; i++) {
     for (j = i + 1; j < end; j++) {
       int start = IncludesEnglish(Entries[i]);
@@ -255,23 +308,31 @@ void SearchWord(EntryTag Entries[], int nEntry) {
   scanf("%s", word);
   int i = 0;
   int j = 0;
+  int found = 0;
   printf("\n");
 
+  printf("----------------------------------------\n");
+  printf("\n");
   printf("Language\tTranslation\n");
   for (i = 0; i < nEntry; i++) {
     for (j = 0; j < Entries[i].nEntryPairs; j++) {
       if (strcmp(word, Entries[i].EntryPair[j].translation) == 0) {
+        found++;
         DisplayPair(Entries[i].EntryPair[j]);
         printf("\n");
       }
     }
   }
+  if (!found)
+    printf("No Entries found\n\n");
+  printf("----------------------------------------\n");
 }
 
 int SearchEntryPair(EntryPairTag EntryPair[], int nEntryPairs,
                     String20 language, String20 translation) {
   int i = 0;
   int SearchEntryIndex = -1;
+  printf("\n");
 
   for (i = 0; i < nEntryPairs; i++) {
     if (strcmp(EntryPair[i].language, language) == 0 &&
@@ -312,28 +373,38 @@ void SearchTranslation(EntryTag Entries[], int nEntry) {
                               EntryPairIndex, &numOfSameEntry);
   int i = 0;
   int j = 0;
+  int found = 0;
 
+  printf("----------------------------------------\n");
+  printf("\n");
   printf("Language\tTranslation\n");
   if (numOfSameEntry > 1) {
     for (i = 0; i < numOfSameEntry; i++) {
       for (j = 0; j < Entries[EntryPairIndex[i]].nEntryPairs; j++) {
         if (strcmp(language,
-                   Entries[EntryPairIndex[i]].EntryPair[j].language) == 0 &&
+                   Entries[EntryPairIndex[i]].EntryPair[j].language) != 0 &&
             strcmp(translation,
-                   Entries[EntryPairIndex[i]].EntryPair[j].translation) == 0) {
+                   Entries[EntryPairIndex[i]].EntryPair[j].translation) != 0) {
+          found++;
           DisplayPair(Entries[EntryPairIndex[i]].EntryPair[j]);
         }
       }
     }
   } else {
     for (i = 0; i < Entries[sameEntry].nEntryPairs; i++) {
-      if (strcmp(language, Entries[sameEntry].EntryPair[i].language) == 0 &&
-          strcmp(translation, Entries[sameEntry].EntryPair[i].translation) ==
+      if (strcmp(language, Entries[sameEntry].EntryPair[i].language) != 0 &&
+          strcmp(translation, Entries[sameEntry].EntryPair[i].translation) !=
               0) {
+        found++;
         DisplayPair(Entries[sameEntry].EntryPair[i]);
       }
     }
   }
+  if (!found) {
+    printf("No Entries found\n\n");
+  }
+  printf("\n");
+  printf("----------------------------------------\n");
 }
 
 void AddTranslation(int *nEntry, EntryTag Entries[]) {
@@ -652,6 +723,9 @@ int main() {
         scanf("%d", &input);
         printf("----------------------------------------\n");
 
+        if (input == 1) {
+          TranslateTextOption(Entries);
+        }
         if (input == 3) {
           printf("----------------------------------------\n");
           printf("Exitting menu!\n");

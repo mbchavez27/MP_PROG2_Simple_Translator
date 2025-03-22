@@ -1,5 +1,6 @@
 #define MAXPAIRS 10
 #define MAXENTRIES 150
+#define MAXCHARS 151
 #define MAXFILENAMELENGTH 30
 
 typedef char String20[21];
