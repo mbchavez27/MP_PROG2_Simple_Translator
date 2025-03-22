@@ -4,52 +4,23 @@
 #include <stdio.h>
 #include <string.h>
 
-void TranslateText() {}
-
-void TranslateTextOption(EntryTag Entries[]) {
-  String150 sourceText;
-  String20 sourceLanguage;
-  String20 outputLanguage;
-  char input;
-
-  printf("----------------------------------------\n");
-  printf("\n");
-  printf("Translating Input....\n\n");
-  printf("Give Language of Source Text: ");
-  scanf("%s", sourceLanguage);
-  printf("\n");
-  printf("Give Language of Output: ");
-  scanf("%s", outputLanguage);
-  printf("\n");
-
-  printf("Input the Text: ");
-  scanf(" %[^\n]", sourceText);
-  printf("\n");
-  printf("Text given is: %s\n", sourceText);
-  printf("\n");
-
-  printf("Translated Text given is: %s\n", sourceText);
-  printf("\n");
-  printf("----------------------------------------\n");
-  printf("\n");
-
-  printf("----------------------------------------\n");
-  printf("\n");
-  printf("Do you want to input again? [y/n]: ");
-  scanf(" %c", &input);
-  if (input == 'y') {
-    printf("Ok!\n");
-    printf("\n");
-    printf("----------------------------------------\n");
-
-    printf("\n");
-    TranslateTextOption(Entries);
-  } else {
-    printf("Going Back to Menu\n");
+void RemovePuncMarks(String20 word) {
+  int length = strlen(word);
+  if (word[length - 1] == ',' || word[length - 1] == '!' ||
+      word[length - 1] == '?' || word[length - 1] == '.') {
+    word[length - 1] = '\0';
   }
+}
 
-  printf("\n");
-  printf("----------------------------------------\n");
+char ReturnPuncMarks(String20 word) {
+  char puncMark = '\0';
+  int length = strlen(word);
+
+  if (word[length - 1] == ',' || word[length - 1] == '!' ||
+      word[length - 1] == '?' || word[length - 1] == '.') {
+    puncMark = word[length - 1];
+  }
+  return puncMark;
 }
 
 // Checks if Entry Has English Pair
@@ -563,6 +534,117 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
   printf("\n");
 }
 
+void TranslateWord(String20 word, String20 sourceLanguage,
+                   String20 outputLanguage, EntryTag Entries[], int nEntry) {
+  int EntryPairIndex[MAXPAIRS];
+  int numOfSameEntry = 0;
+
+  int sameEntry = SearchEntry(Entries, nEntry, sourceLanguage, word,
+                              EntryPairIndex, &numOfSameEntry);
+  int i = 0;
+  int j = 0;
+
+  if (sameEntry != -1) {
+    if (numOfSameEntry > 1) {
+      for (i = 0; i < numOfSameEntry; i++) {
+        for (j = 0; j < Entries[EntryPairIndex[i]].nEntryPairs; j++) {
+        }
+      }
+    } else {
+      for (i = 0; i < Entries[sameEntry].nEntryPairs; i++) {
+        if (strcmp(outputLanguage, Entries[sameEntry].EntryPair[i].language) ==
+            0) {
+          strcpy(word, Entries[sameEntry].EntryPair[i].translation);
+        }
+      }
+    }
+  }
+}
+
+void TranslateText(String150 sourceText, String150 outputText,
+                   String20 sourceLanguage, String20 outputLanguage,
+                   EntryTag Entries[], int nEntry) {
+  String150 tempSource;
+  strcpy(tempSource, sourceText);
+
+  outputText[0] = '\0';
+
+  char *token = strtok(tempSource, " ");
+
+  while (token != NULL) {
+    String20 tempWord;
+    char tempChar = ReturnPuncMarks(token) ? ReturnPuncMarks(token) : '\0';
+
+    char tempStr[2] = {tempChar, '\0'}; // Ensure null termination
+
+    strcpy(tempWord, token);
+    RemovePuncMarks(tempWord);
+    TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry);
+
+    strcat(tempWord, tempStr);
+    strcat(outputText, tempWord);
+    if (tempChar == '\0')
+      strcat(outputText, " ");
+    token = strtok(NULL, " ");
+  }
+  if (strlen(outputText) > 0)
+    outputText[strlen(outputText) - 1] = '\0';
+}
+
+void TranslateTextOption(EntryTag Entries[], int nEntry) {
+  String150 sourceText;
+  String150 outputText = "";
+  String20 sourceLanguage;
+  String20 outputLanguage;
+  char input;
+
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Translating Input....\n\n");
+  printf("Give Language of Source Text: ");
+  scanf("%s", sourceLanguage);
+  printf("\n");
+  printf("Give Language of Output: ");
+  scanf("%s", outputLanguage);
+
+  printf("\n");
+
+  getchar();
+  printf("Input the Text: ");
+  fgets(sourceText, sizeof(sourceText), stdin);
+  sourceText[strcspn(sourceText, "\n")] = '\0'; // Remove trailing newline
+  printf("\n");
+  printf("Text Given is: %s\n", sourceText);
+
+  strcpy(outputText, sourceText);
+
+  TranslateText(sourceText, outputText, sourceLanguage, outputLanguage, Entries,
+                nEntry);
+
+  printf("Translated Text given is: %s\n", outputText);
+  printf("\n");
+  printf("----------------------------------------\n");
+  printf("\n");
+
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Do you want to input again? [y/n]: ");
+  scanf(" %c", &input);
+  if (input == 'y') {
+    printf("Ok!\n");
+    printf("\n");
+    printf("----------------------------------------\n");
+
+    printf("\n");
+    TranslateTextOption(Entries, nEntry);
+  } else {
+    printf("Going Back to Menu\n");
+  }
+
+  printf("\n");
+  printf("----------------------------------------\n");
+}
+
 int main() {
   int input = 0;
   EntryTag Entries[MAXENTRIES] = {0};
@@ -609,9 +691,11 @@ int main() {
           } else {
             printf("Already have max number of entries!\n");
           }
+          SortEntry(Entries, nEntry);
         }
         if (input == 2) {
           AddTranslation(&nEntry, Entries);
+          SortEntry(Entries, nEntry);
         }
         if (input == 3) {
           int index = 0;
@@ -622,6 +706,7 @@ int main() {
             scanf("%d", &index);
             if (index >= 1 && index <= (nEntry)) {
               DeleteEntry(Entries, &nEntry, index);
+              SortEntry(Entries, nEntry);
             } else {
               printf("Cant delete given index %d\n\n", index);
             }
@@ -638,6 +723,7 @@ int main() {
             scanf("%d", &index);
             if (index >= 1 && index <= (nEntry)) {
               DeleteEntryPair(Entries, index);
+              SortEntry(Entries, nEntry);
             } else {
               printf("Cant delete given index %d\n\n", index);
             }
@@ -724,7 +810,7 @@ int main() {
         printf("----------------------------------------\n");
 
         if (input == 1) {
-          TranslateTextOption(Entries);
+          TranslateTextOption(Entries, nEntry);
         }
         if (input == 3) {
           printf("----------------------------------------\n");
