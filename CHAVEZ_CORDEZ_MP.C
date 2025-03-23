@@ -1,14 +1,14 @@
 #include "Headers.h"
-#include <cinttypes>
 #include <cstddef>
 #include <stdio.h>
 #include <string.h>
 
 void RemovePuncMarks(String20 word) {
   int length = strlen(word);
-  if (word[length - 1] == ',' || word[length - 1] == '!' ||
-      word[length - 1] == '?' || word[length - 1] == '.') {
+  while (length > 0 && (word[length - 1] == ',' || word[length - 1] == '!' ||
+                        word[length - 1] == '?' || word[length - 1] == '.')) {
     word[length - 1] = '\0';
+    length--;
   }
 }
 
@@ -148,7 +148,6 @@ void Import(String20 filename, EntryTag Entries[], int *nEntry) {
   *nEntry = 0;
   if (file == NULL) {
     printf("File: %s does not exist!!!\n", filename);
-    fclose(file);
   } else {
     while (fgets(buffer, sizeof(buffer), file) != NULL) {
       if (buffer[0] == '\n' || buffer[0] == '\0') {
@@ -538,26 +537,39 @@ void TranslateWord(String20 word, String20 sourceLanguage,
                    String20 outputLanguage, EntryTag Entries[], int nEntry) {
   int EntryPairIndex[MAXPAIRS];
   int numOfSameEntry = 0;
-
   int sameEntry = SearchEntry(Entries, nEntry, sourceLanguage, word,
                               EntryPairIndex, &numOfSameEntry);
   int i = 0;
   int j = 0;
+  int found = 0;
+  String20 tempWord;
 
   if (sameEntry != -1) {
     if (numOfSameEntry > 1) {
-      for (i = 0; i < numOfSameEntry; i++) {
-        for (j = 0; j < Entries[EntryPairIndex[i]].nEntryPairs; j++) {
+      for (i = 0; i < numOfSameEntry && !found; i++) {
+        int entryIndex = EntryPairIndex[i];
+        for (j = 0; j < Entries[entryIndex].nEntryPairs && !found; j++) {
+          if (strcmp(outputLanguage,
+                     Entries[entryIndex].EntryPair[j].language) == 0) {
+            strcpy(tempWord, Entries[entryIndex].EntryPair[j].translation);
+            found = 1;
+          }
         }
       }
     } else {
-      for (i = 0; i < Entries[sameEntry].nEntryPairs; i++) {
+
+      for (i = 0; i < Entries[sameEntry].nEntryPairs && !found; i++) {
         if (strcmp(outputLanguage, Entries[sameEntry].EntryPair[i].language) ==
             0) {
-          strcpy(word, Entries[sameEntry].EntryPair[i].translation);
+          strcpy(tempWord, Entries[sameEntry].EntryPair[i].translation);
+          found = 1;
         }
       }
     }
+  }
+
+  if (found) {
+    strcpy(word, tempWord);
   }
 }
 
@@ -565,6 +577,7 @@ void TranslateText(String150 sourceText, String150 outputText,
                    String20 sourceLanguage, String20 outputLanguage,
                    EntryTag Entries[], int nEntry) {
   String150 tempSource;
+
   strcpy(tempSource, sourceText);
 
   outputText[0] = '\0';
@@ -572,21 +585,29 @@ void TranslateText(String150 sourceText, String150 outputText,
   char *token = strtok(tempSource, " ");
 
   while (token != NULL) {
+
     String20 tempWord;
+
     char tempChar = ReturnPuncMarks(token) ? ReturnPuncMarks(token) : '\0';
 
-    char tempStr[2] = {tempChar, '\0'}; // Ensure null termination
+    char tempStr[3] = {tempChar, ' ', '\0'};
 
     strcpy(tempWord, token);
+
     RemovePuncMarks(tempWord);
+
     TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry);
 
     strcat(tempWord, tempStr);
+
     strcat(outputText, tempWord);
+
     if (tempChar == '\0')
       strcat(outputText, " ");
+
     token = strtok(NULL, " ");
   }
+
   if (strlen(outputText) > 0)
     outputText[strlen(outputText) - 1] = '\0';
 }
@@ -611,18 +632,14 @@ void TranslateTextOption(EntryTag Entries[], int nEntry) {
 
   getchar();
   printf("Input the Text: ");
-  fgets(sourceText, sizeof(sourceText), stdin);
-  sourceText[strcspn(sourceText, "\n")] = '\0'; // Remove trailing newline
+  fgets(sourceText, MAXCHARS, stdin);
   printf("\n");
   printf("Text Given is: %s\n", sourceText);
-
-  strcpy(outputText, sourceText);
 
   TranslateText(sourceText, outputText, sourceLanguage, outputLanguage, Entries,
                 nEntry);
 
   printf("Translated Text given is: %s\n", outputText);
-  printf("\n");
   printf("----------------------------------------\n");
   printf("\n");
 
