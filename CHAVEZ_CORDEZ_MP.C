@@ -1,5 +1,7 @@
 #include "Headers.h"
+#include <algorithm>
 #include <cstddef>
+#include <filesystem>
 #include <stdio.h>
 #include <string.h>
 
@@ -124,6 +126,8 @@ void Export(String20 filename, EntryTag Entries[], int nEntry) {
   for (i = 0; i < nEntry; i++) {
     SortEntryPairs(&Entries[i]);
   }
+
+  SortEntry(Entries, nEntry);
 
   if (file == NULL) {
     printf("File: %s does not exist!!!\n", filename);
@@ -533,66 +537,24 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
   printf("\n");
 }
 
-int findTranslationIndex(EntryTag Entries[], int entryIndex, int j,
-                         String20 outputLanguage) {
-  return (j >= Entries[entryIndex].nEntryPairs) ? -1
-         : (strcmp(outputLanguage, Entries[entryIndex].EntryPair[j].language) ==
-            0)
-             ? j
-             : findTranslationIndex(Entries, entryIndex, j + 1, outputLanguage);
-}
-
-int getTranslationIndex(String20 word, String20 sourceLanguage,
-                        String20 outputLanguage, EntryTag Entries[],
-                        int nEntry) {
-  int EntryPairIndex[MAXPAIRS], numOfSameEntry = 0;
-  int sameEntry = SearchEntry(Entries, nEntry, sourceLanguage, word,
-                              EntryPairIndex, &numOfSameEntry);
-
-  return (sameEntry == -1) ? -1
-         : (numOfSameEntry > 1)
-             ? findTranslationIndex(Entries, EntryPairIndex[0], 0,
-                                    outputLanguage)
-             : findTranslationIndex(Entries, sameEntry, 0, outputLanguage);
-}
-
 void TranslateWord(String20 word, String20 sourceLanguage,
                    String20 outputLanguage, EntryTag Entries[], int nEntry) {
-  int EntryPairIndex[MAXPAIRS];
-  int numOfSameEntry = 0;
-  int sameEntry = SearchEntry(Entries, nEntry, sourceLanguage, word,
-                              EntryPairIndex, &numOfSameEntry);
   int i = 0;
   int j = 0;
+  int k = 0;
   int found = 0;
-  String20 tempWord;
 
-  if (sameEntry != -1) {
-    if (numOfSameEntry > 1) {
-      for (i = 0; i < numOfSameEntry && !found; i++) {
-        int entryIndex = EntryPairIndex[i];
-        for (j = 0; j < Entries[entryIndex].nEntryPairs && !found; j++) {
-          if (strcmp(outputLanguage,
-                     Entries[entryIndex].EntryPair[j].language) == 0) {
-            strcpy(tempWord, Entries[entryIndex].EntryPair[j].translation);
+  for (i = 0; i < nEntry && !found; i++) {
+    for (j = 0; j < Entries[i].nEntryPairs && !found; j++) {
+      if (strcmp(word, Entries[i].EntryPair[j].translation) == 0) {
+        for (k = 0; k < Entries[i].nEntryPairs && !found; k++) {
+          if (strcmp(outputLanguage, Entries[i].EntryPair[k].language) == 0) {
+            strcpy(word, Entries[i].EntryPair[k].translation);
             found = 1;
           }
         }
       }
-    } else {
-
-      for (i = 0; i < Entries[sameEntry].nEntryPairs && !found; i++) {
-        if (strcmp(outputLanguage, Entries[sameEntry].EntryPair[i].language) ==
-            0) {
-          strcpy(tempWord, Entries[sameEntry].EntryPair[i].translation);
-          found = 1;
-        }
-      }
     }
-  }
-
-  if (found) {
-    strcpy(word, tempWord);
   }
 }
 
@@ -605,11 +567,8 @@ void TranslateText(String150 sourceText, String150 outputText,
 
   outputText[0] = '\0';
 
-  char *token = strtok(tempSource, " ");
+  char *token = strtok(strcat(tempSource, " "), " ");
 
-  String20 tempWord;
-  printf("%d\n", getTranslationIndex(tempWord, sourceLanguage, outputLanguage,
-                                     Entries, nEntry));
   while (token != NULL) {
 
     String20 tempWord;
@@ -622,19 +581,18 @@ void TranslateText(String150 sourceText, String150 outputText,
 
     RemovePuncMarks(tempWord);
 
-    /*TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries,
-     * nEntry);*/
-    printf("%d\n", getTranslationIndex(tempWord, sourceLanguage, outputLanguage,
-                                       Entries, nEntry));
+    TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry);
 
     strcat(tempWord, tempStr);
-
     strcat(outputText, tempWord);
 
-    if (tempChar == '\0')
-      strcat(outputText, " ");
+    char *nextToken = strtok(NULL, " ");
 
-    token = strtok(NULL, " ");
+    if (nextToken != NULL || tempChar != '\0') {
+      strcat(outputText, " "); // Ensure proper spacing
+    }
+
+    token = nextToken;
   }
 
   if (strlen(outputText) > 0)
@@ -664,6 +622,7 @@ void TranslateTextOption(EntryTag Entries[], int nEntry) {
   fgets(sourceText, MAXCHARS, stdin);
   printf("\n");
   printf("Text Given is: %s\n", sourceText);
+  strcat(sourceText, " ");
 
   TranslateText(sourceText, outputText, sourceLanguage, outputLanguage, Entries,
                 nEntry);
@@ -841,6 +800,7 @@ int main() {
         strcat(fileName, ".txt");
         printf("Reading data from file name: %s\n\n", fileName);
         Import(fileName, Entries, &nEntry);
+        SortEntry(Entries, nEntry);
       }
       while (input != 3) {
         printf("\n");
