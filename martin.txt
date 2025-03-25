@@ -1,21 +1,20 @@
-Japanese: Tamago
-Filipino: Itlog
-
-Japanese: Uma
-Filipino: Kabayo
-
-Japanese: Sakana
-Filipino: Isda
-English: Fish
-
-Japanese: Gakkou
-Filipino: Paaralan
-English: School
-
-Japanese: Daigaku
-Filipino: Kolehiyo
 English: College
+Filipino: Kolehiyo
+Japanese: Daigaku
 
-Japanese: Suki
-Filipino: Gusto
+English: Egg
+Filipino: Itlog
+Japanese: Tamago
+
+English: Fish
+Filipino: Isda
+Japanese: Sakana
+
 English: Like
+Filipino: Gusto
+Japanese: Suki
+
+English: School
+Filipino: Paaralan
+Japanese: Gakkou
+
