@@ -533,6 +533,29 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[]) {
   printf("\n");
 }
 
+int findTranslationIndex(EntryTag Entries[], int entryIndex, int j,
+                         String20 outputLanguage) {
+  return (j >= Entries[entryIndex].nEntryPairs) ? -1
+         : (strcmp(outputLanguage, Entries[entryIndex].EntryPair[j].language) ==
+            0)
+             ? j
+             : findTranslationIndex(Entries, entryIndex, j + 1, outputLanguage);
+}
+
+int getTranslationIndex(String20 word, String20 sourceLanguage,
+                        String20 outputLanguage, EntryTag Entries[],
+                        int nEntry) {
+  int EntryPairIndex[MAXPAIRS], numOfSameEntry = 0;
+  int sameEntry = SearchEntry(Entries, nEntry, sourceLanguage, word,
+                              EntryPairIndex, &numOfSameEntry);
+
+  return (sameEntry == -1) ? -1
+         : (numOfSameEntry > 1)
+             ? findTranslationIndex(Entries, EntryPairIndex[0], 0,
+                                    outputLanguage)
+             : findTranslationIndex(Entries, sameEntry, 0, outputLanguage);
+}
+
 void TranslateWord(String20 word, String20 sourceLanguage,
                    String20 outputLanguage, EntryTag Entries[], int nEntry) {
   int EntryPairIndex[MAXPAIRS];
@@ -584,6 +607,9 @@ void TranslateText(String150 sourceText, String150 outputText,
 
   char *token = strtok(tempSource, " ");
 
+  String20 tempWord;
+  printf("%d\n", getTranslationIndex(tempWord, sourceLanguage, outputLanguage,
+                                     Entries, nEntry));
   while (token != NULL) {
 
     String20 tempWord;
@@ -596,7 +622,10 @@ void TranslateText(String150 sourceText, String150 outputText,
 
     RemovePuncMarks(tempWord);
 
-    TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry);
+    /*TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries,
+     * nEntry);*/
+    printf("%d\n", getTranslationIndex(tempWord, sourceLanguage, outputLanguage,
+                                       Entries, nEntry));
 
     strcat(tempWord, tempStr);
 
