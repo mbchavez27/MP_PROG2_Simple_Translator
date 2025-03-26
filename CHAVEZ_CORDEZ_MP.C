@@ -918,6 +918,8 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
 
   printf("\n");
   printf("Translation of file name: %s is done the output can be found at file name: %s", sourceFileName, outputFileName);
+  printf("\n");
+  printf("You can also view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
 }
 
 void TranslateTextOption(EntryTag Entries[], int nEntry)
@@ -950,8 +952,17 @@ void TranslateTextOption(EntryTag Entries[], int nEntry)
                 nEntry);
 
   printf("Translated Text given is: %s\n", outputText);
+
+  FILE *historyFile = fopen("SentenceHistory.txt", "a");
+  if (historyFile == NULL)
+  {
+    printf("Error appending history!\n");
+  }
+  fprintf(historyFile, "%s\n", outputText);
+  fclose(historyFile);
+
   printf("\n");
-  printf("You can view the previously used translated words in History.txt\n");
+  printf("You can view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
   printf("----------------------------------------\n");
   printf("\n");
 
