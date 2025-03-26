@@ -1,7 +1,4 @@
 #include "Headers.h"
-#include <algorithm>
-#include <cstddef>
-#include <cstdio>
 #include <stdio.h>
 #include <string.h>
 
