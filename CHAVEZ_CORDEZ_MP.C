@@ -523,10 +523,10 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
           if (strcmp(language, "STOP!") != 0 ||
               strcmp(translation, "STOP!") != 0)
           {
-            strcpy(Entries[sameEntry].EntryPair[Entries->nEntryPairs].language,
+            strcpy(Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].language,
                    language);
             strcpy(
-                Entries[sameEntry].EntryPair[Entries->nEntryPairs].translation,
+                Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].translation,
                 translation);
             Entries[sameEntry].nEntryPairs++;
           }
@@ -602,6 +602,18 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
   else
   {
     printf("Cancelled Command\n");
+  }
+
+  char input;
+  printf("----------------------------------------------\n");
+  printf("Add another translation? [y/n]: ");
+  scanf(" %c", &input);
+  printf("----------------------------------------------\n");
+
+  if (input == 'y' || input == 'Y')
+  {
+    AddTranslation(nEntry, Entries);
+    printf("\n");
   }
 }
 
