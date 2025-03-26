@@ -1,8 +1,4 @@
 #include "Headers.h"
-#include <algorithm>
-#include <cstddef>
-#include <cstdio>
-#include <filesystem>
 #include <stdio.h>
 #include <string.h>
 
@@ -291,7 +287,7 @@ void DisplayAllEntries(EntryTag Entry[], int nEntry)
       }
       if (input == 'R' || input == 'r')
       {
-        if (i >= nEntry)
+        if (i > nEntry)
           printf("Already at the end index!\n");
         else
           i++;
@@ -693,7 +689,7 @@ void TranslateWord(String20 word, String20 sourceLanguage,
     {
       if (strcmp(word, Entries[i].EntryPair[j].translation) == 0)
       {
-        for (k = 0; k < Entries[i].nEntryPairs && !found; k++)
+        for (k = 0; k < Entries[i].nEntryPairs; k++)
         {
           if (strcmp(outputLanguage, Entries[i].EntryPair[k].language) == 0)
           {
@@ -804,12 +800,15 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
         if (hasText)
         {
           TranslateText(sentence, transSentence, sourceLanguage, outputLanguage, Entries, nEntry);
-
-          printf("%s\n", transSentence);
-
-          fprintf(outputFile, "%s\n", transSentence);
+        }
+        else
+        {
+          strcpy(transSentence, sentence);
         }
 
+        printf("%s\n", transSentence);
+
+        fprintf(outputFile, "%s\n", transSentence);
         hasText = 0;
       }
     }
