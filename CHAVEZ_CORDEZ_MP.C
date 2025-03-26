@@ -1186,7 +1186,7 @@ int main()
           SortEntry(Entries, nEntry);
         }
       }
-      while (translateInput != 3 && successImport != -1)
+      while (translateInput != 4 && successImport != -1)
       {
         printf("\n");
         printf("----------------------------------------\n");
@@ -1194,7 +1194,8 @@ int main()
         printf("----------------------------------------\n");
         printf("1. Translate Text Input\n");
         printf("2. Translate Text File\n");
-        printf("3. Exit\n");
+        printf("3. Check History \n");
+        printf("4. Exit\n");
         printf("----------------------------------------\n");
         printf("Action: ");
         scanf("%d", &translateInput);
@@ -1244,6 +1245,27 @@ int main()
           }
         }
         if (translateInput == 3)
+        {
+          FILE *historyFile = fopen("History.txt", "r");
+          char buffer[255];
+
+          if (historyFile == NULL)
+          {
+            printf("----------------------------------------\n");
+            printf("Error reading file\n");
+            printf("----------------------------------------\n");
+          }
+          printf("----------------------------------------\n");
+          printf("\n");
+          printf("Translation History: \n\n");
+          while (fgets(buffer, sizeof(buffer), historyFile) != NULL)
+          {
+            printf("%s\n", buffer);
+          }
+          printf("----------------------------------------\n");
+          fclose(historyFile);
+        }
+        if (translateInput == 4)
         {
           printf("----------------------------------------\n");
           printf("Exitting menu!\n");

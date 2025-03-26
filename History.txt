@@ -2,3 +2,6 @@ English: College -> Filipino: Kolehiyo
 English: Egg -> Filipino: Itlog
 English: School -> Filipino: Paaralan
 English: Egg -> Japanese: Tamago
+English: Egg -> Filipino: Itlog
+English: College -> Filipino: Kolehiyo
+English: School -> Filipino: Paaralan
