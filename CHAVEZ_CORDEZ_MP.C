@@ -362,6 +362,46 @@ void DeleteEntryPair(EntryTag Entries[], int index)
   }
 }
 
+void ModifyEntryPair(EntryTag Entries[], int index)
+{
+  int j = 0;
+  index = index - 1;
+
+  printf("Given Entry Detals\n\n");
+  printf("Language\tTranslation\n");
+  for (j = 0; j < Entries[index].nEntryPairs; j++)
+  {
+    printf("%d: ", j + 1);
+    DisplayPair(Entries[index].EntryPair[j]);
+  }
+
+  printf("\n");
+
+  int indexPair = 0;
+  printf("Choose an Entry Pair Number to Edit: ");
+  scanf("%d", &indexPair);
+  if (indexPair >= 1 && indexPair <= Entries[index].nEntryPairs)
+  {
+    String20 language, translation;
+    indexPair = indexPair - 1;
+    printf("Add Language (STOP! to terminate command): ");
+    scanf("%s", language);
+    printf("Add Translation (STOP! to terminate command): ");
+    scanf("%s", translation);
+    printf("\n");
+    strcpy(Entries[index].EntryPair[indexPair].language, language);
+    strcpy(Entries[index].EntryPair[indexPair].translation, translation);
+
+    printf("Entry Pair has been edited!\n");
+  }
+  else
+  {
+    printf("Cannot delete entry pair %d\n\n", indexPair);
+  }
+
+  printf("\n");
+}
+
 void SearchWord(EntryTag Entries[], int nEntry)
 {
   String20 word;
@@ -930,21 +970,22 @@ int main()
     // Manage Data
     if (input == 1)
     {
-      while (input != 10)
+      while (input != 11)
       {
         printf("----------------------------------------\n");
         printf("\tManage Data:\t\n");
         printf("----------------------------------------\n");
         printf("1. Add Entry\n");
         printf("2. Add Translations\n");
-        printf("3. Delete Entry\n");
-        printf("4. Delete Translations\n");
-        printf("5. Display All Entries\n");
-        printf("6. Search Word\n");
-        printf("7. Search Translations\n");
-        printf("8. Export\n");
-        printf("9. Import\n");
-        printf("10. Exit\n");
+        printf("3. Modify Entry Pair\n");
+        printf("4. Delete Entry\n");
+        printf("5. Delete Translations\n");
+        printf("6. Display All Entries\n");
+        printf("7. Search Word\n");
+        printf("8. Search Translations\n");
+        printf("9. Export\n");
+        printf("10. Import\n");
+        printf("11. Exit\n");
         printf("----------------------------------------\n");
         printf("Action: ");
         scanf("%d", &input);
@@ -973,9 +1014,33 @@ int main()
           int index = 0;
           if (nEntry > 0)
           {
+            printf("Select Entry Number to Edit:\n");
+            DisplayAllEntries(Entries, nEntry);
+            printf("Entry Index: ");
+            scanf("%d", &index);
+            if (index >= 1 && index <= (nEntry))
+            {
+              ModifyEntryPair(Entries, index);
+              SortEntry(Entries, nEntry);
+            }
+            else
+            {
+              printf("Cant modify given index %d\n\n", index);
+            }
+          }
+          else
+          {
+            printf("No Entries\n\n");
+          }
+        }
+        if (input == 4)
+        {
+          int index = 0;
+          if (nEntry > 0)
+          {
             printf("Select Entry Number to Delete:\n");
             DisplayAllEntries(Entries, nEntry);
-            printf("Index: ");
+            printf("Entry Index: ");
             scanf("%d", &index);
             if (index >= 1 && index <= (nEntry))
             {
@@ -992,14 +1057,14 @@ int main()
             printf("No Entries\n\n");
           }
         }
-        if (input == 4)
+        if (input == 5)
         {
           int index = 0;
           if (nEntry > 0)
           {
             printf("Select Entry Number:\n");
             DisplayAllEntries(Entries, nEntry);
-            printf("Index: ");
+            printf("Entry Index: ");
             scanf("%d", &index);
             if (index >= 1 && index <= (nEntry))
             {
@@ -1016,21 +1081,21 @@ int main()
             printf("No Entries\n\n");
           }
         }
-        if (input == 5)
+        if (input == 6)
         {
           SortEntry(Entries, nEntry);
           DisplayAllEntries(Entries, nEntry);
         }
-        if (input == 6)
+        if (input == 7)
         {
           SearchWord(Entries, nEntry);
         }
-        if (input == 7)
+        if (input == 8)
         {
           SearchTranslation(Entries, nEntry);
           printf("\n");
         }
-        if (input == 8)
+        if (input == 9)
         {
           String30 fileName;
           printf("Give Filename for the Exported Data: ");
@@ -1048,7 +1113,7 @@ int main()
           }
           printf("\n");
         }
-        if (input == 9)
+        if (input == 10)
         {
           String30 fileName;
           printf("Give Filename to import Data: ");
@@ -1066,7 +1131,7 @@ int main()
           }
           printf("\n");
         }
-        if (input == 10)
+        if (input == 11)
         {
           printf("----------------------------------------\n");
           printf("Exitting menu!\n");
