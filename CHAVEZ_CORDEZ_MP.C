@@ -607,72 +607,90 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
 
 void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
 {
-  int nEntryPairs = Entry->nEntryPairs;
-  int numOfSameEntries = 0;
-  String20 language, translation;
+    int nEntryPairs = Entry->nEntryPairs;
+    int numOfSameEntries = 0;
+    String20 language, translation;
+    int nCancelled = 0;
 
-  printf("----------------------------------------------\n");
-  printf("Add Language (STOP! to terminate command): ");
-  scanf("%s", language);
-  printf("Add Translation (STOP! to terminate command): ");
-  scanf("%s", translation);
-  printf("----------------------------------------------\n");
-
-  int EntryPairIndex[MAXPAIRS];
-  int sameEntry = SearchEntry(Entries, *nEntry, language, translation,
-                              EntryPairIndex, &numOfSameEntries);
-
-  if (strcmp(language, "STOP!") != 0 || strcmp(translation, "STOP!") != 0)
-  {
-    if (sameEntry != -1)
-    {
-      int input;
-
-      printf("----------------------------------------------\n");
-      printf("Entry Exists:\n");
-      printf("Language\tTranslation\n");
-      printf("%s \t%s\n\n", language, translation);
-      printf("----------------------------------------------\n");
-
-      printf("----------------------------------------------\n");
-      printf("New Entry?[0/1]: ");
-      scanf("%d", &input);
-      printf("\n");
-      printf("----------------------------------------------\n");
-      if (input == 1)
-      {
-        strcpy(Entry->EntryPair[nEntryPairs].translation, translation);
-        strcpy(Entry->EntryPair[nEntryPairs].language, language);
-        Entry->nEntryPairs++;
-        (*nEntry)++;
-      }
-    }
-    else
-    {
-      strcpy(Entry->EntryPair[nEntryPairs].translation, translation);
-      strcpy(Entry->EntryPair[nEntryPairs].language, language);
-      Entry->nEntryPairs++;
-      (*nEntry)++;
-    }
-  }
-  else
-  {
     printf("----------------------------------------------\n");
-    printf("Cancelled Command\n");
-    printf("----------------------------------------------\n");
-  }
+    printf("Add Language (STOP! to terminate command): ");
+    scanf("%s", language);
 
-  int input = 0;
-  printf("----------------------------------------------\n");
-  printf("Add another entry? [0/1]: ");
-  scanf("%d", &input);
-  printf("----------------------------------------------\n");
-  if (input == 1)
-  {
-    AddEntry(&Entries[*nEntry], nEntry, Entries);
-    printf("\n");
-  }
-  printf("\n");
+    if (strcmp(language, "STOP!") == 0) 
+    {
+        nCancelled = 1;
+    }
+
+    if (!nCancelled)  
+    {
+        printf("Add Translation (STOP! to terminate command): ");
+        scanf("%s", translation);
+
+        if (strcmp(translation, "STOP!") == 0)  
+        {
+            nCancelled = 1;
+        }
+    }
+
+    if (!nCancelled)  
+    {
+        printf("----------------------------------------------\n");
+
+        int EntryPairIndex[MAXPAIRS];
+        int sameEntry = SearchEntry(Entries, *nEntry, language, translation,
+                                    EntryPairIndex, &numOfSameEntries);
+
+        if (sameEntry != -1)
+        {
+            int input;
+            printf("----------------------------------------------\n");
+            printf("Entry Exists:\n");
+            printf("Language\tTranslation\n");
+            printf("%s \t%s\n\n", language, translation);
+            printf("----------------------------------------------\n");
+
+            printf("New Entry? [0/1]: ");
+            scanf("%d", &input);
+            printf("\n");
+            printf("----------------------------------------------\n");
+
+            if (input == 1)
+            {
+                strcpy(Entry->EntryPair[nEntryPairs].translation, translation);
+                strcpy(Entry->EntryPair[nEntryPairs].language, language);
+                Entry->nEntryPairs++;
+                (*nEntry)++;
+            }
+        }
+        else
+        {
+            strcpy(Entry->EntryPair[nEntryPairs].translation, translation);
+            strcpy(Entry->EntryPair[nEntryPairs].language, language);
+            Entry->nEntryPairs++;
+            (*nEntry)++;
+        }
+    }
+
+    if (nCancelled)  
+    {
+        printf("----------------------------------------------\n");
+        printf("Cancelled Command\n");
+        printf("----------------------------------------------\n");
+    }
+    else  
+    {
+        int input = 0;
+        printf("----------------------------------------------\n");
+        printf("Add another entry? [0/1]: ");
+        scanf("%d", &input);
+        printf("----------------------------------------------\n");
+
+        if (input == 1)
+        {
+            AddEntry(&Entries[*nEntry], nEntry, Entries);
+            printf("\n");
+        }
+    }
 }
 
 void TranslateWord(String20 word, String20 sourceLanguage,
