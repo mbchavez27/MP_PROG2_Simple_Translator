@@ -1,6 +1,7 @@
 #include "Headers.h"
 #include <algorithm>
 #include <cstddef>
+#include <cstdio>
 #include <filesystem>
 #include <stdio.h>
 #include <string.h>
@@ -179,16 +180,19 @@ void Export(String20 filename, EntryTag Entries[], int nEntry)
   }
 }
 
-void Import(String20 filename, EntryTag Entries[], int *nEntry)
+int Import(String20 filename, EntryTag Entries[], int *nEntry)
 {
   FILE *file = fopen(filename, "r");
   char buffer[255];
   String20 words[2];
 
+  int success = 1;
+
   *nEntry = 0;
   if (file == NULL)
   {
     printf("File: %s does not exist!!!\n", filename);
+    success = -1;
   }
   else
   {
@@ -221,6 +225,25 @@ void Import(String20 filename, EntryTag Entries[], int *nEntry)
     printf("Translation successfully loaded\n");
     fclose(file);
   }
+  return success;
+}
+
+int ImportTranslateText(String20 sourceFileName, String20 outputFileName,
+                        String20 sourceLanguage, String20 outputLanguage)
+{
+  FILE *file = fopen(sourceFileName, "r");
+  int success = -1;
+
+  if (file == NULL)
+  {
+    printf("File: %s does not exist!!!\n", sourceFileName);
+    success = -1;
+  }
+  else
+  {
+    success = 1;
+  }
+  return success;
 }
 
 void DisplayPairs(EntryTag Entry)
@@ -726,10 +749,77 @@ void TranslateText(String150 sourceText, String150 outputText,
     token = nextToken;
   }
 
-  if (sourceText[strlen(sourceText) - 1] == '.' || sourceText[strlen(sourceText) - 1] == ',' || sourceText[strlen(sourceText) - 1] == '?' || sourceText[strlen(sourceText) - 1] == '!')
+  if (sourceText[strlen(sourceText) - 1] == '.' ||
+      sourceText[strlen(sourceText) - 1] == ',' ||
+      sourceText[strlen(sourceText) - 1] == '?' ||
+      sourceText[strlen(sourceText) - 1] == '!')
   {
     outputText[strlen(outputText) - 1] = sourceText[strlen(sourceText) - 1];
   }
+}
+
+void TranslateFile(String20 sourceFileName, String20 outputFileName,
+                   String20 sourceLanguage, String20 outputLanguage, EntryTag Entries[], int nEntry)
+{
+  FILE *inputFile = fopen(sourceFileName, "r");
+  FILE *outputFile = fopen(outputFileName, "w");
+
+  String150 sentence;
+  String150 transSentence;
+  int index = 0;
+  char ch, prevCh = '\0';
+  int hasText = 0;
+
+  if (inputFile == NULL)
+  {
+    printf("File: %s does not exist!!!\n", sourceFileName);
+  }
+  else
+  {
+    while ((ch = fgetc(inputFile)) != EOF)
+    {
+      sentence[index++] = ch;
+
+      if (ch != ' ' && ch != '\t' && ch != '\n' && ch != '.' && ch != '?' && ch != '!')
+      {
+        hasText = 1;
+      }
+
+      if (index == MAXCHARS || (ch == '.' || ch == '?' || ch == '!'))
+      {
+
+        while ((ch = fgetc(inputFile)) != EOF && (ch == prevCh))
+        {
+          sentence[index++] = ch;
+        }
+
+        if (ch != EOF && ch != prevCh)
+        {
+          ungetc(ch, inputFile);
+        }
+
+        sentence[index] = '\0';
+        index = 0;
+
+        if (hasText)
+        {
+          TranslateText(sentence, transSentence, sourceLanguage, outputLanguage, Entries, nEntry);
+
+          printf("%s\n", transSentence);
+
+          fprintf(outputFile, "%s\n", transSentence);
+        }
+
+        hasText = 0;
+      }
+    }
+  }
+
+  fclose(inputFile);
+  fclose(outputFile);
+
+  printf("\n");
+  printf("Translation of file name: %s is done the output can be found at file name: %s", sourceFileName, outputFileName);
 }
 
 void TranslateTextOption(EntryTag Entries[], int nEntry)
@@ -964,6 +1054,8 @@ int main()
     // Translate Menu
     if (input == 2)
     {
+      int translateInput = 0;
+      int successImport = -1;
       String30 fileName;
       printf("Give Filename to import Data: ");
       scanf("%s", fileName);
@@ -976,10 +1068,17 @@ int main()
       {
         strcat(fileName, ".txt");
         printf("Reading data from file name: %s\n\n", fileName);
-        Import(fileName, Entries, &nEntry);
-        SortEntry(Entries, nEntry);
+        successImport = Import(fileName, Entries, &nEntry);
+        if (successImport == -1)
+        {
+          printf("\n");
+        }
+        else
+        {
+          SortEntry(Entries, nEntry);
+        }
       }
-      while (input != 3)
+      while (translateInput != 3 && successImport != -1)
       {
         printf("\n");
         printf("----------------------------------------\n");
@@ -990,14 +1089,53 @@ int main()
         printf("3. Exit\n");
         printf("----------------------------------------\n");
         printf("Action: ");
-        scanf("%d", &input);
+        scanf("%d", &translateInput);
         printf("----------------------------------------\n");
 
-        if (input == 1)
+        if (translateInput == 1)
         {
           TranslateTextOption(Entries, nEntry);
         }
-        if (input == 3)
+        if (translateInput == 2)
+        {
+          String30 sourceFileName, outputFileName;
+          String20 sourceLanguage, outputLanguage;
+          int successTranslateImport = -1;
+          printf("Give Filename to Read: ");
+          scanf("%s", sourceFileName);
+          printf("Give Language of Source File: ");
+          scanf("%s", sourceLanguage);
+          printf("Give Filename to Output: ");
+          scanf("%s", outputFileName);
+          printf("Give Language of Output File: ");
+          scanf("%s", outputLanguage);
+          printf("\n");
+
+          if (strlen(sourceFileName) > (MAXFILENAMELENGTH - 4))
+          {
+            printf("Given file name %s exceeds max length!\n", sourceFileName);
+          }
+          else
+          {
+            if (strlen(outputFileName) > (MAXFILENAMELENGTH - 4))
+            {
+
+              printf("Given file name %s exceeds max length!\n", sourceFileName);
+            }
+            else
+            {
+              strcat(sourceFileName, ".txt");
+              strcat(outputFileName, ".txt");
+              printf("Translating file name: %s to file name: %s\n\n", sourceFileName, outputFileName);
+              successTranslateImport = ImportTranslateText(sourceFileName, outputFileName, sourceLanguage, outputFileName);
+              if (successTranslateImport != -1)
+              {
+                TranslateFile(sourceFileName, outputFileName, sourceLanguage, outputLanguage, Entries, nEntry);
+              }
+            }
+          }
+        }
+        if (translateInput == 3)
         {
           printf("----------------------------------------\n");
           printf("Exitting menu!\n");

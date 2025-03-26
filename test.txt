@@ -1,4 +1,12 @@
-English: Chicken
+Cebuano: mahal
+Chinese: gui
+English: expensive
+Tagalog: mahal
+Kapampangan: mal
 
-1: 1
-
+Cebuano: gugma
+Chinese: ai
+English: love
+Hiligaynon: gugma
+Spanish: amor
+Tagalog: mahal
