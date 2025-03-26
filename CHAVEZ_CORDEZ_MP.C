@@ -1032,6 +1032,10 @@ void ViewSentenceHistory()
   fclose(historyFile);
 }
 
+void ViewMostTranslatedWord()
+{
+}
+
 int main()
 {
   int input = 0;
@@ -1336,14 +1340,15 @@ int main()
     if (input == 3)
     {
       int analyticsInput = 0;
-      while (analyticsInput != 3)
+      while (analyticsInput != 4)
       {
         printf("----------------------------------------\n");
         printf("\tLanguage Translator:\t\n");
         printf("----------------------------------------\n");
         printf("1. View Translated Words History\n");
-        printf("2. View Translated Sentences History\n");
-        printf("3. Exit\n");
+        printf("2. View Most Translated Word\n");
+        printf("3. View Translated Sentences History\n");
+        printf("4. Exit\n");
         printf("----------------------------------------\n");
         printf("Action: ");
         scanf("%d", &analyticsInput);
@@ -1356,9 +1361,13 @@ int main()
         }
         if (analyticsInput == 2)
         {
+          ViewMostTranslatedWord();
+        }
+        if (analyticsInput == 3)
+        {
           ViewSentenceHistory();
         }
-        else if (analyticsInput == 3)
+        else if (analyticsInput == 4)
         {
           printf("----------------------------------------\n");
           printf("Leaving...\n");
