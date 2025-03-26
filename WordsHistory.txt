@@ -1,0 +1,3 @@
+English: Rice -> Filipino: Kanin
+English: Fish -> Filipino: Isda
+English: Bread -> Filipino: Tinapay

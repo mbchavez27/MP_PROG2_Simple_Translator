@@ -775,7 +775,7 @@ void TranslateWord(String20 word, String20 sourceLanguage,
             String20 tempWord;
             strcpy(tempWord, word);
 
-            FILE *historyFile = fopen("History.txt", "a");
+            FILE *historyFile = fopen("WordsHistory.txt", "a");
             if (historyFile == NULL)
             {
               printf("Error appending history!\n");
@@ -899,6 +899,15 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
         printf("%s\n", transSentence);
 
         fprintf(outputFile, "%s\n", transSentence);
+
+        FILE *historyFile = fopen("SentenceHistory.txt", "a");
+        if (historyFile == NULL)
+        {
+          printf("Error appending history!\n");
+        }
+        fprintf(historyFile, "%s\n", transSentence);
+        fclose(historyFile);
+
         hasText = 0;
       }
     }
@@ -968,9 +977,9 @@ void TranslateTextOption(EntryTag Entries[], int nEntry)
   printf("----------------------------------------\n");
 }
 
-void ViewHistory()
+void ViewWordsHistory()
 {
-  FILE *historyFile = fopen("History.txt", "r");
+  FILE *historyFile = fopen("WordsHistory.txt", "r");
   char buffer[255];
 
   if (historyFile == NULL)
@@ -981,7 +990,29 @@ void ViewHistory()
   }
   printf("----------------------------------------\n");
   printf("\n");
-  printf("Translation History: \n\n");
+  printf("Words Translation History: \n\n");
+  while (fgets(buffer, sizeof(buffer), historyFile) != NULL)
+  {
+    printf("%s\n", buffer);
+  }
+  printf("----------------------------------------\n");
+  fclose(historyFile);
+}
+
+void ViewSentenceHistory()
+{
+  FILE *historyFile = fopen("SentenceHistory.txt", "r");
+  char buffer[255];
+
+  if (historyFile == NULL)
+  {
+    printf("----------------------------------------\n");
+    printf("Error reading file\n");
+    printf("----------------------------------------\n");
+  }
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Sentence Translation History: \n\n");
   while (fgets(buffer, sizeof(buffer), historyFile) != NULL)
   {
     printf("%s\n", buffer);
@@ -1294,13 +1325,14 @@ int main()
     if (input == 3)
     {
       int analyticsInput = 0;
-      while (analyticsInput != 2)
+      while (analyticsInput != 3)
       {
         printf("----------------------------------------\n");
         printf("\tLanguage Translator:\t\n");
         printf("----------------------------------------\n");
-        printf("1. View History\n");
-        printf("2. Exit\n");
+        printf("1. View Translated Words History\n");
+        printf("2. View Translated Sentences History\n");
+        printf("3. Exit\n");
         printf("----------------------------------------\n");
         printf("Action: ");
         scanf("%d", &analyticsInput);
@@ -1309,9 +1341,13 @@ int main()
 
         if (analyticsInput == 1)
         {
-          ViewHistory();
+          ViewWordsHistory();
         }
-        else if (analyticsInput == 2)
+        if (analyticsInput == 2)
+        {
+          ViewSentenceHistory();
+        }
+        else if (analyticsInput == 3)
         {
           printf("----------------------------------------\n");
           printf("Leaving...\n");

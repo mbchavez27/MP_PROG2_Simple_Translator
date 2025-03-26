@@ -1,0 +1,19 @@
+English: Rice
+Filipino: Kanin
+Japanese: Gohan
+
+English: Fish
+Filipino: Isda
+Japanese: Sakana
+
+English: Meat
+Filipino: Karne
+Japanese: Niku
+
+English: Bread
+Filipino: Tinapay
+Japanese: Pan
+
+English: Fruit
+Filipino: Prutas
+Japanese: Kudamono
