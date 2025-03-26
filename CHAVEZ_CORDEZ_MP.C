@@ -463,6 +463,7 @@ void SearchTranslation(EntryTag Entries[], int nEntry)
           DisplayPair(Entries[EntryPairIndex[i]].EntryPair[j]);
         }
       }
+      printf("\n");
     }
   }
   else
