@@ -1,0 +1,19 @@
+English: Water
+Filipino: Tubig
+Japanese: Mizu
+
+English: Earth
+Filipino: Lupa
+Japanese: Tsuchi
+
+English: Wind
+Filipino: Hangin
+Japanese: Kaze
+
+English: Sky
+Filipino: Kalangitan
+Japanese: Sora
+
+English: Tree
+Filipino: Puno
+Japanese: Ki

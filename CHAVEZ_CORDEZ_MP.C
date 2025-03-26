@@ -218,6 +218,12 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
         }
       }
     }
+
+    if (Entries[*nEntry].nEntryPairs > 0)
+    {
+      (*nEntry)++;
+    }
+
     printf("Translation successfully loaded\n");
     fclose(file);
   }
