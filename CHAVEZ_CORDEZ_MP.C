@@ -968,20 +968,43 @@ void TranslateTextOption(EntryTag Entries[], int nEntry)
   printf("----------------------------------------\n");
 }
 
+void ViewHistory()
+{
+  FILE *historyFile = fopen("History.txt", "r");
+  char buffer[255];
+
+  if (historyFile == NULL)
+  {
+    printf("----------------------------------------\n");
+    printf("Error reading file\n");
+    printf("----------------------------------------\n");
+  }
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Translation History: \n\n");
+  while (fgets(buffer, sizeof(buffer), historyFile) != NULL)
+  {
+    printf("%s\n", buffer);
+  }
+  printf("----------------------------------------\n");
+  fclose(historyFile);
+}
+
 int main()
 {
   int input = 0;
   EntryTag Entries[MAXENTRIES] = {0};
   int nEntry = 0;
 
-  while (input != 3)
+  while (input != 4)
   {
     printf("----------------------------------------\n");
     printf("\tLanguage Translator:\t\n");
     printf("----------------------------------------\n");
     printf("1. Manage Data\n");
     printf("2. Translate Menu\n");
-    printf("3. Exit\n");
+    printf("3. View Analytics\n");
+    printf("4. Exit\n");
     printf("----------------------------------------\n");
     printf("Action: ");
     scanf("%d", &input);
@@ -1195,7 +1218,7 @@ int main()
           SortEntry(Entries, nEntry);
         }
       }
-      while (translateInput != 4 && successImport != -1)
+      while (translateInput != 3 && successImport != -1)
       {
         printf("\n");
         printf("----------------------------------------\n");
@@ -1203,8 +1226,7 @@ int main()
         printf("----------------------------------------\n");
         printf("1. Translate Text Input\n");
         printf("2. Translate Text File\n");
-        printf("3. Check History \n");
-        printf("4. Exit\n");
+        printf("3. Exit\n");
         printf("----------------------------------------\n");
         printf("Action: ");
         scanf("%d", &translateInput);
@@ -1255,27 +1277,6 @@ int main()
         }
         if (translateInput == 3)
         {
-          FILE *historyFile = fopen("History.txt", "r");
-          char buffer[255];
-
-          if (historyFile == NULL)
-          {
-            printf("----------------------------------------\n");
-            printf("Error reading file\n");
-            printf("----------------------------------------\n");
-          }
-          printf("----------------------------------------\n");
-          printf("\n");
-          printf("Translation History: \n\n");
-          while (fgets(buffer, sizeof(buffer), historyFile) != NULL)
-          {
-            printf("%s\n", buffer);
-          }
-          printf("----------------------------------------\n");
-          fclose(historyFile);
-        }
-        if (translateInput == 4)
-        {
           printf("----------------------------------------\n");
           printf("Exitting menu!\n");
           printf("----------------------------------------\n");
@@ -1285,6 +1286,36 @@ int main()
             Entries[i] = (EntryTag){0};
           }
           nEntry = 0;
+        }
+      }
+    }
+
+    // View Analytics
+    if (input == 3)
+    {
+      int analyticsInput = 0;
+      while (analyticsInput != 2)
+      {
+        printf("----------------------------------------\n");
+        printf("\tLanguage Translator:\t\n");
+        printf("----------------------------------------\n");
+        printf("1. View History\n");
+        printf("2. Exit\n");
+        printf("----------------------------------------\n");
+        printf("Action: ");
+        scanf("%d", &analyticsInput);
+        printf("----------------------------------------\n");
+        printf("\n");
+
+        if (analyticsInput == 1)
+        {
+          ViewHistory();
+        }
+        else if (analyticsInput == 2)
+        {
+          printf("----------------------------------------\n");
+          printf("Leaving...\n");
+          printf("----------------------------------------\n");
         }
       }
     }
