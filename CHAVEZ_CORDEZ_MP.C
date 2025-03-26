@@ -764,7 +764,18 @@ void TranslateWord(String20 word, String20 sourceLanguage,
         {
           if (strcmp(outputLanguage, Entries[i].EntryPair[k].language) == 0)
           {
+            String20 tempWord;
+            strcpy(tempWord, word);
+
+            FILE *historyFile = fopen("History.txt", "a");
+            if (historyFile == NULL)
+            {
+              printf("Error appending history!\n");
+            }
+
             strcpy(word, Entries[i].EntryPair[k].translation);
+            fprintf(historyFile, "%s: %s -> %s: %s\n", sourceLanguage, tempWord, Entries[i].EntryPair[k].language, Entries[i].EntryPair[k].translation);
+            fclose(historyFile);
             found = 1;
           }
         }
@@ -922,6 +933,8 @@ void TranslateTextOption(EntryTag Entries[], int nEntry)
                 nEntry);
 
   printf("Translated Text given is: %s\n", outputText);
+  printf("\n");
+  printf("You can view the previously used translated words in History.txt\n");
   printf("----------------------------------------\n");
   printf("\n");
 
