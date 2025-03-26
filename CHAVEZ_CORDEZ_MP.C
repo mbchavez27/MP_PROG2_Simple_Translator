@@ -264,6 +264,8 @@ void DisplayAllEntries(EntryTag Entry[], int nEntry)
   int i = 0;
   char input = '\0';
 
+  SortEntry(Entry, nEntry);
+
   if (nEntry > 0)
   {
     while (input != 'q' && input != 'Q')
@@ -1141,6 +1143,7 @@ int main()
             strcat(fileName, ".txt");
             printf("Reading data from file name: %s\n\n", fileName);
             Import(fileName, Entries, &nEntry);
+            SortEntry(Entries, nEntry);
           }
           printf("\n");
         }
