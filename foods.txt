@@ -1,14 +1,19 @@
 English: Rice
+Filipino: Kanin
 Japanese: Gohan
 
-Bisaya: Brid
+English: Fish
+Filipino: Isda
+Japanese: Sakana
+
+English: Meat
+Filipino: Karne
+Japanese: Niku
+
 English: Bread
+Filipino: Tinapay
 Japanese: Pan
 
-English: Chicken
-Filipino: Manok
-Japanese: Tori
-
-English: Steak
-Filipino: istik
-
+English: Fruit
+Filipino: Prutas
+Japanese: Kudamono

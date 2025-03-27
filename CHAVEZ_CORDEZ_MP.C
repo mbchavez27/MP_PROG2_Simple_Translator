@@ -1,6 +1,9 @@
 #include "Headers.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+// #include <direct.h>
 
 void RemovePuncMarks(String20 word)
 {
@@ -176,7 +179,7 @@ void Export(String20 filename, EntryTag Entries[], int nEntry)
   }
 }
 
-int Import(String20 filename, EntryTag Entries[], int *nEntry)
+int ImportFile(String20 filename, EntryTag Entries[], int *nEntry)
 {
   FILE *file = fopen(filename, "r");
   char buffer[255];
@@ -218,6 +221,12 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
         }
       }
     }
+
+    if (Entries[*nEntry].nEntryPairs > 0)
+    {
+      (*nEntry)++;
+    }
+
     printf("Translation successfully loaded\n");
     fclose(file);
   }
@@ -263,6 +272,8 @@ void DisplayAllEntries(EntryTag Entry[], int nEntry)
 {
   int i = 0;
   char input = '\0';
+
+  SortEntry(Entry, nEntry);
 
   if (nEntry > 0)
   {
@@ -360,6 +371,46 @@ void DeleteEntryPair(EntryTag Entries[], int index)
   {
     printf("Given Entry Index #%d has only one entry pair\n\n", index + 1);
   }
+}
+
+void ModifyEntryPair(EntryTag Entries[], int index)
+{
+  int j = 0;
+  index = index - 1;
+
+  printf("Given Entry Detals\n\n");
+  printf("Language\tTranslation\n");
+  for (j = 0; j < Entries[index].nEntryPairs; j++)
+  {
+    printf("%d: ", j + 1);
+    DisplayPair(Entries[index].EntryPair[j]);
+  }
+
+  printf("\n");
+
+  int indexPair = 0;
+  printf("Choose an Entry Pair Number to Edit: ");
+  scanf("%d", &indexPair);
+  if (indexPair >= 1 && indexPair <= Entries[index].nEntryPairs)
+  {
+    String20 language, translation;
+    indexPair = indexPair - 1;
+    printf("Add Language (STOP! to terminate command): ");
+    scanf("%s", language);
+    printf("Add Translation (STOP! to terminate command): ");
+    scanf("%s", translation);
+    printf("\n");
+    strcpy(Entries[index].EntryPair[indexPair].language, language);
+    strcpy(Entries[index].EntryPair[indexPair].translation, translation);
+
+    printf("Entry Pair has been edited!\n");
+  }
+  else
+  {
+    printf("Cannot delete entry pair %d\n\n", indexPair);
+  }
+
+  printf("\n");
 }
 
 void SearchWord(EntryTag Entries[], int nEntry)
@@ -463,6 +514,7 @@ void SearchTranslation(EntryTag Entries[], int nEntry)
           DisplayPair(Entries[EntryPairIndex[i]].EntryPair[j]);
         }
       }
+      printf("\n");
     }
   }
   else
@@ -706,7 +758,7 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
 }
 
 void TranslateWord(String20 word, String20 sourceLanguage,
-                   String20 outputLanguage, EntryTag Entries[], int nEntry)
+                   String20 outputLanguage, EntryTag Entries[], int nEntry, String20 account)
 {
   int i = 0;
   int j = 0;
@@ -723,7 +775,21 @@ void TranslateWord(String20 word, String20 sourceLanguage,
         {
           if (strcmp(outputLanguage, Entries[i].EntryPair[k].language) == 0)
           {
+            String20 tempWord;
+            strcpy(tempWord, word);
+
+            String30 filename = "";
+            strcat(filename, account);
+            strcat(filename, "/WHistory.txt");
+            FILE *historyFile = fopen(filename, "a");
+            if (historyFile == NULL)
+            {
+              printf("Error appending word history!\n");
+            }
+
             strcpy(word, Entries[i].EntryPair[k].translation);
+            fprintf(historyFile, "%s: %s -> %s: %s\n", sourceLanguage, tempWord, Entries[i].EntryPair[k].language, Entries[i].EntryPair[k].translation);
+            fclose(historyFile);
             found = 1;
           }
         }
@@ -734,7 +800,7 @@ void TranslateWord(String20 word, String20 sourceLanguage,
 
 void TranslateText(String150 sourceText, String150 outputText,
                    String20 sourceLanguage, String20 outputLanguage,
-                   EntryTag Entries[], int nEntry)
+                   EntryTag Entries[], int nEntry, String20 account)
 {
   String150 tempSource;
 
@@ -755,7 +821,7 @@ void TranslateText(String150 sourceText, String150 outputText,
 
     RemovePuncMarks(tempWord);
 
-    TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry);
+    TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry, account);
 
     if (tempChar != '\0')
     {
@@ -785,7 +851,7 @@ void TranslateText(String150 sourceText, String150 outputText,
 }
 
 void TranslateFile(String20 sourceFileName, String20 outputFileName,
-                   String20 sourceLanguage, String20 outputLanguage, EntryTag Entries[], int nEntry)
+                   String20 sourceLanguage, String20 outputLanguage, EntryTag Entries[], int nEntry, String20 account)
 {
   FILE *inputFile = fopen(sourceFileName, "r");
   FILE *outputFile = fopen(outputFileName, "w");
@@ -829,7 +895,7 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
 
         if (hasText)
         {
-          TranslateText(sentence, transSentence, sourceLanguage, outputLanguage, Entries, nEntry);
+          TranslateText(sentence, transSentence, sourceLanguage, outputLanguage, Entries, nEntry, account);
         }
         else
         {
@@ -839,6 +905,18 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
         printf("%s\n", transSentence);
 
         fprintf(outputFile, "%s\n", transSentence);
+
+        String30 filename = "";
+        strcat(filename, account);
+        strcat(filename, "/SHistory.txt");
+        FILE *historyFile = fopen(filename, "a");
+        if (historyFile == NULL)
+        {
+          printf("Error appending history!\n");
+        }
+        fprintf(historyFile, "%s\n", transSentence);
+        fclose(historyFile);
+
         hasText = 0;
       }
     }
@@ -849,9 +927,11 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
 
   printf("\n");
   printf("Translation of file name: %s is done the output can be found at file name: %s", sourceFileName, outputFileName);
+  printf("\n");
+  printf("You can also view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
 }
 
-void TranslateTextOption(EntryTag Entries[], int nEntry)
+void TranslateTextOption(EntryTag Entries[], int nEntry, String20 account)
 {
   String150 sourceText;
   String150 outputText = "";
@@ -878,9 +958,23 @@ void TranslateTextOption(EntryTag Entries[], int nEntry)
   sourceText[strlen(sourceText) - 1] = '\0';
 
   TranslateText(sourceText, outputText, sourceLanguage, outputLanguage, Entries,
-                nEntry);
+                nEntry, account);
 
   printf("Translated Text given is: %s\n", outputText);
+
+  String30 filename = "";
+  strcat(filename, account);
+  strcat(filename, "/SHistory.txt");
+  FILE *historyFile = fopen(filename, "a");
+  if (historyFile == NULL)
+  {
+    printf("Error appending Sentence history!\n");
+  }
+  fprintf(historyFile, "%s\n", outputText);
+  fclose(historyFile);
+
+  printf("\n");
+  printf("You can view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
   printf("----------------------------------------\n");
   printf("\n");
 
@@ -895,7 +989,7 @@ void TranslateTextOption(EntryTag Entries[], int nEntry)
     printf("----------------------------------------\n");
 
     printf("\n");
-    TranslateTextOption(Entries, nEntry);
+    TranslateTextOption(Entries, nEntry, account);
   }
   else
   {
@@ -906,20 +1000,142 @@ void TranslateTextOption(EntryTag Entries[], int nEntry)
   printf("----------------------------------------\n");
 }
 
+void ViewWordsHistory(String20 account)
+{
+  String30 filename = "";
+  strcat(filename, account);
+  strcat(filename, "/WHistory.txt");
+  FILE *historyFile = fopen(filename, "r");
+  char buffer[255];
+
+  if (historyFile == NULL)
+  {
+    printf("----------------------------------------\n");
+    printf("Error reading file\n");
+    printf("----------------------------------------\n");
+  }
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Words Translation History: \n\n");
+  while (fgets(buffer, sizeof(buffer), historyFile) != NULL)
+  {
+    printf("%s\n", buffer);
+  }
+  printf("----------------------------------------\n");
+  fclose(historyFile);
+}
+
+void ViewSentenceHistory(String20 account)
+{
+  String30 filename = "";
+  strcat(filename, account);
+  strcat(filename, "/SHistory.txt");
+  FILE *historyFile = fopen(filename, "r");
+  char buffer[255];
+
+  if (historyFile == NULL)
+  {
+    printf("----------------------------------------\n");
+    printf("Error reading file\n");
+    printf("----------------------------------------\n");
+  }
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Sentence Translation History: \n\n");
+  while (fgets(buffer, sizeof(buffer), historyFile) != NULL)
+  {
+    printf("%s\n", buffer);
+  }
+  printf("----------------------------------------\n");
+  fclose(historyFile);
+}
+
+void ViewMostTranslatedWord()
+{
+}
+
+int checkAccount(String20 account)
+{
+
+  FILE *accountFile = fopen("accountsList.txt", "r");
+  char buffer[255];
+  int found = -1;
+
+  if (accountFile == NULL)
+  {
+    printf("No Accounts Yet\n\n");
+    return -1;
+  }
+  else
+  {
+    while (fgets(buffer, sizeof(buffer), accountFile) != NULL)
+    {
+      char *accountName = strtok(buffer, " \t\n");
+      while (accountName != NULL)
+      {
+        if (strcmp(account, accountName) == 0)
+          found = 1;
+        accountName = strtok(NULL, " \t\n");
+      }
+    }
+  }
+
+  return found;
+}
+
+void CreateAccount(String20 account)
+{
+  FILE *accountFile = fopen("accountsList.txt", "a");
+  if (accountFile == NULL)
+  {
+    printf("Error appending account!\n");
+  }
+
+  fprintf(accountFile, "%s\n", account);
+
+  mkdir(account, 0777);
+  // _mkdir(account, 0777);
+
+  fclose(accountFile);
+}
+
 int main()
 {
   int input = 0;
   EntryTag Entries[MAXENTRIES] = {0};
   int nEntry = 0;
 
-  while (input != 3)
+  String20 account;
+  printf("Log In to your Account\n[type Guest if Log in as Guest]: ");
+  scanf("%s", account);
+  printf("\n");
+  if (strcmp(account, "Guest") == 0)
+  {
+    printf("Logged In As Guest!!!\n\n");
+  }
+  else
+  {
+    int doesExist = checkAccount(account);
+    if (doesExist == 1)
+    {
+      printf("Ok logged in!\n\nHello %s\n\n", account);
+    }
+    else if (doesExist == -1)
+    {
+      printf("New Account!\n\nHello %s\n\n", account);
+      CreateAccount(account);
+    }
+  }
+
+  while (input != 4)
   {
     printf("----------------------------------------\n");
     printf("\tLanguage Translator:\t\n");
     printf("----------------------------------------\n");
     printf("1. Manage Data\n");
     printf("2. Translate Menu\n");
-    printf("3. Exit\n");
+    printf("3. View Analytics\n");
+    printf("4. Exit\n");
     printf("----------------------------------------\n");
     printf("Action: ");
     scanf("%d", &input);
@@ -929,21 +1145,22 @@ int main()
     // Manage Data
     if (input == 1)
     {
-      while (input != 10)
+      while (input != 11)
       {
         printf("----------------------------------------\n");
         printf("\tManage Data:\t\n");
         printf("----------------------------------------\n");
         printf("1. Add Entry\n");
         printf("2. Add Translations\n");
-        printf("3. Delete Entry\n");
-        printf("4. Delete Translations\n");
-        printf("5. Display All Entries\n");
-        printf("6. Search Word\n");
-        printf("7. Search Translations\n");
-        printf("8. Export\n");
-        printf("9. Import\n");
-        printf("10. Exit\n");
+        printf("3. Modify Entry Pair\n");
+        printf("4. Delete Entry\n");
+        printf("5. Delete Translations\n");
+        printf("6. Display All Entries\n");
+        printf("7. Search Word\n");
+        printf("8. Search Translations\n");
+        printf("9. Export\n");
+        printf("10. Import\n");
+        printf("11. Exit\n");
         printf("----------------------------------------\n");
         printf("Action: ");
         scanf("%d", &input);
@@ -972,9 +1189,33 @@ int main()
           int index = 0;
           if (nEntry > 0)
           {
+            printf("Select Entry Number to Edit:\n");
+            DisplayAllEntries(Entries, nEntry);
+            printf("Entry Index: ");
+            scanf("%d", &index);
+            if (index >= 1 && index <= (nEntry))
+            {
+              ModifyEntryPair(Entries, index);
+              SortEntry(Entries, nEntry);
+            }
+            else
+            {
+              printf("Cant modify given index %d\n\n", index);
+            }
+          }
+          else
+          {
+            printf("No Entries\n\n");
+          }
+        }
+        if (input == 4)
+        {
+          int index = 0;
+          if (nEntry > 0)
+          {
             printf("Select Entry Number to Delete:\n");
             DisplayAllEntries(Entries, nEntry);
-            printf("Index: ");
+            printf("Entry Index: ");
             scanf("%d", &index);
             if (index >= 1 && index <= (nEntry))
             {
@@ -991,14 +1232,14 @@ int main()
             printf("No Entries\n\n");
           }
         }
-        if (input == 4)
+        if (input == 5)
         {
           int index = 0;
           if (nEntry > 0)
           {
             printf("Select Entry Number:\n");
             DisplayAllEntries(Entries, nEntry);
-            printf("Index: ");
+            printf("Entry Index: ");
             scanf("%d", &index);
             if (index >= 1 && index <= (nEntry))
             {
@@ -1015,21 +1256,21 @@ int main()
             printf("No Entries\n\n");
           }
         }
-        if (input == 5)
+        if (input == 6)
         {
           SortEntry(Entries, nEntry);
           DisplayAllEntries(Entries, nEntry);
         }
-        if (input == 6)
+        if (input == 7)
         {
           SearchWord(Entries, nEntry);
         }
-        if (input == 7)
+        if (input == 8)
         {
           SearchTranslation(Entries, nEntry);
           printf("\n");
         }
-        if (input == 8)
+        if (input == 9)
         {
           String30 fileName;
           printf("Give Filename for the Exported Data: ");
@@ -1047,7 +1288,7 @@ int main()
           }
           printf("\n");
         }
-        if (input == 9)
+        if (input == 10)
         {
           String30 fileName;
           printf("Give Filename to import Data: ");
@@ -1062,10 +1303,11 @@ int main()
             strcat(fileName, ".txt");
             printf("Reading data from file name: %s\n\n", fileName);
             Import(fileName, Entries, &nEntry);
+            SortEntry(Entries, nEntry);
           }
           printf("\n");
         }
-        if (input == 10)
+        if (input == 11)
         {
           printf("----------------------------------------\n");
           printf("Exitting menu!\n");
@@ -1123,7 +1365,7 @@ int main()
 
         if (translateInput == 1)
         {
-          TranslateTextOption(Entries, nEntry);
+          TranslateTextOption(Entries, nEntry, account);
         }
         if (translateInput == 2)
         {
@@ -1159,7 +1401,7 @@ int main()
               successTranslateImport = ImportTranslateText(sourceFileName, outputFileName, sourceLanguage, outputFileName);
               if (successTranslateImport != -1)
               {
-                TranslateFile(sourceFileName, outputFileName, sourceLanguage, outputLanguage, Entries, nEntry);
+                TranslateFile(sourceFileName, outputFileName, sourceLanguage, outputLanguage, Entries, nEntry, account);
               }
             }
           }
@@ -1175,6 +1417,46 @@ int main()
             Entries[i] = (EntryTag){0};
           }
           nEntry = 0;
+        }
+      }
+    }
+
+    // View Analytics
+    if (input == 3)
+    {
+      int analyticsInput = 0;
+      while (analyticsInput != 4)
+      {
+        printf("----------------------------------------\n");
+        printf("\tLanguage Translator:\t\n");
+        printf("----------------------------------------\n");
+        printf("1. View Translated Words History\n");
+        printf("2. View Most Translated Word\n");
+        printf("3. View Translated Sentences History\n");
+        printf("4. Exit\n");
+        printf("----------------------------------------\n");
+        printf("Action: ");
+        scanf("%d", &analyticsInput);
+        printf("----------------------------------------\n");
+        printf("\n");
+
+        if (analyticsInput == 1)
+        {
+          ViewWordsHistory(account);
+        }
+        if (analyticsInput == 2)
+        {
+          ViewMostTranslatedWord();
+        }
+        if (analyticsInput == 3)
+        {
+          ViewSentenceHistory(account);
+        }
+        else if (analyticsInput == 4)
+        {
+          printf("----------------------------------------\n");
+          printf("Leaving...\n");
+          printf("----------------------------------------\n");
         }
       }
     }
