@@ -179,7 +179,7 @@ void Export(String20 filename, EntryTag Entries[], int nEntry)
   }
 }
 
-int Import(String20 filename, EntryTag Entries[], int *nEntry)
+int ImportFile(String20 filename, EntryTag Entries[], int *nEntry)
 {
   FILE *file = fopen(filename, "r");
   char buffer[255];
