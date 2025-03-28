@@ -2,8 +2,52 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <sys/stat.h>
-// #include <direct.h>
+// #include <sys/stat.h>
+#include <direct.h>
+
+/************************************************************************************************************************
+This is to certify that this project is my own work, based on my personal efforts in studying and applying the concepts
+learned.  I have constructed the functions and their respective algorithms and corresponding code by myself.  The
+program was run, tested, and debugged by my own efforts.  I further certify that I have not copied in part or whole or
+otherwise plagiarized the work of other students and/or persons.
+
+                                                                              Charles Stephen C. Cordez, DLSU ID 12411043
+                                                                              Max Benedict B. Chavez,    DLSU ID 12328146
+************************************************************************************************************************/
+
+/*HELPER
+the DisplayPair function
+
+@param EntryPair
+*/
+
+void DisplayPair(EntryPairTag EntryPair)
+{
+  printf("%s: \t%s\n", EntryPair.language, EntryPair.translation);
+}
+
+/*HELPER
+the DisplayPairs function
+
+@param Entry
+*/
+void DisplayPairs(EntryTag Entry)
+{
+  int i = 0;
+
+  for (i = 0; i < Entry.nEntryPairs; i++)
+  {
+    printf("%s: \t%s\n", Entry.EntryPair[i].language,
+           Entry.EntryPair[i].translation);
+  }
+  printf("\n");
+}
+
+/*HELPER
+the RemovePuncMarks
+
+@param word
+*/
 
 void RemovePuncMarks(String20 word)
 {
@@ -16,6 +60,11 @@ void RemovePuncMarks(String20 word)
   }
 }
 
+/*HELPER
+the ReturnPuncMarks
+
+@param word
+*/
 char ReturnPuncMarks(String20 word)
 {
   char puncMark = '\0';
@@ -29,7 +78,93 @@ char ReturnPuncMarks(String20 word)
   return puncMark;
 }
 
-// Checks if Entry Has English Pair
+/*Helper
+The SearchEntryPair Function
+
+@param EntryPair[]
+@param nEntryPairs
+@param language
+@param translation
+*/
+
+int SearchEntryPair(EntryPairTag EntryPair[], int nEntryPairs,
+                    String20 language, String20 translation)
+{
+  int i = 0;
+  int SearchEntryIndex = -1;
+  printf("\n");
+
+  for (i = 0; i < nEntryPairs; i++)
+  {
+    if (strcmp(EntryPair[i].language, language) == 0 &&
+        strcmp(EntryPair[i].translation, translation) == 0)
+      SearchEntryIndex = i;
+  }
+  return SearchEntryIndex;
+}
+
+/*HELPER
+The SearchEntry Function
+
+@param Entries[]
+@param nEntry
+@param language
+@param translation
+@param *EntryIndex
+@param *numOfSameEntry
+*/
+
+int SearchEntry(EntryTag Entries[], int nEntry, String20 language,
+                String20 translation, int *EntryIndex, int *numOfSameEntry)
+{
+  int i = 0;
+  int SearchEntryPairIndex = -1;
+
+  for (i = 0; i < nEntry; i++)
+  {
+    if (SearchEntryPair(Entries[i].EntryPair, Entries[i].nEntryPairs, language,
+                        translation) != -1)
+    {
+      SearchEntryPairIndex = i;
+      EntryIndex[*numOfSameEntry] = i;
+      (*numOfSameEntry)++;
+    }
+  }
+
+  return SearchEntryPairIndex;
+}
+
+/*
+the DeleteEntry Function
+
+@param Entries[]
+@param *nEntry
+@param index
+
+*/
+void DeleteEntry(EntryTag Entries[], int *nEntry, int index)
+{
+  int j = 0;
+
+  printf("Deleted Entry #%d\n\n", index);
+  index = index - 1;
+
+  for (j = index; j < *nEntry - 1; j++)
+  {
+    Entries[j] = Entries[j + 1];
+  }
+  Entries[j].nEntryPairs--;
+  (*nEntry)--;
+}
+
+/* HELPER
+The IncludesEnglish Function
+
+@param Entry
+
+ Checks if Entry Has English Pair
+*/
+
 int IncludesEnglish(EntryTag Entry)
 {
   int i = 0;
@@ -44,7 +179,133 @@ int IncludesEnglish(EntryTag Entry)
   return -1;
 }
 
-// Splits into Translation and Language
+/*
+The TranslateWord Function
+
+@param word
+@param sourceLanguage
+@param outputLanguage
+@param Entries[]
+@param nEntry
+@param account
+
+*/
+
+void TranslateWord(String20 word, String20 sourceLanguage,
+                   String20 outputLanguage, EntryTag Entries[], int nEntry, String20 account)
+{
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int found = 0;
+
+  for (i = 0; i < nEntry && !found; i++)
+  {
+    for (j = 0; j < Entries[i].nEntryPairs && !found; j++)
+    {
+      if (strcmp(word, Entries[i].EntryPair[j].translation) == 0)
+      {
+        for (k = 0; k < Entries[i].nEntryPairs; k++)
+        {
+          if (strcmp(outputLanguage, Entries[i].EntryPair[k].language) == 0)
+          {
+            String20 tempWord;
+            strcpy(tempWord, word);
+
+            String30 filename = "";
+            strcat(filename, account);
+            strcat(filename, "/WHistory.txt");
+            FILE *historyFile = fopen(filename, "a");
+            if (historyFile == NULL)
+            {
+              printf("Error appending word history!\n");
+            }
+
+            strcpy(word, Entries[i].EntryPair[k].translation);
+            fprintf(historyFile, "%s: %s -> %s: %s\n", sourceLanguage, tempWord, Entries[i].EntryPair[k].language, Entries[i].EntryPair[k].translation);
+            fclose(historyFile);
+            found = 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+/*
+The TranslateText Function
+
+@param sourceText
+@param outputText
+@param sourceLanguage
+@param outputLanguage
+@param Entries[]
+@param nEntry
+@param account
+
+*/
+
+void TranslateText(String150 sourceText, String150 outputText,
+                   String20 sourceLanguage, String20 outputLanguage,
+                   EntryTag Entries[], int nEntry, String20 account)
+{
+  String150 tempSource;
+
+  strcpy(tempSource, sourceText);
+
+  outputText[0] = '\0';
+
+  char *token = strtok(tempSource, " ");
+
+  while (token != NULL)
+  {
+
+    String20 tempWord;
+
+    char tempChar = ReturnPuncMarks(token) ? ReturnPuncMarks(token) : '\0';
+
+    strcpy(tempWord, token);
+
+    RemovePuncMarks(tempWord);
+
+    TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry, account);
+
+    if (tempChar != '\0')
+    {
+      char tempStr[2] = {tempChar, '\0'};
+      strcat(tempWord, tempStr);
+    }
+
+    strcat(outputText, tempWord);
+
+    char *nextToken = strtok(NULL, " ");
+
+    if (nextToken != NULL)
+    {
+      strcat(outputText, " ");
+    }
+
+    token = nextToken;
+  }
+
+  if (sourceText[strlen(sourceText) - 1] == '.' ||
+      sourceText[strlen(sourceText) - 1] == ',' ||
+      sourceText[strlen(sourceText) - 1] == '?' ||
+      sourceText[strlen(sourceText) - 1] == '!')
+  {
+    outputText[strlen(outputText) - 1] = sourceText[strlen(sourceText) - 1];
+  }
+}
+
+/*
+the SplitEntryPair Function
+
+@param line[]
+@param words[]
+
+Splits into Translation and Language
+*/
+
 void SplitEntryPair(char line[], String20 words[])
 {
   int i = 0;
@@ -73,7 +334,12 @@ void SplitEntryPair(char line[], String20 words[])
   }
 }
 
-// Sorts Entry
+/*
+The SortEntry Function
+
+@param Entries[]
+@param nEntry
+*/
 void SortEntry(EntryTag Entries[], int nEntry)
 {
   int i = 0;
@@ -122,6 +388,11 @@ void SortEntry(EntryTag Entries[], int nEntry)
   }
 }
 
+/*
+The SortEntryPairs Function
+
+@param *Entry
+*/
 void SortEntryPairs(EntryTag *Entry)
 {
   int i = 0;
@@ -145,292 +416,18 @@ void SortEntryPairs(EntryTag *Entry)
   }
 }
 
-void Export(String20 filename, EntryTag Entries[], int nEntry)
-{
-  FILE *file;
-  file = fopen(filename, "w");
-  int i = 0;
-  int j = 0;
+/*
+The ModifyEntryPair Function
 
-  for (i = 0; i < nEntry; i++)
-  {
-    SortEntryPairs(&Entries[i]);
-  }
-
-  SortEntry(Entries, nEntry);
-
-  if (file == NULL)
-  {
-    printf("File: %s does not exist!!!\n", filename);
-  }
-  else
-  {
-    for (i = 0; i < nEntry; i++)
-    {
-      for (j = 0; j < Entries[i].nEntryPairs; j++)
-      {
-        fprintf(file, "%s: %s\n", Entries[i].EntryPair[j].language,
-                Entries[i].EntryPair[j].translation);
-      }
-      fprintf(file, "\n");
-    }
-    fclose(file);
-    printf("File: %s successfully saved\n", filename);
-  }
-}
-
-int Import(String20 filename, EntryTag Entries[], int *nEntry)
-{
-  FILE *file = fopen(filename, "r");
-  char buffer[255];
-  String20 words[2];
-
-  int success = 1;
-
-  *nEntry = 0;
-  if (file == NULL)
-  {
-    printf("File: %s does not exist!!!\n", filename);
-    success = -1;
-  }
-  else
-  {
-    while (fgets(buffer, sizeof(buffer), file) != NULL)
-    {
-      if (buffer[0] == '\n' || buffer[0] == '\0')
-      {
-        if (*nEntry < MAXENTRIES)
-        {
-          (*nEntry)++;
-        }
-      }
-      else
-      {
-        SplitEntryPair(buffer, words);
-        if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
-            words[1][0] != '\0')
-        {
-          strcpy(
-              Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language,
-              words[0]);
-          strcpy(Entries[*nEntry]
-                     .EntryPair[Entries[*nEntry].nEntryPairs]
-                     .translation,
-                 words[1]);
-          Entries[*nEntry].nEntryPairs++;
-        }
-      }
-    }
-
-    if (Entries[*nEntry].nEntryPairs > 0)
-    {
-      (*nEntry)++;
-    }
-
-    printf("Translation successfully loaded\n");
-    fclose(file);
-  }
-  return success;
-}
-
-int ImportFile(String20 filename, EntryTag Entries[], int *nEntry)
-{
-  FILE *file = fopen(filename, "r");
-  char buffer[255];
-  String20 words[2];
-
-  int success = 1;
-
-  *nEntry = 0;
-  if (file == NULL)
-  {
-    printf("File: %s does not exist!!!\n", filename);
-    success = -1;
-  }
-  else
-  {
-    while (fgets(buffer, sizeof(buffer), file) != NULL)
-    {
-      if (buffer[0] == '\n' || buffer[0] == '\0')
-      {
-        if (*nEntry < MAXENTRIES)
-        {
-          (*nEntry)++;
-        }
-      }
-      else
-      {
-        SplitEntryPair(buffer, words);
-        if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
-            words[1][0] != '\0')
-        {
-          strcpy(
-              Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language,
-              words[0]);
-          strcpy(Entries[*nEntry]
-                     .EntryPair[Entries[*nEntry].nEntryPairs]
-                     .translation,
-                 words[1]);
-          Entries[*nEntry].nEntryPairs++;
-        }
-      }
-    }
-
-    if (Entries[*nEntry].nEntryPairs > 0)
-    {
-      (*nEntry)++;
-    }
-
-    printf("Translation successfully loaded\n");
-    fclose(file);
-  }
-  return success;
-}
-
-int ImportTranslateText(String20 sourceFileName, String20 outputFileName,
-                        String20 sourceLanguage, String20 outputLanguage)
-{
-  FILE *file = fopen(sourceFileName, "r");
-  int success = -1;
-
-  if (file == NULL)
-  {
-    printf("File: %s does not exist!!!\n", sourceFileName);
-    success = -1;
-  }
-  else
-  {
-    success = 1;
-  }
-  return success;
-}
-
-void DisplayPairs(EntryTag Entry)
-{
-  int i = 0;
-
-  for (i = 0; i < Entry.nEntryPairs; i++)
-  {
-    printf("%s: \t%s\n", Entry.EntryPair[i].language,
-           Entry.EntryPair[i].translation);
-  }
-  printf("\n");
-}
-
-void DisplayPair(EntryPairTag EntryPair)
-{
-  printf("%s: \t%s\n", EntryPair.language, EntryPair.translation);
-}
-
-void DisplayAllEntries(EntryTag Entry[], int nEntry)
-{
-  int i = 0;
-  char input = '\0';
-
-  SortEntry(Entry, nEntry);
-
-  if (nEntry > 0)
-  {
-    while (input != 'q' && input != 'Q')
-    {
-      printf("----------------------------------------\n");
-      printf("\n");
-      printf("Language\tTranslation\n");
-      printf("%d: ", i + 1);
-      SortEntryPairs(&Entry[i]);
-      DisplayPairs(Entry[i]);
-      printf("----------------------------------------\n");
-      printf("\n");
-      printf("Action (L->Move Left Index, R->Move Right Index,Q->Stop): ");
-      scanf(" %c", &input);
-      if (input == 'L' || input == 'l')
-      {
-        if (i == 0)
-          printf("Already at the start index!\n");
-        else
-          i--;
-      }
-      if (input == 'R' || input == 'r')
-      {
-        if (i == nEntry - 1)
-          printf("Already at the end index!\n");
-        else
-          i++;
-      }
-      if (input == 'Q' || input == 'q')
-      {
-        printf("Ending display!\n");
-      }
-      printf("\n");
-    }
-  }
-  else
-  {
-    printf("No Entries\n\n");
-  }
-}
-
-void DeleteEntry(EntryTag Entries[], int *nEntry, int index)
-{
-  int j = 0;
-
-  printf("Deleted Entry #%d\n\n", index);
-  index = index - 1;
-
-  for (j = index; j < *nEntry - 1; j++)
-  {
-    Entries[j] = Entries[j + 1];
-  }
-  Entries[j].nEntryPairs--;
-  (*nEntry)--;
-}
-
-void DeleteEntryPair(EntryTag Entries[], int index)
-{
-  int j = 0;
-  index = index - 1;
-  if (Entries[index].nEntryPairs > 1)
-  {
-    printf("Given Entry Detals\n\n");
-    printf("Language\tTranslation\n");
-    for (j = 0; j < Entries[index].nEntryPairs; j++)
-    {
-      printf("%d: ", j + 1);
-      DisplayPair(Entries[index].EntryPair[j]);
-    }
-
-    printf("\n");
-
-    int indexPair = 0;
-    int k = 0;
-    printf("Choose an Entry Pair Number to Delete: ");
-    scanf("%d", &indexPair);
-    if (indexPair >= 1 && indexPair <= Entries[index].nEntryPairs)
-    {
-      indexPair = indexPair - 1;
-      for (k = indexPair; k < Entries[index].nEntryPairs - 1; k++)
-      {
-        Entries[index].EntryPair[k] = Entries[index].EntryPair[k + 1];
-      }
-      Entries[index].nEntryPairs--;
-    }
-    else
-    {
-      printf("Cannot delete entry pair %d\n\n", indexPair);
-    }
-
-    printf("\n");
-  }
-  else
-  {
-    printf("Given Entry Index #%d has only one entry pair\n\n", index + 1);
-  }
-}
-
+@param Entries[]
+@param index
+*/
 void ModifyEntryPair(EntryTag Entries[], int index)
 {
   int j = 0;
   index = index - 1;
+  int indexPair = 0;
+  int nCancelled = 0;
 
   printf("Given Entry Detals\n\n");
   printf("Language\tTranslation\n");
@@ -442,7 +439,6 @@ void ModifyEntryPair(EntryTag Entries[], int index)
 
   printf("\n");
 
-  int indexPair = 0;
   printf("Choose an Entry Pair Number to Edit: ");
   scanf("%d", &indexPair);
   if (indexPair >= 1 && indexPair <= Entries[index].nEntryPairs)
@@ -451,13 +447,32 @@ void ModifyEntryPair(EntryTag Entries[], int index)
     indexPair = indexPair - 1;
     printf("Add Language (STOP! to terminate command): ");
     scanf("%s", language);
-    printf("Add Translation (STOP! to terminate command): ");
-    scanf("%s", translation);
-    printf("\n");
-    strcpy(Entries[index].EntryPair[indexPair].language, language);
-    strcpy(Entries[index].EntryPair[indexPair].translation, translation);
+    if (strcmp(language, "STOP!") == 0)
+    {
+      nCancelled = 1;
+    }
 
-    printf("Entry Pair has been edited!\n");
+    if (!nCancelled)
+    {
+      printf("Add Translation (STOP! to terminate command): ");
+      scanf("%s", translation);
+      if (strcmp(language, "STOP!") == 0)
+      {
+        nCancelled = 1;
+      }
+      printf("\n");
+    }
+
+    if (!nCancelled)
+    {
+      strcpy(Entries[index].EntryPair[indexPair].language, language);
+      strcpy(Entries[index].EntryPair[indexPair].translation, translation);
+      printf("Entry Pair has been edited!\n");
+    }
+    else
+    {
+      printf("Cancelled Command\n");
+    }
   }
   else
   {
@@ -467,261 +482,46 @@ void ModifyEntryPair(EntryTag Entries[], int index)
   printf("\n");
 }
 
-void SearchWord(EntryTag Entries[], int nEntry)
-{
-  String20 word;
-  printf("Search word: ");
-  scanf("%s", word);
-  int i = 0;
-  int j = 0;
-  int found = 0;
-  printf("\n");
 
+/*
+The ViewSentenceHistory Function
+
+@param account
+*/
+
+void ViewSentenceHistory(String20 account)
+{
+  String30 filename = "";
+  strcat(filename, account);
+  strcat(filename, "/SHistory.txt");
+  FILE *historyFile = fopen(filename, "r");
+  char buffer[255];
+
+  if (historyFile == NULL)
+  {
+    printf("----------------------------------------\n");
+    printf("Error reading file\n");
+    printf("----------------------------------------\n");
+    fclose(historyFile);
+  }
   printf("----------------------------------------\n");
   printf("\n");
-  printf("Language\tTranslation\n");
-  for (i = 0; i < nEntry; i++)
+  printf("Sentence Translation History: \n\n");
+  while (fgets(buffer, sizeof(buffer), historyFile) != NULL)
   {
-    for (j = 0; j < Entries[i].nEntryPairs; j++)
-    {
-      if (strcmp(word, Entries[i].EntryPair[j].translation) == 0)
-      {
-        found++;
-        DisplayPair(Entries[i].EntryPair[j]);
-        printf("\n");
-      }
-    }
+    printf("%s\n", buffer);
   }
-  if (!found)
-    printf("No Entries found\n\n");
   printf("----------------------------------------\n");
+  fclose(historyFile);
 }
 
-int SearchEntryPair(EntryPairTag EntryPair[], int nEntryPairs,
-                    String20 language, String20 translation)
-{
-  int i = 0;
-  int SearchEntryIndex = -1;
-  printf("\n");
+/*
+the AddEntry function adds blah blah
 
-  for (i = 0; i < nEntryPairs; i++)
-  {
-    if (strcmp(EntryPair[i].language, language) == 0 &&
-        strcmp(EntryPair[i].translation, translation) == 0)
-      SearchEntryIndex = i;
-  }
-  return SearchEntryIndex;
-}
-
-int SearchEntry(EntryTag Entries[], int nEntry, String20 language,
-                String20 translation, int *EntryIndex, int *numOfSameEntry)
-{
-  int i = 0;
-  int SearchEntryPairIndex = -1;
-
-  for (i = 0; i < nEntry; i++)
-  {
-    if (SearchEntryPair(Entries[i].EntryPair, Entries[i].nEntryPairs, language,
-                        translation) != -1)
-    {
-      SearchEntryPairIndex = i;
-      EntryIndex[*numOfSameEntry] = i;
-      (*numOfSameEntry)++;
-    }
-  }
-
-  return SearchEntryPairIndex;
-}
-
-void SearchTranslation(EntryTag Entries[], int nEntry)
-{
-  String20 language, translation;
-  printf("Search Language: ");
-  scanf("%s", language);
-  printf("Search Translation: ");
-  scanf("%s", translation);
-  printf("\n\n");
-  int EntryPairIndex[MAXPAIRS];
-  int numOfSameEntry = 0;
-
-  int sameEntry = SearchEntry(Entries, nEntry, language, translation,
-                              EntryPairIndex, &numOfSameEntry);
-  int i = 0;
-  int j = 0;
-  int found = 0;
-
-  printf("----------------------------------------\n");
-  printf("\n");
-  printf("Language\tTranslation\n");
-  if (numOfSameEntry > 1)
-  {
-    for (i = 0; i < numOfSameEntry; i++)
-    {
-      for (j = 0; j < Entries[EntryPairIndex[i]].nEntryPairs; j++)
-      {
-        if (strcmp(language,
-                   Entries[EntryPairIndex[i]].EntryPair[j].language) != 0 &&
-            strcmp(translation,
-                   Entries[EntryPairIndex[i]].EntryPair[j].translation) != 0)
-        {
-          found++;
-          DisplayPair(Entries[EntryPairIndex[i]].EntryPair[j]);
-        }
-      }
-      printf("\n");
-    }
-  }
-  else
-  {
-    for (i = 0; i < Entries[sameEntry].nEntryPairs; i++)
-    {
-      if (strcmp(language, Entries[sameEntry].EntryPair[i].language) != 0 &&
-          strcmp(translation, Entries[sameEntry].EntryPair[i].translation) !=
-              0)
-      {
-        found++;
-        DisplayPair(Entries[sameEntry].EntryPair[i]);
-      }
-    }
-  }
-  if (!found)
-  {
-    printf("No Entries found\n\n");
-  }
-  printf("\n");
-  printf("----------------------------------------\n");
-}
-
-void AddTranslation(int *nEntry, EntryTag Entries[])
-{
-  int numOfSameEntries = 0;
-  int i = 0;
-  String20 language, translation;
-
-  printf("Find Language (STOP! to terminate command): ");
-  scanf("%s", language);
-  printf("Find Translation (STOP! to terminate command): ");
-  scanf("%s", translation);
-  printf("\n\n");
-
-  int EntryPairIndex[MAXPAIRS];
-
-  int sameEntry = SearchEntry(Entries, *nEntry, language, translation,
-                              EntryPairIndex, &numOfSameEntries);
-
-  if (strcmp(language, "STOP!") != 0 || strcmp(translation, "STOP!") != 0)
-  {
-    if (sameEntry != -1)
-    {
-      if (numOfSameEntries == 1)
-      {
-        if (Entries[sameEntry].nEntryPairs < 10)
-        {
-          printf("Given Entry Detals\n\n");
-          printf("Language\tTranslation\n");
-          DisplayPairs(Entries[sameEntry]);
-          printf("Add Language (STOP! to terminate command): ");
-          scanf("%s", language);
-          printf("Add Translation (STOP! to terminate command): ");
-          scanf("%s", translation);
-          printf("\n");
-
-          if (strcmp(language, "STOP!") != 0 ||
-              strcmp(translation, "STOP!") != 0)
-          {
-            strcpy(Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].language,
-                   language);
-            strcpy(
-                Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].translation,
-                translation);
-            Entries[sameEntry].nEntryPairs++;
-          }
-          else
-          {
-            printf("Cancelled Command\n");
-          }
-        }
-        else
-        {
-          printf("Maximum Number of Translation Pairs Exceeded");
-        }
-      }
-      else
-      {
-        int input = -1;
-
-        do
-        {
-          printf("Given Entry Detals\n\n");
-          printf("Language\tTranslation\n");
-          for (i = 0; i < numOfSameEntries; i++)
-          {
-            printf("Entry #%d:\n", i + 1);
-            DisplayPairs(Entries[EntryPairIndex[i]]);
-          }
-          printf("Pick a Entry to add translations...: ");
-          scanf("%d", &input);
-        } while (input < 0 || input > numOfSameEntries);
-        if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
-        {
-          printf("Chosen Entry #%d\n", input);
-
-          printf("Add Language (STOP! to terminate command): ");
-          scanf("%s", language);
-          printf("Add Translation (STOP! to terminate command): ");
-          scanf("%s", translation);
-          printf("\n");
-
-          if (strcmp(language, "STOP!") != 0 ||
-              strcmp(translation, "STOP!") != 0)
-          {
-            strcpy(
-                Entries[EntryPairIndex[input - 1]]
-                    .EntryPair[Entries[EntryPairIndex[input - 1]].nEntryPairs]
-                    .language,
-                language);
-            strcpy(
-                Entries[EntryPairIndex[input - 1]]
-                    .EntryPair[Entries[EntryPairIndex[input - 1]].nEntryPairs]
-                    .translation,
-                translation);
-            Entries[EntryPairIndex[input - 1]].nEntryPairs++;
-          }
-          else
-          {
-            printf("Cancelled Command\n");
-          }
-        }
-        else
-        {
-          printf(
-              "Chosen Entry #%d has already have the max translation pairs\n",
-              input);
-        }
-      }
-    }
-    else
-    {
-      printf("No Entry Yet... Add Entry an entry first\n\n");
-    }
-  }
-  else
-  {
-    printf("Cancelled Command\n");
-  }
-
-  char input;
-  printf("----------------------------------------------\n");
-  printf("Add another translation? [y/n]: ");
-  scanf(" %c", &input);
-  printf("----------------------------------------------\n");
-
-  if (input == 'y' || input == 'Y')
-  {
-    AddTranslation(nEntry, Entries);
-    printf("\n");
-  }
-}
+@param EntryTag *Entry
+@param *nEntry
+@param Entries[]
+*/
 
 void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
 {
@@ -811,98 +611,628 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
   }
 }
 
-void TranslateWord(String20 word, String20 sourceLanguage,
-                   String20 outputLanguage, EntryTag Entries[], int nEntry, String20 account)
+/*
+the AddTranslation Function
+
+@param *nEntry
+@param Entries[]
+*/
+
+void AddTranslation(int *nEntry, EntryTag Entries[])
 {
+  int numOfSameEntries = 0;
   int i = 0;
-  int j = 0;
-  int k = 0;
-  int found = 0;
+  String20 language, translation;
+  int nCancelled = 0;
 
-  for (i = 0; i < nEntry && !found; i++)
+  printf("Find Language (STOP! to terminate command): ");
+  scanf("%s", language);
+
+  if (strcmp(language, "STOP!") == 0)
   {
-    for (j = 0; j < Entries[i].nEntryPairs && !found; j++)
+    nCancelled = 1;
+  }
+  if (!nCancelled)
+  {
+    printf("Find Translation (STOP! to terminate command): ");
+    scanf("%s", translation);
+    if (strcmp(translation, "STOP!") == 0)
     {
-      if (strcmp(word, Entries[i].EntryPair[j].translation) == 0)
+      nCancelled = 1;
+    }
+  }
+
+  if (!nCancelled)
+  {
+    printf("\n\n");
+    int EntryPairIndex[MAXPAIRS];
+    int sameEntry = SearchEntry(Entries, *nEntry, language, translation,
+                                EntryPairIndex, &numOfSameEntries);
+    if (sameEntry != -1)
+    {
+      if (numOfSameEntries == 1)
       {
-        for (k = 0; k < Entries[i].nEntryPairs; k++)
+        if (Entries[sameEntry].nEntryPairs < 10)
         {
-          if (strcmp(outputLanguage, Entries[i].EntryPair[k].language) == 0)
+          printf("Given Entry Detals\n\n");
+          printf("Language\tTranslation\n");
+          DisplayPairs(Entries[sameEntry]);
+          printf("Add Language (STOP! to terminate command): ");
+          scanf("%s", language);
+          if (strcmp(language, "STOP!") == 0)
           {
-            String20 tempWord;
-            strcpy(tempWord, word);
-
-            String30 filename = "";
-            strcat(filename, account);
-            strcat(filename, "/WHistory.txt");
-            FILE *historyFile = fopen(filename, "a");
-            if (historyFile == NULL)
-            {
-              printf("Error appending word history!\n");
-            }
-
-            strcpy(word, Entries[i].EntryPair[k].translation);
-            fprintf(historyFile, "%s: %s -> %s: %s\n", sourceLanguage, tempWord, Entries[i].EntryPair[k].language, Entries[i].EntryPair[k].translation);
-            fclose(historyFile);
-            found = 1;
+            nCancelled = 1;
           }
+
+          if (!nCancelled)
+          {
+            printf("Add Translation (STOP! to terminate command): ");
+            scanf("%s", translation);
+
+            if (strcmp(translation, "STOP!") == 0)
+            {
+              nCancelled = 1;
+            }
+            printf("\n");
+          }
+
+          if (!nCancelled)
+          {
+            strcpy(Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].language,
+                   language);
+            strcpy(
+                Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].translation,
+                translation);
+            Entries[sameEntry].nEntryPairs++;
+          }
+          else
+          {
+            printf("Cancelled Command\n");
+          }
+        }
+        else
+        {
+          printf("Maximum Number of Translation Pairs Exceeded");
+        }
+      }
+      else
+      {
+        int input = -1;
+
+        do
+        {
+          printf("Given Entry Detals\n\n");
+          printf("Language\tTranslation\n");
+          for (i = 0; i < numOfSameEntries; i++)
+          {
+            printf("Entry #%d:\n", i + 1);
+            DisplayPairs(Entries[EntryPairIndex[i]]);
+          }
+          printf("Pick a Entry to add translations...: ");
+          scanf("%d", &input);
+        } while (input < 0 || input > numOfSameEntries);
+        if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
+        {
+          printf("Chosen Entry #%d\n", input);
+
+          printf("Add Language (STOP! to terminate command): ");
+          scanf("%s", language);
+          if (strcmp(language, "STOP!") == 0)
+          {
+            nCancelled = 1;
+          }
+          if (!nCancelled)
+          {
+            printf("Add Translation (STOP! to terminate command): ");
+            scanf("%s", translation);
+            if (strcmp(translation, "STOP!") == 0)
+            {
+              nCancelled = 1;
+            }
+            printf("\n");
+          }
+
+          if (!nCancelled)
+          {
+            strcpy(
+                Entries[EntryPairIndex[input - 1]]
+                    .EntryPair[Entries[EntryPairIndex[input - 1]].nEntryPairs]
+                    .language,
+                language);
+            strcpy(
+                Entries[EntryPairIndex[input - 1]]
+                    .EntryPair[Entries[EntryPairIndex[input - 1]].nEntryPairs]
+                    .translation,
+                translation);
+            Entries[EntryPairIndex[input - 1]].nEntryPairs++;
+          }
+          else
+          {
+            printf("Cancelled Command\n");
+          }
+        }
+        else
+        {
+          printf(
+              "Chosen Entry #%d has already have the max translation pairs\n",
+              input);
         }
       }
     }
+    else
+    {
+      printf("No Entry Yet... Add Entry an entry first\n\n");
+    }
+  }
+  if (nCancelled)
+  {
+    printf("Cancelled Command\n");
+  }
+  else
+  {
+    char input;
+    printf("----------------------------------------------\n");
+    printf("Add another translation? [y/n]: ");
+    scanf(" %c", &input);
+    printf("----------------------------------------------\n");
+    if (input == 'y' || input == 'Y')
+    {
+      AddTranslation(nEntry, Entries);
+      printf("\n");
+    }
   }
 }
 
-void TranslateText(String150 sourceText, String150 outputText,
-                   String20 sourceLanguage, String20 outputLanguage,
-                   EntryTag Entries[], int nEntry, String20 account)
+/*
+the DeleteEntryPair Function
+
+@param Entries[]
+@param index
+*/
+
+void DeleteEntryPair(EntryTag Entries[], int index)
 {
-  String150 tempSource;
+  int j = 0;
+  index = index - 1;
+  int indexPair = 0;
+  int k = 0;
 
-  strcpy(tempSource, sourceText);
-
-  outputText[0] = '\0';
-
-  char *token = strtok(tempSource, " ");
-
-  while (token != NULL)
+  if (Entries[index].nEntryPairs > 1)
   {
-
-    String20 tempWord;
-
-    char tempChar = ReturnPuncMarks(token) ? ReturnPuncMarks(token) : '\0';
-
-    strcpy(tempWord, token);
-
-    RemovePuncMarks(tempWord);
-
-    TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry, account);
-
-    if (tempChar != '\0')
+    printf("Given Entry Detals\n\n");
+    printf("Language\tTranslation\n");
+    for (j = 0; j < Entries[index].nEntryPairs; j++)
     {
-      char tempStr[2] = {tempChar, '\0'};
-      strcat(tempWord, tempStr);
+      printf("%d: ", j + 1);
+      DisplayPair(Entries[index].EntryPair[j]);
+    }
+    printf("\n");
+
+    int indexPair = 0;
+    int k = 0;
+    printf("Choose an Entry Pair Number to Delete: ");
+    scanf("%d", &indexPair);
+    if (indexPair >= 1 && indexPair <= Entries[index].nEntryPairs)
+    {
+      indexPair = indexPair - 1;
+      for (k = indexPair; k < Entries[index].nEntryPairs - 1; k++)
+      {
+        Entries[index].EntryPair[k] = Entries[index].EntryPair[k + 1];
+      }
+      Entries[index].nEntryPairs--;
+    }
+    else
+    {
+      printf("Cannot delete entry pair %d\n\n", indexPair);
     }
 
-    strcat(outputText, tempWord);
-
-    char *nextToken = strtok(NULL, " ");
-
-    if (nextToken != NULL)
-    {
-      strcat(outputText, " ");
-    }
-
-    token = nextToken;
+    printf("\n");
   }
-
-  if (sourceText[strlen(sourceText) - 1] == '.' ||
-      sourceText[strlen(sourceText) - 1] == ',' ||
-      sourceText[strlen(sourceText) - 1] == '?' ||
-      sourceText[strlen(sourceText) - 1] == '!')
+  else
   {
-    outputText[strlen(outputText) - 1] = sourceText[strlen(sourceText) - 1];
+    printf("Given Entry Index #%d has only one entry pair\n\n", index + 1);
   }
 }
+
+/*
+The DisplayAllEntries Function
+
+@param Entry[]
+@param nEntry
+*/
+
+void DisplayAllEntries(EntryTag Entry[], int nEntry)
+{
+  int i = 0;
+  char input = '\0';
+
+  SortEntry(Entry, nEntry);
+
+  if (nEntry > 0)
+  {
+    while (input != 'q' && input != 'Q')
+    {
+      printf("----------------------------------------\n");
+      printf("\n");
+      printf("Language\tTranslation\n");
+      printf("%d: ", i + 1);
+      SortEntryPairs(&Entry[i]);
+      DisplayPairs(Entry[i]);
+      printf("----------------------------------------\n");
+      printf("\n");
+      printf("Action (L->Move Left Index, R->Move Right Index,Q->Stop): ");
+      scanf(" %c", &input);
+      if (input == 'L' || input == 'l')
+      {
+        if (i == 0)
+          printf("Already at the start index!\n");
+        else
+          i--;
+      }
+      if (input == 'R' || input == 'r')
+      {
+        if (i == nEntry - 1)
+          printf("Already at the end index!\n");
+        else
+          i++;
+      }
+      if (input == 'Q' || input == 'q')
+      {
+        printf("Ending display!\n");
+      }
+      printf("\n");
+    }
+  }
+  else
+  {
+    printf("No Entries\n\n");
+  }
+}
+
+/*
+the SearchWord Function
+
+@param Entries[]
+@param nEntry
+
+*/
+
+void SearchWord(EntryTag Entries[], int nEntry)
+{
+  String20 word;
+  printf("Search word: ");
+  scanf("%s", word);
+  int i = 0;
+  int j = 0;
+  int found = 0;
+  printf("\n");
+
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Language\tTranslation\n");
+  for (i = 0; i < nEntry; i++)
+  {
+    for (j = 0; j < Entries[i].nEntryPairs; j++)
+    {
+      if (strcmp(word, Entries[i].EntryPair[j].translation) == 0)
+      {
+        found++;
+        DisplayPair(Entries[i].EntryPair[j]);
+        printf("\n");
+      }
+    }
+  }
+  if (!found)
+    printf("No Entries found\n\n");
+  printf("----------------------------------------\n");
+}
+
+/*
+the SearchTranslation Functions
+
+@param Entries[]
+@param nEntry
+*/
+
+void SearchTranslation(EntryTag Entries[], int nEntry)
+{
+  int i = 0;
+  int j = 0;
+  int found = 0;
+  int EntryPairIndex[MAXPAIRS];
+  int numOfSameEntry = 0;
+  int nCancelled = 0;
+
+  String20 language, translation;
+  printf("Search Language: ");
+  scanf("%s", language);
+  if (strcmp(language, "STOP!") == 0)
+  {
+    nCancelled = 1;
+  }
+
+  if (!nCancelled)
+  {
+    printf("Search Translation: ");
+    scanf("%s", translation);
+    if (strcmp(translation, "STOP!") == 0)
+    {
+      nCancelled = 1;
+    }
+    printf("\n\n");
+  }
+
+  if (!nCancelled)
+  {
+    int sameEntry = SearchEntry(Entries, nEntry, language, translation,
+                                EntryPairIndex, &numOfSameEntry);
+
+    printf("----------------------------------------\n");
+    printf("\n");
+    printf("Language\tTranslation\n");
+    if (numOfSameEntry > 1)
+    {
+      for (i = 0; i < numOfSameEntry; i++)
+      {
+        for (j = 0; j < Entries[EntryPairIndex[i]].nEntryPairs; j++)
+        {
+          if (strcmp(language,
+                     Entries[EntryPairIndex[i]].EntryPair[j].language) != 0 &&
+              strcmp(translation,
+                     Entries[EntryPairIndex[i]].EntryPair[j].translation) != 0)
+          {
+            found++;
+            DisplayPair(Entries[EntryPairIndex[i]].EntryPair[j]);
+          }
+        }
+        printf("\n");
+      }
+    }
+    else
+    {
+      for (i = 0; i < Entries[sameEntry].nEntryPairs; i++)
+      {
+        if (strcmp(language, Entries[sameEntry].EntryPair[i].language) != 0 &&
+            strcmp(translation, Entries[sameEntry].EntryPair[i].translation) !=
+                0)
+        {
+          found++;
+          DisplayPair(Entries[sameEntry].EntryPair[i]);
+        }
+      }
+    }
+    if (!found)
+    {
+      printf("No Entries found\n\n");
+    }
+    printf("\n");
+    printf("----------------------------------------\n");
+  }
+  else
+  {
+    printf("Cancelled Command\n");
+  }
+}
+
+/*
+the Export Function
+
+@param filename
+@param Entries[]
+@param nEntry
+*/
+
+void Export(String20 filename, EntryTag Entries[], int nEntry)
+{
+  FILE *file;
+  file = fopen(filename, "w");
+  int i = 0;
+  int j = 0;
+
+  for (i = 0; i < nEntry; i++)
+  {
+    SortEntryPairs(&Entries[i]);
+  }
+
+  SortEntry(Entries, nEntry);
+
+  if (file == NULL)
+  {
+    printf("File: %s does not exist!!!\n", filename);
+  }
+  else
+  {
+    for (i = 0; i < nEntry; i++)
+    {
+      for (j = 0; j < Entries[i].nEntryPairs; j++)
+      {
+        fprintf(file, "%s: %s\n", Entries[i].EntryPair[j].language,
+                Entries[i].EntryPair[j].translation);
+      }
+      fprintf(file, "\n");
+    }
+    fclose(file);
+    printf("File: %s successfully saved\n", filename);
+  }
+}
+
+/*
+The ImportTranslateText Function
+
+@param sourceFileName
+@param outputFileName
+@param sourceLanguage
+@param outputLanguage
+*/
+
+int ImportTranslateText(String20 sourceFileName, String20 outputFileName,
+                        String20 sourceLanguage, String20 outputLanguage)
+{
+  FILE *file = fopen(sourceFileName, "r");
+  int success = -1;
+
+  if (file == NULL)
+  {
+    printf("File: %s does not exist!!!\n", sourceFileName);
+    success = -1;
+  }
+  else
+  {
+    success = 1;
+  }
+  return success;
+}
+
+/*
+The Import Function
+
+@param filename
+@param Entries[]
+@param *nEntry
+*/
+
+int Import(String20 filename, EntryTag Entries[], int *nEntry)
+{
+  FILE *file = fopen(filename, "r");
+  char buffer[255];
+  String20 words[2];
+
+  int success = 1;
+
+  *nEntry = 0;
+  if (file == NULL)
+  {
+    printf("File: %s does not exist!!!\n", filename);
+    success = -1;
+  }
+  else
+  {
+    while (fgets(buffer, sizeof(buffer), file) != NULL)
+    {
+      if (buffer[0] == '\n' || buffer[0] == '\0')
+      {
+        if (*nEntry < MAXENTRIES)
+        {
+          (*nEntry)++;
+        }
+      }
+      else
+      {
+        SplitEntryPair(buffer, words);
+        if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
+            words[1][0] != '\0')
+        {
+          strcpy(
+              Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language,
+              words[0]);
+          strcpy(Entries[*nEntry]
+                     .EntryPair[Entries[*nEntry].nEntryPairs]
+                     .translation,
+                 words[1]);
+          Entries[*nEntry].nEntryPairs++;
+        }
+      }
+    }
+
+    if (Entries[*nEntry].nEntryPairs > 0)
+    {
+      (*nEntry)++;
+    }
+
+    printf("Translation successfully loaded\n");
+    fclose(file);
+  }
+  return success;
+}
+
+/*
+The TranslateTextOption Function *TranslateTextInput, ayusin ko mamaya name
+
+@param Entries[]
+@param nEntry
+@param account
+*/
+
+void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
+{
+  String150 sourceText;
+  String150 outputText = "";
+  String20 sourceLanguage;
+  String20 outputLanguage;
+  String30 filename = "";
+  char input;
+
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Translating Input....\n\n");
+  printf("Give Language of Source Text: ");
+  scanf("%s", sourceLanguage);
+  printf("\n");
+  printf("Give Language of Output: ");
+  scanf("%s", outputLanguage);
+
+  printf("\n");
+
+  getchar();
+  printf("Input the Text: ");
+  fgets(sourceText, MAXCHARS, stdin);
+  printf("\n");
+  printf("Text Given is: %s\n", sourceText);
+  sourceText[strlen(sourceText) - 1] = '\0';
+
+  TranslateText(sourceText, outputText, sourceLanguage, outputLanguage, Entries,
+                nEntry, account);
+
+  printf("Translated Text given is: %s\n", outputText);
+
+  strcat(filename, account);
+  strcat(filename, "/SHistory.txt");
+  FILE *historyFile = fopen(filename, "a");
+  if (historyFile == NULL)
+  {
+    printf("Error appending Sentence history!\n");
+  }
+  fprintf(historyFile, "%s\n", outputText);
+  fclose(historyFile);
+
+  printf("\n");
+  printf("You can view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
+  printf("----------------------------------------\n");
+  printf("\n");
+
+  printf("----------------------------------------\n");
+  printf("\n");
+  printf("Do you want to input again? [y/n]: ");
+  scanf(" %c", &input);
+  if (input == 'y')
+  {
+    printf("Ok!\n");
+    printf("\n");
+    printf("----------------------------------------\n");
+
+    printf("\n");
+    TranslateTextInput(Entries, nEntry, account);
+  }
+  else
+  {
+    printf("Going Back to Menu\n");
+  }
+
+  printf("\n");
+  printf("----------------------------------------\n");
+}
+
+/*
+the TranslateFile Function  (TranslateTextFile**)
+
+@param sourceFileName
+@param outputFileName
+@param sourceLanguage
+@param outputLanguage
+@param Entries[]
+@param nEntry
+@param account
+*/
 
 void TranslateFile(String20 sourceFileName, String20 outputFileName,
                    String20 sourceLanguage, String20 outputLanguage, EntryTag Entries[], int nEntry, String20 account)
@@ -985,74 +1315,73 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
   printf("You can also view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
 }
 
-void TranslateTextOption(EntryTag Entries[], int nEntry, String20 account)
+/*
+The ImportFile Function
+
+@param filename
+@param Entries[]
+@param *nEntry
+*/
+int ImportFile(String20 filename, EntryTag Entries[], int *nEntry)
 {
-  String150 sourceText;
-  String150 outputText = "";
-  String20 sourceLanguage;
-  String20 outputLanguage;
-  char input;
+  FILE *file = fopen(filename, "r");
+  char buffer[255];
+  String20 words[2];
 
-  printf("----------------------------------------\n");
-  printf("\n");
-  printf("Translating Input....\n\n");
-  printf("Give Language of Source Text: ");
-  scanf("%s", sourceLanguage);
-  printf("\n");
-  printf("Give Language of Output: ");
-  scanf("%s", outputLanguage);
+  int success = 1;
 
-  printf("\n");
-
-  getchar();
-  printf("Input the Text: ");
-  fgets(sourceText, MAXCHARS, stdin);
-  printf("\n");
-  printf("Text Given is: %s\n", sourceText);
-  sourceText[strlen(sourceText) - 1] = '\0';
-
-  TranslateText(sourceText, outputText, sourceLanguage, outputLanguage, Entries,
-                nEntry, account);
-
-  printf("Translated Text given is: %s\n", outputText);
-
-  String30 filename = "";
-  strcat(filename, account);
-  strcat(filename, "/SHistory.txt");
-  FILE *historyFile = fopen(filename, "a");
-  if (historyFile == NULL)
+  *nEntry = 0;
+  if (file == NULL)
   {
-    printf("Error appending Sentence history!\n");
-  }
-  fprintf(historyFile, "%s\n", outputText);
-  fclose(historyFile);
-
-  printf("\n");
-  printf("You can view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
-  printf("----------------------------------------\n");
-  printf("\n");
-
-  printf("----------------------------------------\n");
-  printf("\n");
-  printf("Do you want to input again? [y/n]: ");
-  scanf(" %c", &input);
-  if (input == 'y')
-  {
-    printf("Ok!\n");
-    printf("\n");
-    printf("----------------------------------------\n");
-
-    printf("\n");
-    TranslateTextOption(Entries, nEntry, account);
+    printf("File: %s does not exist!!!\n", filename);
+    success = -1;
   }
   else
   {
-    printf("Going Back to Menu\n");
-  }
+    while (fgets(buffer, sizeof(buffer), file) != NULL)
+    {
+      if (buffer[0] == '\n' || buffer[0] == '\0')
+      {
+        if (*nEntry < MAXENTRIES)
+        {
+          (*nEntry)++;
+        }
+      }
+      else
+      {
+        SplitEntryPair(buffer, words);
+        if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
+            words[1][0] != '\0')
+        {
+          strcpy(
+              Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language,
+              words[0]);
+          strcpy(Entries[*nEntry]
+                     .EntryPair[Entries[*nEntry].nEntryPairs]
+                     .translation,
+                 words[1]);
+          Entries[*nEntry].nEntryPairs++;
+        }
+      }
+    }
 
-  printf("\n");
-  printf("----------------------------------------\n");
+    if (Entries[*nEntry].nEntryPairs > 0)
+    {
+      (*nEntry)++;
+    }
+
+    printf("Translation successfully loaded\n");
+    fclose(file);
+  }
+  return success;
 }
+
+/*
+The ViewWordsHistory Function
+
+@param account
+
+*/
 
 void ViewWordsHistory(String20 account)
 {
@@ -1080,36 +1409,21 @@ void ViewWordsHistory(String20 account)
   fclose(historyFile);
 }
 
-void ViewSentenceHistory(String20 account)
-{
-  String30 filename = "";
-  strcat(filename, account);
-  strcat(filename, "/SHistory.txt");
-  FILE *historyFile = fopen(filename, "r");
-  char buffer[255];
+/*BONUS
+The ViewMostTranslatedWord
 
-  if (historyFile == NULL)
-  {
-    printf("----------------------------------------\n");
-    printf("Error reading file\n");
-    printf("----------------------------------------\n");
-    fclose(historyFile);
-  }
-  printf("----------------------------------------\n");
-  printf("\n");
-  printf("Sentence Translation History: \n\n");
-  while (fgets(buffer, sizeof(buffer), historyFile) != NULL)
-  {
-    printf("%s\n", buffer);
-  }
-  printf("----------------------------------------\n");
-  fclose(historyFile);
-}
+IN PROGRESS
 
+*/
 void ViewMostTranslatedWord()
 {
 }
 
+/*BONUS
+The checkAccount Function
+
+@param account
+*/
 int checkAccount(String20 account)
 {
 
@@ -1139,6 +1453,13 @@ int checkAccount(String20 account)
   return found;
 }
 
+/*BONUS
+the CreateAccount Function
+
+@param account
+
+*/
+
 void CreateAccount(String20 account)
 {
   FILE *accountFile = fopen("accountsList.txt", "a");
@@ -1149,8 +1470,8 @@ void CreateAccount(String20 account)
 
   fprintf(accountFile, "%s\n", account);
 
-  mkdir(account, 0777);
-  // _mkdir(account, 0777);
+  // mkdir(account, 0777);
+  _mkdir(account);
 
   fclose(accountFile);
 }
@@ -1403,7 +1724,7 @@ int main()
 
         if (translateInput == 1)
         {
-          TranslateTextOption(Entries, nEntry, account);
+          TranslateTextInput(Entries, nEntry, account);
         }
         if (translateInput == 2)
         {
