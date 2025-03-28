@@ -179,6 +179,60 @@ void Export(String20 filename, EntryTag Entries[], int nEntry)
   }
 }
 
+int Import(String20 filename, EntryTag Entries[], int *nEntry)
+{
+  FILE *file = fopen(filename, "r");
+  char buffer[255];
+  String20 words[2];
+
+  int success = 1;
+
+  *nEntry = 0;
+  if (file == NULL)
+  {
+    printf("File: %s does not exist!!!\n", filename);
+    success = -1;
+  }
+  else
+  {
+    while (fgets(buffer, sizeof(buffer), file) != NULL)
+    {
+      if (buffer[0] == '\n' || buffer[0] == '\0')
+      {
+        if (*nEntry < MAXENTRIES)
+        {
+          (*nEntry)++;
+        }
+      }
+      else
+      {
+        SplitEntryPair(buffer, words);
+        if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
+            words[1][0] != '\0')
+        {
+          strcpy(
+              Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language,
+              words[0]);
+          strcpy(Entries[*nEntry]
+                     .EntryPair[Entries[*nEntry].nEntryPairs]
+                     .translation,
+                 words[1]);
+          Entries[*nEntry].nEntryPairs++;
+        }
+      }
+    }
+
+    if (Entries[*nEntry].nEntryPairs > 0)
+    {
+      (*nEntry)++;
+    }
+
+    printf("Translation successfully loaded\n");
+    fclose(file);
+  }
+  return success;
+}
+
 int ImportFile(String20 filename, EntryTag Entries[], int *nEntry)
 {
   FILE *file = fopen(filename, "r");
@@ -1013,6 +1067,7 @@ void ViewWordsHistory(String20 account)
     printf("----------------------------------------\n");
     printf("Error reading file\n");
     printf("----------------------------------------\n");
+    fclose(historyFile);
   }
   printf("----------------------------------------\n");
   printf("\n");
@@ -1038,6 +1093,7 @@ void ViewSentenceHistory(String20 account)
     printf("----------------------------------------\n");
     printf("Error reading file\n");
     printf("----------------------------------------\n");
+    fclose(historyFile);
   }
   printf("----------------------------------------\n");
   printf("\n");
@@ -1104,38 +1160,20 @@ int main()
   int input = 0;
   EntryTag Entries[MAXENTRIES] = {0};
   int nEntry = 0;
+  String20 account = "Guest";
 
-  String20 account;
-  printf("Log In to your Account\n[type Guest if Log in as Guest]: ");
-  scanf("%s", account);
-  printf("\n");
-  if (strcmp(account, "Guest") == 0)
-  {
-    printf("Logged In As Guest!!!\n\n");
-  }
-  else
-  {
-    int doesExist = checkAccount(account);
-    if (doesExist == 1)
-    {
-      printf("Ok logged in!\n\nHello %s\n\n", account);
-    }
-    else if (doesExist == -1)
-    {
-      printf("New Account!\n\nHello %s\n\n", account);
-      CreateAccount(account);
-    }
-  }
-
-  while (input != 4)
+  while (input != 5)
   {
     printf("----------------------------------------\n");
     printf("\tLanguage Translator:\t\n");
+    printf("\n");
+    printf("  Logged in as User: %s\t\n", account);
     printf("----------------------------------------\n");
     printf("1. Manage Data\n");
     printf("2. Translate Menu\n");
     printf("3. View Analytics\n");
-    printf("4. Exit\n");
+    printf("4. Change User\n");
+    printf("5. Exit\n");
     printf("----------------------------------------\n");
     printf("Action: ");
     scanf("%d", &input);
@@ -1458,6 +1496,22 @@ int main()
           printf("Leaving...\n");
           printf("----------------------------------------\n");
         }
+      }
+    }
+    if (input == 4)
+    {
+      printf("Log In to your Account\n[type Guest if Log in as Guest]: ");
+      scanf("%s", account);
+      printf("\n");
+      int doesExist = checkAccount(account);
+      if (doesExist == 1)
+      {
+        printf("Ok logged in!\n\nHello %s\n\n", account);
+      }
+      else if (doesExist == -1)
+      {
+        printf("New Account!\n\nHello %s\n\n", account);
+        CreateAccount(account);
       }
     }
   }
