@@ -1067,6 +1067,7 @@ void ViewWordsHistory(String20 account)
     printf("----------------------------------------\n");
     printf("Error reading file\n");
     printf("----------------------------------------\n");
+    fclose(historyFile);
   }
   printf("----------------------------------------\n");
   printf("\n");
@@ -1092,6 +1093,7 @@ void ViewSentenceHistory(String20 account)
     printf("----------------------------------------\n");
     printf("Error reading file\n");
     printf("----------------------------------------\n");
+    fclose(historyFile);
   }
   printf("----------------------------------------\n");
   printf("\n");
