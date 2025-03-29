@@ -11,3 +11,11 @@ English: Bread -> Japanese: Pan
 English: Rice -> Japanese: Gohan
 English: Fish -> Japanese: Sakana
 English: Bread -> Japanese: Pan
+Japanese: Rice -> Filipino: Kanin
+Japanese: Fish -> Filipino: Isda
+Japanese: Kanin -> Filipino: Kanin
+Japanese: Fish -> Filipino: Isda
+English: Rice -> Japanese: Gohan
+English: Fish -> Japanese: Sakana
+English: Fruit -> Japanese: Kudamono
+English: Fish -> Japanese: Sakana

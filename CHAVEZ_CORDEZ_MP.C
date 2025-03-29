@@ -1202,51 +1202,52 @@ void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
 
   printf("\n");
 
-  getchar();
-  printf("Input the Text: ");
-  fgets(sourceText, MAXCHARS, stdin);
-  printf("\n");
-  printf("Text Given is: %s\n", sourceText);
-  sourceText[strlen(sourceText) - 1] = '\0';
-
-  TranslateText(sourceText, outputText, sourceLanguage, outputLanguage, Entries,
-                nEntry, account);
-
-  printf("Translated Text given is: %s\n", outputText);
-
-  strcat(filename, account);
-  strcat(filename, "SHistory.txt");
-  FILE *historyFile = fopen(filename, "a");
-  if (historyFile == NULL)
+  while (input != 'n' || input != 'N')
   {
-    printf("Error appending Sentence history!\n");
-  }
-  fprintf(historyFile, "%s\n", outputText);
-  fclose(historyFile);
-
-  printf("\n");
-  printf("You can view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
-  printf("----------------------------------------\n");
-  printf("\n");
-
-  printf("----------------------------------------\n");
-  printf("\n");
-  printf("Do you want to input again? [y/n]: ");
-  scanf(" %c", &input);
-  if (input == 'y')
-  {
-    printf("Ok!\n");
+    getchar();
+    printf("Input the Text: ");
+    fgets(sourceText, MAXCHARS, stdin);
     printf("\n");
+    printf("Text Given is: %s\n", sourceText);
+    sourceText[strlen(sourceText) - 1] = '\0';
+
+    TranslateText(sourceText, outputText, sourceLanguage, outputLanguage, Entries,
+                  nEntry, account);
+
+    printf("Translated Text given is: %s\n", outputText);
+
+    strcat(filename, account);
+    strcat(filename, "SHistory.txt");
+    FILE *historyFile = fopen(filename, "a");
+    if (historyFile == NULL)
+    {
+      printf("Error appending Sentence history!\n");
+    }
+    fprintf(historyFile, "%s\n", outputText);
+    fclose(historyFile);
+
+    printf("\n");
+    printf("You can view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
     printf("----------------------------------------\n");
-
     printf("\n");
-    TranslateTextInput(Entries, nEntry, account);
-  }
-  else
-  {
-    printf("Going Back to Menu\n");
-  }
 
+    printf("----------------------------------------\n");
+    printf("\n");
+    printf("Do you want to input again with same source and output language? [y/n]: ");
+    scanf(" %c", &input);
+    if (input == 'y')
+    {
+      printf("Ok!\n");
+      printf("\n");
+      printf("----------------------------------------\n");
+
+      printf("\n");
+    }
+    else
+    {
+      printf("Going Back to Menu\n");
+    }
+  }
   printf("\n");
   printf("----------------------------------------\n");
 }
