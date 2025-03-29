@@ -1,0 +1,13 @@
+English: Rice -> Japanese: Gohan
+English: Fish -> Japanese: Sakana
+English: Rice -> Filipino: Kanin
+English: Fish -> Filipino: Isda
+English: Bread -> Filipino: Tinapay
+English: Rice -> Japanese: Gohan
+English: Fish -> Japanese: Sakana
+English: Rice -> Japanese: Gohan
+English: Fish -> Japanese: Sakana
+English: Bread -> Japanese: Pan
+English: Rice -> Japanese: Gohan
+English: Fish -> Japanese: Sakana
+English: Bread -> Japanese: Pan

@@ -1095,15 +1095,71 @@ The Import Function
 @param *nEntry
 */
 
+// int Import(String20 filename, EntryTag Entries[], int *nEntry)
+// {
+//   FILE *file = fopen(filename, "r");
+//   char buffer[255];
+//   String20 words[2];
+
+//   int success = 1;
+
+//   *nEntry = 0;
+//   if (file == NULL)
+//   {
+//     printf("File: %s does not exist!!!\n", filename);
+//     success = -1;
+//   }
+//   else
+//   {
+//     while (fgets(buffer, sizeof(buffer), file) != NULL)
+//     {
+//       if (buffer[0] == '\n' || buffer[0] == '\0')
+//       {
+//         if (*nEntry < MAXENTRIES)
+//         {
+//           (*nEntry)++;
+//         }
+//       }
+//       else
+//       {
+//         SplitEntryPair(buffer, words);
+//         if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
+//             words[1][0] != '\0')
+//         {
+//           strcpy(
+//               Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language,
+//               words[0]);
+//           strcpy(Entries[*nEntry]
+//                      .EntryPair[Entries[*nEntry].nEntryPairs]
+//                      .translation,
+//                  words[1]);
+//           Entries[*nEntry].nEntryPairs++;
+//         }
+//       }
+//     }
+
+//     if (Entries[*nEntry].nEntryPairs > 0)
+//     {
+//       (*nEntry)++;
+//     }
+
+//     printf("Translation successfully loaded\n");
+//     fclose(file);
+//   }
+//   return success;
+// }
+
 int Import(String20 filename, EntryTag Entries[], int *nEntry)
 {
   FILE *file = fopen(filename, "r");
   char buffer[255];
   String20 words[2];
+  char response;
 
   int success = 1;
-
   *nEntry = 0;
+  int tempPairs = 0;
+
   if (file == NULL)
   {
     printf("File: %s does not exist!!!\n", filename);
@@ -1115,35 +1171,77 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
     {
       if (buffer[0] == '\n' || buffer[0] == '\0')
       {
-        if (*nEntry < MAXENTRIES)
+        if (tempPairs > 0)
         {
-          (*nEntry)++;
+          printf("\nEntry #%d:\n", *nEntry + 1);
+          printf("Language\tTranslation\n");
+          for (int i = 0; i < Entries[*nEntry].nEntryPairs; i++)
+          {
+            printf("%s: \t%s\n",
+                   Entries[*nEntry].EntryPair[i].language,
+                   Entries[*nEntry].EntryPair[i].translation);
+          }
+
+          printf("\n");
+          printf("Confirm adding this entry? (y/n): ");
+          scanf(" %c", &response);
+          if (response == 'y' || response == 'Y')
+          {
+            (*nEntry)++;
+          }
+          else
+          {
+            Entries[*nEntry].nEntryPairs = 0;
+          }
+          tempPairs = 0;
         }
       }
       else
       {
         SplitEntryPair(buffer, words);
-        if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
-            words[1][0] != '\0')
+        if (words[0][0] != '\0' && words[1][0] != '\0' && Entries[*nEntry].nEntryPairs < MAXPAIRS)
         {
-          strcpy(
-              Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language,
-              words[0]);
-          strcpy(Entries[*nEntry]
-                     .EntryPair[Entries[*nEntry].nEntryPairs]
-                     .translation,
-                 words[1]);
+          strcpy(Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language, words[0]);
+          strcpy(Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].translation, words[1]);
           Entries[*nEntry].nEntryPairs++;
+          tempPairs++;
         }
       }
     }
 
-    if (Entries[*nEntry].nEntryPairs > 0)
+    if (tempPairs > 0)
     {
-      (*nEntry)++;
+      printf("\nEntry #%d:\n", *nEntry + 1);
+      printf("Language\tTranslation\n");
+      for (int i = 0; i < Entries[*nEntry].nEntryPairs; i++)
+      {
+        printf("%s: \t%s\n",
+               Entries[*nEntry].EntryPair[i].language,
+               Entries[*nEntry].EntryPair[i].translation);
+      }
+
+      printf("\n");
+      printf("Confirm adding this entry? (y/n): ");
+      scanf(" %c", &response);
+      if (response == 'y' || response == 'Y')
+      {
+        (*nEntry)++;
+      }
+      else
+      {
+        Entries[*nEntry].nEntryPairs = 0;
+      }
+      tempPairs = 0;
     }
 
-    printf("Translation successfully loaded\n");
+    if (*nEntry > 0)
+    {
+      printf("Translation successfully loaded\n");
+    }
+    else
+    {
+      printf("Translation failed\n");
+    }
     fclose(file);
   }
   return success;
@@ -1265,7 +1363,7 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
         hasText = 1;
       }
 
-      if (index == MAXCHARS || (ch == '.' || ch == '?' || ch == '!'))
+      if (index == MAXCHARS || (ch == '\n' || ch == '.' || ch == '?' || ch == '!'))
       {
 
         while ((ch = fgetc(inputFile)) != EOF && (ch == prevCh))
@@ -1292,18 +1390,22 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
 
         printf("%s\n", transSentence);
 
-        fprintf(outputFile, "%s\n", transSentence);
-
-        String30 filename = "";
-        strcat(filename, account);
-        strcat(filename, "SHistory.txt");
-        FILE *historyFile = fopen(filename, "a");
-        if (historyFile == NULL)
+        if (
+            hasText)
         {
-          printf("Error appending history!\n");
+          fprintf(outputFile, "%s\n", transSentence);
+
+          String30 filename = "";
+          strcat(filename, account);
+          strcat(filename, "SHistory.txt");
+          FILE *historyFile = fopen(filename, "a");
+          if (historyFile == NULL)
+          {
+            printf("Error appending history!\n");
+          }
+          fprintf(historyFile, "%s\n", transSentence);
+          fclose(historyFile);
         }
-        fprintf(historyFile, "%s\n", transSentence);
-        fclose(historyFile);
 
         hasText = 0;
       }
