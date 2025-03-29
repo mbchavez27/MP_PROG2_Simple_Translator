@@ -926,7 +926,7 @@ void SearchWord(EntryTag Entries[], int nEntry)
       if (strcmp(word, Entries[i].EntryPair[j].translation) == 0)
       {
         found++;
-        DisplayPair(Entries[i].EntryPair[j]);
+        DisplayPairs(Entries[i]);
         printf("\n");
       }
     }
