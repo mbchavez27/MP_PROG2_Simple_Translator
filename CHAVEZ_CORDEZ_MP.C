@@ -16,9 +16,9 @@ otherwise plagiarized the work of other students and/or persons.
 ************************************************************************************************************************/
 
 /*HELPER
-the DisplayPair function
+the DisplayPair function prints a single language-translation pair
 
-@param EntryPair
+@param EntryPair - A structure containing the language and translation
 */
 
 void DisplayPair(EntryPairTag EntryPair)
@@ -27,9 +27,9 @@ void DisplayPair(EntryPairTag EntryPair)
 }
 
 /*HELPER
-the DisplayPairs function
+the DisplayPairs function prints all language-translation pairs in a given entry
 
-@param Entry
+@param Entry - A structure containing the language-translation pairs
 */
 void DisplayPairs(EntryTag Entry)
 {
@@ -44,9 +44,9 @@ void DisplayPairs(EntryTag Entry)
 }
 
 /*HELPER
-the RemovePuncMarks
+the RemovePuncMarks function removes punctuation marks (, !, ?, .)
 
-@param word
+@param word - string containing the word to be removed of puncmarks.
 */
 
 void RemovePuncMarks(String20 word)
@@ -61,9 +61,10 @@ void RemovePuncMarks(String20 word)
 }
 
 /*HELPER
-the ReturnPuncMarks
+the ReturnPuncMarks checks if the last character of a word
+is a punctuation mark (, !, ?, .) and returns it.
 
-@param word
+@param word - string containing the word to be checked.
 */
 char ReturnPuncMarks(String20 word)
 {
@@ -79,12 +80,12 @@ char ReturnPuncMarks(String20 word)
 }
 
 /*Helper
-The SearchEntryPair Function
+The SearchEntryPair Function searches for a language-translation pair
 
-@param EntryPair[]
-@param nEntryPairs
-@param language
-@param translation
+@param EntryPair[] - an array of EntryPair structures that contains language-translation pairs
+@param nEntryPairs - the number of entry pairs in the array
+@param language - the language string to search for
+@param translation - the translation string to search for 
 */
 
 int SearchEntryPair(EntryPairTag EntryPair[], int nEntryPairs,
@@ -104,14 +105,14 @@ int SearchEntryPair(EntryPairTag EntryPair[], int nEntryPairs,
 }
 
 /*HELPER
-The SearchEntry Function
+The SearchEntry Function searches for entries containing a specific language-translation pair
 
-@param Entries[]
-@param nEntry
-@param language
-@param translation
-@param *EntryIndex
-@param *numOfSameEntry
+@param Entries[] - an array of EntryTag structures containing entry pairs
+@param nEntry - the Total number of entries in the array
+@param language - the language string to search for
+@param translation - the translation string to search for 
+@param *EntryIndex - a pointer to an array that stores the indexes of matching entries
+@param *numOfSameEntry - a pointer to store the count of matching entries found 
 */
 
 int SearchEntry(EntryTag Entries[], int nEntry, String20 language,
@@ -135,11 +136,11 @@ int SearchEntry(EntryTag Entries[], int nEntry, String20 language,
 }
 
 /*
-the DeleteEntry Function
-
-@param Entries[]
-@param *nEntry
-@param index
+the DeleteEntry Function removes an entry from the array
+ 
+@param Entries[] - the array of EntryTag structures
+@param *nEntry - Pointer to the number of entries in the array
+@param index - the index of the entry to be deleted 
 
 */
 void DeleteEntry(EntryTag Entries[], int *nEntry, int index)
@@ -158,11 +159,10 @@ void DeleteEntry(EntryTag Entries[], int *nEntry, int index)
 }
 
 /* HELPER
-The IncludesEnglish Function
+The IncludesEnglish Function Checks if Entry Has English Pair
 
-@param Entry
+@param Entry - the entry to check for an english language pair
 
- Checks if Entry Has English Pair
 */
 
 int IncludesEnglish(EntryTag Entry)
@@ -515,12 +515,19 @@ void ViewSentenceHistory(String20 account)
   fclose(historyFile);
 }
 
-/*
-the AddEntry function adds blah blah
+void printTitle(String20 account)
+{
+  printf("----------------------------------------\n");
+  printf("        Language Translator:\n\n");
+  printf("Logged in as User: %s\t\n", account);
+}
 
-@param EntryTag *Entry
-@param *nEntry
-@param Entries[]
+/*
+the AddEntry function adds a new language-translation pair to an entry.
+
+@param EntryTag *Entry - Pointer to the entry where the new pair is added.
+@param *nEntry - Pointer to the total number of entries in Entries[].
+@param Entries[] - The array storing all entries.
 */
 
 void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
@@ -612,10 +619,12 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
 }
 
 /*
-the AddTranslation Function
+the AddTranslation Function adds a new language-pair to an existing entry. 
+If entry already exists, user can add a translation to it, provided it has not
+reached the limit of 10 translations. 
 
-@param *nEntry
-@param Entries[]
+@param *nEntry - Pointer to the total number of entries.
+@param Entries[] - Array of entries containing language-translation pairs.
 */
 
 void AddTranslation(int *nEntry, EntryTag Entries[])
@@ -808,8 +817,6 @@ void DeleteEntryPair(EntryTag Entries[], int index)
     }
     printf("\n");
 
-    int indexPair = 0;
-    int k = 0;
     printf("Choose an Entry Pair Number to Delete: ");
     scanf("%d", &indexPair);
     if (indexPair >= 1 && indexPair <= Entries[index].nEntryPairs)
@@ -1485,10 +1492,7 @@ int main()
 
   while (input != 5)
   {
-    printf("----------------------------------------\n");
-    printf("\tLanguage Translator:\t\n");
-    printf("\n");
-    printf("  Logged in as User: %s\t\n", account);
+    printTitle(account);
     printf("----------------------------------------\n");
     printf("1. Manage Data\n");
     printf("2. Translate Menu\n");
@@ -1506,8 +1510,9 @@ int main()
     {
       while (input != 11)
       {
+        printTitle(account);
         printf("----------------------------------------\n");
-        printf("\tManage Data:\t\n");
+        printf("\t     Manage Data:\t\n");
         printf("----------------------------------------\n");
         printf("1. Add Entry\n");
         printf("2. Add Translations\n");
@@ -1711,6 +1716,7 @@ int main()
       while (translateInput != 3 && successImport != -1)
       {
         printf("\n");
+        printTitle(account);
         printf("----------------------------------------\n");
         printf("\tTranslate Menu:\t\n");
         printf("----------------------------------------\n");
@@ -1786,8 +1792,7 @@ int main()
       int analyticsInput = 0;
       while (analyticsInput != 4)
       {
-        printf("----------------------------------------\n");
-        printf("\tLanguage Translator:\t\n");
+        printTitle(account);
         printf("----------------------------------------\n");
         printf("1. View Translated Words History\n");
         printf("2. View Most Translated Word\n");
