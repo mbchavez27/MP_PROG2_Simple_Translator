@@ -480,7 +480,7 @@ void ModifyEntryPair(EntryTag Entries[], int index)
   printf("\n");
 }
 
-/*
+/* Bonus
 The ViewSentenceHistory Function
 
 @param account
@@ -948,8 +948,6 @@ void SearchTranslation(EntryTag Entries[], int nEntry)
   int i = 0;
   int j = 0;
   int found = 0;
-  int EntryPairIndex[MAXPAIRS];
-  int numOfSameEntry = 0;
   int nCancelled = 0;
 
   String20 language, translation;
@@ -973,40 +971,19 @@ void SearchTranslation(EntryTag Entries[], int nEntry)
 
   if (!nCancelled)
   {
-    int sameEntry = SearchEntry(Entries, nEntry, language, translation,
-                                EntryPairIndex, &numOfSameEntry);
 
     printf("----------------------------------------\n");
     printf("\n");
     printf("Language\tTranslation\n");
-    if (numOfSameEntry > 1)
+    for (i = 0; i < nEntry; i++)
     {
-      for (i = 0; i < numOfSameEntry; i++)
+      for (j = 0; j < Entries[i].nEntryPairs; j++)
       {
-        for (j = 0; j < Entries[EntryPairIndex[i]].nEntryPairs; j++)
-        {
-          if (strcmp(language,
-                     Entries[EntryPairIndex[i]].EntryPair[j].language) != 0 &&
-              strcmp(translation,
-                     Entries[EntryPairIndex[i]].EntryPair[j].translation) != 0)
-          {
-            found++;
-            DisplayPair(Entries[EntryPairIndex[i]].EntryPair[j]);
-          }
-        }
-        printf("\n");
-      }
-    }
-    else
-    {
-      for (i = 0; i < Entries[sameEntry].nEntryPairs; i++)
-      {
-        if (strcmp(language, Entries[sameEntry].EntryPair[i].language) != 0 &&
-            strcmp(translation, Entries[sameEntry].EntryPair[i].translation) !=
-                0)
+        if (strcmp(translation, Entries[i].EntryPair[j].translation) == 0 && strcmp(language, Entries[i].EntryPair[j].language) == 0)
         {
           found++;
-          DisplayPair(Entries[sameEntry].EntryPair[i]);
+          DisplayPairs(Entries[i]);
+          printf("\n");
         }
       }
     }
@@ -1014,7 +991,6 @@ void SearchTranslation(EntryTag Entries[], int nEntry)
     {
       printf("No Entries found\n\n");
     }
-    printf("\n");
     printf("----------------------------------------\n");
   }
   else

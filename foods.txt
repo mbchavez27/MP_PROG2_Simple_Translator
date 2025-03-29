@@ -6,7 +6,6 @@ English: Fish
 Filipino: Isda
 Japanese: Sakana
 
-English: Meat
 Filipino: Karne
 Japanese: Niku
 
