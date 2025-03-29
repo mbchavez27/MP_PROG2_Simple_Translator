@@ -559,6 +559,7 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
     printf("----------------------------------------------\n");
 
     int EntryPairIndex[MAXPAIRS];
+    int i = 0;
     int sameEntry = SearchEntry(Entries, *nEntry, language, translation,
                                 EntryPairIndex, &numOfSameEntries);
 
@@ -568,7 +569,11 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
       printf("----------------------------------------------\n");
       printf("Entry Exists:\n");
       printf("Language\tTranslation\n");
-      printf("%s \t%s\n\n", language, translation);
+      for (i = 0; i < numOfSameEntries; i++)
+      {
+        printf("Entry #%d:\n", i + 1);
+        DisplayPairs(Entries[EntryPairIndex[i]]);
+      }
       printf("----------------------------------------------\n");
 
       printf("New Entry? [y/n]: ");
@@ -1428,7 +1433,12 @@ int ImportFile(String20 filename, EntryTag Entries[], int *nEntry)
   return success;
 }
 
-// BONUS FUNCTIONS
+/*BONUS
+The check Word Count Functioin
+
+@param
+
+*/
 void checkWordCount(WordCountTag words[], int *nWords, String20 word)
 {
   int i = 0;
@@ -1485,7 +1495,6 @@ void ViewWordsHistory(String20 account)
 /*BONUS
 The ViewMostTranslatedWord
 
-IN PROGRESS
 
 */
 void ViewMostTranslatedWord(String20 account, WordCountTag words[], int *nWords)
