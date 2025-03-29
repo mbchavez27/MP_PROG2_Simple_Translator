@@ -1095,60 +1095,6 @@ The Import Function
 @param *nEntry
 */
 
-// int Import(String20 filename, EntryTag Entries[], int *nEntry)
-// {
-//   FILE *file = fopen(filename, "r");
-//   char buffer[255];
-//   String20 words[2];
-
-//   int success = 1;
-
-//   *nEntry = 0;
-//   if (file == NULL)
-//   {
-//     printf("File: %s does not exist!!!\n", filename);
-//     success = -1;
-//   }
-//   else
-//   {
-//     while (fgets(buffer, sizeof(buffer), file) != NULL)
-//     {
-//       if (buffer[0] == '\n' || buffer[0] == '\0')
-//       {
-//         if (*nEntry < MAXENTRIES)
-//         {
-//           (*nEntry)++;
-//         }
-//       }
-//       else
-//       {
-//         SplitEntryPair(buffer, words);
-//         if (Entries[*nEntry].nEntryPairs < MAXPAIRS && words[0][0] != '\0' &&
-//             words[1][0] != '\0')
-//         {
-//           strcpy(
-//               Entries[*nEntry].EntryPair[Entries[*nEntry].nEntryPairs].language,
-//               words[0]);
-//           strcpy(Entries[*nEntry]
-//                      .EntryPair[Entries[*nEntry].nEntryPairs]
-//                      .translation,
-//                  words[1]);
-//           Entries[*nEntry].nEntryPairs++;
-//         }
-//       }
-//     }
-
-//     if (Entries[*nEntry].nEntryPairs > 0)
-//     {
-//       (*nEntry)++;
-//     }
-
-//     printf("Translation successfully loaded\n");
-//     fclose(file);
-//   }
-//   return success;
-// }
-
 int Import(String20 filename, EntryTag Entries[], int *nEntry)
 {
   FILE *file = fopen(filename, "r");
@@ -1482,7 +1428,28 @@ int ImportFile(String20 filename, EntryTag Entries[], int *nEntry)
   return success;
 }
 
-/*
+// BONUS FUNCTIONS
+void checkWordCount(WordCountTag words[], int *nWords, String20 word)
+{
+  int i = 0;
+  int found = 0;
+  for (i = 0; i < *nWords && !found; i++)
+  {
+    if (strcmp(words[i].word, word) == 0)
+    {
+      words[i].count++;
+      found = 1;
+    }
+  }
+  if (!found)
+  {
+    strcpy(words[*nWords].word, word);
+    words[*nWords].count = 1;
+    (*nWords)++;
+  }
+}
+
+/*BONUS
 The ViewWordsHistory Function
 
 @param account
@@ -1521,8 +1488,61 @@ The ViewMostTranslatedWord
 IN PROGRESS
 
 */
-void ViewMostTranslatedWord()
+void ViewMostTranslatedWord(String20 account, WordCountTag words[], int *nWords)
 {
+  String30 filename = "";
+  strcat(filename, account);
+  strcat(filename, "WHistory.txt");
+  FILE *file = fopen(filename, "r");
+
+  char buffer[255];
+  char *token;
+  String20 word;
+
+  int maxWord = 0;
+  String20 mostTranslatedWord;
+  mostTranslatedWord[0] = '\0';
+  int i = 0;
+
+  if (file == NULL)
+  {
+    printf("File: %s does not exist!!!\n", filename);
+  }
+  else
+  {
+    while (fgets(buffer, sizeof(buffer), file) != NULL)
+    {
+      token = strtok(buffer, ":");
+
+      if (token != NULL)
+      {
+        token = strtok(NULL, "->");
+        if (token != NULL)
+        {
+          while (*token == ' ')
+          {
+            token++;
+          }
+
+          strcpy(word, token);
+          checkWordCount(words, nWords, word);
+        }
+      }
+    }
+  }
+
+  fclose(file);
+
+  for (i = 0; i < *nWords; i++)
+  {
+    if (words[i].count > maxWord)
+    {
+      maxWord = words[i].count;
+      strcpy(mostTranslatedWord, words[i].word);
+    }
+  }
+
+  printf("Most Translated Word: %s\nTranslated %d times\n\n", mostTranslatedWord, maxWord);
 }
 
 /*BONUS
@@ -1585,6 +1605,8 @@ int main()
   EntryTag Entries[MAXENTRIES] = {0};
   int nEntry = 0;
   String20 account = "Guest";
+  WordCountTag words[MAXWORDS] = {0};
+  int nWords = 0;
 
   while (input != 5)
   {
@@ -1906,7 +1928,7 @@ int main()
         }
         if (analyticsInput == 2)
         {
-          ViewMostTranslatedWord();
+          ViewMostTranslatedWord(account, words, &nWords);
         }
         if (analyticsInput == 3)
         {
