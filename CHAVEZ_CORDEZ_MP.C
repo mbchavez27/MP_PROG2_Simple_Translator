@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-// #include <sys/stat.h>
-#include <direct.h>
 
 /************************************************************************************************************************
 This is to certify that this project is my own work, based on my personal efforts in studying and applying the concepts
@@ -85,7 +83,7 @@ The SearchEntryPair Function searches for a language-translation pair
 @param EntryPair[] - an array of EntryPair structures that contains language-translation pairs
 @param nEntryPairs - the number of entry pairs in the array
 @param language - the language string to search for
-@param translation - the translation string to search for 
+@param translation - the translation string to search for
 */
 
 int SearchEntryPair(EntryPairTag EntryPair[], int nEntryPairs,
@@ -110,9 +108,9 @@ The SearchEntry Function searches for entries containing a specific language-tra
 @param Entries[] - an array of EntryTag structures containing entry pairs
 @param nEntry - the Total number of entries in the array
 @param language - the language string to search for
-@param translation - the translation string to search for 
+@param translation - the translation string to search for
 @param *EntryIndex - a pointer to an array that stores the indexes of matching entries
-@param *numOfSameEntry - a pointer to store the count of matching entries found 
+@param *numOfSameEntry - a pointer to store the count of matching entries found
 */
 
 int SearchEntry(EntryTag Entries[], int nEntry, String20 language,
@@ -137,10 +135,10 @@ int SearchEntry(EntryTag Entries[], int nEntry, String20 language,
 
 /*
 the DeleteEntry Function removes an entry from the array
- 
+
 @param Entries[] - the array of EntryTag structures
 @param *nEntry - Pointer to the number of entries in the array
-@param index - the index of the entry to be deleted 
+@param index - the index of the entry to be deleted
 
 */
 void DeleteEntry(EntryTag Entries[], int *nEntry, int index)
@@ -214,7 +212,7 @@ void TranslateWord(String20 word, String20 sourceLanguage,
 
             String30 filename = "";
             strcat(filename, account);
-            strcat(filename, "/WHistory.txt");
+            strcat(filename, "WHistory.txt");
             FILE *historyFile = fopen(filename, "a");
             if (historyFile == NULL)
             {
@@ -482,7 +480,6 @@ void ModifyEntryPair(EntryTag Entries[], int index)
   printf("\n");
 }
 
-
 /*
 The ViewSentenceHistory Function
 
@@ -493,7 +490,7 @@ void ViewSentenceHistory(String20 account)
 {
   String30 filename = "";
   strcat(filename, account);
-  strcat(filename, "/SHistory.txt");
+  strcat(filename, "SHistory.txt");
   FILE *historyFile = fopen(filename, "r");
   char buffer[255];
 
@@ -619,9 +616,9 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
 }
 
 /*
-the AddTranslation Function adds a new language-pair to an existing entry. 
+the AddTranslation Function adds a new language-pair to an existing entry.
 If entry already exists, user can add a translation to it, provided it has not
-reached the limit of 10 translations. 
+reached the limit of 10 translations.
 
 @param *nEntry - Pointer to the total number of entries.
 @param Entries[] - Array of entries containing language-translation pairs.
@@ -1193,7 +1190,7 @@ void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
   printf("Translated Text given is: %s\n", outputText);
 
   strcat(filename, account);
-  strcat(filename, "/SHistory.txt");
+  strcat(filename, "SHistory.txt");
   FILE *historyFile = fopen(filename, "a");
   if (historyFile == NULL)
   {
@@ -1299,7 +1296,7 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
 
         String30 filename = "";
         strcat(filename, account);
-        strcat(filename, "/SHistory.txt");
+        strcat(filename, "SHistory.txt");
         FILE *historyFile = fopen(filename, "a");
         if (historyFile == NULL)
         {
@@ -1394,7 +1391,7 @@ void ViewWordsHistory(String20 account)
 {
   String30 filename = "";
   strcat(filename, account);
-  strcat(filename, "/WHistory.txt");
+  strcat(filename, "WHistory.txt");
   FILE *historyFile = fopen(filename, "r");
   char buffer[255];
 
@@ -1476,9 +1473,6 @@ void CreateAccount(String20 account)
   }
 
   fprintf(accountFile, "%s\n", account);
-
-  // mkdir(account, 0777);
-  _mkdir(account);
 
   fclose(accountFile);
 }
