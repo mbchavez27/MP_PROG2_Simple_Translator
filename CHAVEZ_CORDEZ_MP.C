@@ -33,6 +33,7 @@ void DisplayPairs(EntryTag Entry)
 {
   int i = 0;
 
+  // Gets all Pair inside This Entry
   for (i = 0; i < Entry.nEntryPairs; i++)
   {
     printf("%s: \t%s\n", Entry.EntryPair[i].language,
@@ -52,6 +53,7 @@ void ProcessLanguage(String20 word)
 {
   int i = 0;
 
+  // Makes word lower
   while (word[i] != '\0')
   {
     if (word[i] >= 'A' && word[i] <= 'Z')
@@ -61,6 +63,7 @@ void ProcessLanguage(String20 word)
     i++;
   }
 
+  // Makes first letter character to be upper
   if (word[0] >= 'a' && word[0] <= 'z')
   {
     word[0] -= 32;
@@ -122,7 +125,7 @@ int SearchEntryPair(EntryPairTag EntryPair[], int nEntryPairs,
   for (i = 0; i < nEntryPairs; i++)
   {
     if (strcmp(EntryPair[i].language, language) == 0 &&
-        strcmp(EntryPair[i].translation, translation) == 0)
+        strcmp(EntryPair[i].translation, translation) == 0) // checks if language and translation are the same
       SearchEntryIndex = i;
   }
   return SearchEntryIndex;
@@ -174,12 +177,13 @@ void DeleteEntry(EntryTag Entries[], int *nEntry, int index)
   printf("Deleted Entry #%d\n\n", index);
   index = index - 1;
 
+  // Shifts element to the left
   for (j = index; j < *nEntry - 1; j++)
   {
     Entries[j] = Entries[j + 1];
   }
-  Entries[j].nEntryPairs--;
-  (*nEntry)--;
+  Entries[j].nEntryPairs--; // Deletes Element nEntryPair
+  (*nEntry)--;              // Deletes Element by removing nEntry
 }
 
 /* HELPER
@@ -189,7 +193,7 @@ The IncludesEnglish Function Checks if Entry Has English Pair
 
 */
 
-int IncludesEnglish(EntryTag Entry)
+int IncludesEnglish(EntryTag Entry) // Checks if Entry has English Pair
 {
   int i = 0;
 
@@ -227,11 +231,11 @@ void TranslateWord(String20 word, String20 sourceLanguage,
   {
     for (j = 0; j < Entries[i].nEntryPairs && !found; j++)
     {
-      if (strcmp(word, Entries[i].EntryPair[j].translation) == 0)
+      if (strcmp(word, Entries[i].EntryPair[j].translation) == 0) // Checks if word is == translation
       {
         for (k = 0; k < Entries[i].nEntryPairs; k++)
         {
-          if (strcmp(outputLanguage, Entries[i].EntryPair[k].language) == 0)
+          if (strcmp(outputLanguage, Entries[i].EntryPair[k].language) == 0) // Then checks if output language exists
           {
             String20 tempWord;
             strcpy(tempWord, word);
@@ -245,7 +249,9 @@ void TranslateWord(String20 word, String20 sourceLanguage,
               printf("Error appending word history!\n");
             }
 
+            // Translates Word
             strcpy(word, Entries[i].EntryPair[k].translation);
+            // Saves to History
             fprintf(historyFile, "%s: %s -> %s: %s\n", sourceLanguage, tempWord, Entries[i].EntryPair[k].language, Entries[i].EntryPair[k].translation);
             fclose(historyFile);
             found = 1;
@@ -277,30 +283,30 @@ void TranslateText(String150 sourceText, String150 outputText,
 
   strcpy(tempSource, sourceText);
 
-  outputText[0] = '\0';
+  outputText[0] = '\0'; // Init as no val
 
-  char *token = strtok(tempSource, " ");
+  char *token = strtok(tempSource, " "); // Splits word
 
   while (token != NULL)
   {
 
     String20 tempWord;
 
-    char tempChar = ReturnPuncMarks(token) ? ReturnPuncMarks(token) : '\0';
+    char tempChar = ReturnPuncMarks(token) ? ReturnPuncMarks(token) : '\0'; // Gets the Punc Mark of the Word
 
     strcpy(tempWord, token);
 
-    RemovePuncMarks(tempWord);
+    RemovePuncMarks(tempWord); // Remove Punc Mark
 
-    TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry, account);
+    TranslateWord(tempWord, sourceLanguage, outputLanguage, Entries, nEntry, account); // Translates word
 
     if (tempChar != '\0')
     {
       char tempStr[2] = {tempChar, '\0'};
-      strcat(tempWord, tempStr);
+      strcat(tempWord, tempStr); // Returns the removed punc mark back to the word
     }
 
-    strcat(outputText, tempWord);
+    strcat(outputText, tempWord); // Then gives to the output text
 
     char *nextToken = strtok(NULL, " ");
 
@@ -317,7 +323,7 @@ void TranslateText(String150 sourceText, String150 outputText,
       sourceText[strlen(sourceText) - 1] == '?' ||
       sourceText[strlen(sourceText) - 1] == '!')
   {
-    outputText[strlen(outputText) - 1] = sourceText[strlen(sourceText) - 1];
+    outputText[strlen(outputText) - 1] = sourceText[strlen(sourceText) - 1]; // Gives the last punc mark to the output text
   }
 }
 
@@ -341,7 +347,7 @@ void SplitEntryPair(char line[], String20 words[])
 
   while (line[i] != '\0' && line[i] != '\n')
   {
-    if (line[i] == ':')
+    if (line[i] == ':') // Finds the Colon
     {
       foundColon = 1;
       words[word][j] = '\0';
@@ -351,6 +357,7 @@ void SplitEntryPair(char line[], String20 words[])
     }
     else if (foundColon && line[i] == ' ' && j == 0)
     {
+      // Doees nothing if colon is found
     }
     else if (word < 2 && j < 19)
     {
@@ -428,6 +435,7 @@ void SortEntryPairs(EntryTag *Entry)
   int j = 0;
   int nEntryPairs = Entry->nEntryPairs;
 
+  // Alphabetical Sorting
   for (i = 0; i < nEntryPairs - 1; i++)
   {
     int minIndex = i;
@@ -1566,11 +1574,12 @@ void ViewWordsHistory(String20 account)
 }
 
 /*BONUS
-The ViewMostTranslatedWord
+The UpdateMostTranslatedWord
 
 
 */
-void ViewMostTranslatedWord(String20 account, WordCountTag words[], int *nWords)
+
+void UpdateMostTranslatedWord(String20 account, WordCountTag words[], int *nWords)
 {
   String30 filename = "";
   strcat(filename, account);
@@ -1614,6 +1623,19 @@ void ViewMostTranslatedWord(String20 account, WordCountTag words[], int *nWords)
   }
 
   fclose(file);
+}
+
+/*BONUS
+The ViewMostTranslatedWord
+
+
+*/
+void ViewMostTranslatedWord(String20 account, WordCountTag words[], int *nWords)
+{
+  int maxWord = 0;
+  String20 mostTranslatedWord;
+  mostTranslatedWord[0] = '\0';
+  int i = 0;
 
   for (i = 0; i < *nWords; i++)
   {
@@ -1873,11 +1895,12 @@ int main()
         }
         if (input == 11)
         {
+          int i = 0;
           printf("----------------------------------------\n");
           printf("Exitting menu!\n");
           printf("----------------------------------------\n");
           printf("\n");
-          for (int i = 0; i < MAXENTRIES; i++)
+          for (i = 0; i < MAXENTRIES; i++)
           {
             Entries[i] = (EntryTag){0};
           }
@@ -1974,11 +1997,12 @@ int main()
         }
         if (translateInput == 3)
         {
+          int i = 0;
           printf("----------------------------------------\n");
           printf("Exitting menu!\n");
           printf("----------------------------------------\n");
           printf("\n");
-          for (int i = 0; i < MAXENTRIES; i++)
+          for (i = 0; i < MAXENTRIES; i++)
           {
             Entries[i] = (EntryTag){0};
           }
@@ -1991,6 +2015,9 @@ int main()
     if (input == 3)
     {
       int analyticsInput = 0;
+
+      UpdateMostTranslatedWord(account, words, &nWords);
+
       while (analyticsInput != 4)
       {
         printTitle(account);
@@ -2019,9 +2046,15 @@ int main()
         }
         else if (analyticsInput == 4)
         {
+          int i = 0;
           printf("----------------------------------------\n");
           printf("Leaving...\n");
           printf("----------------------------------------\n");
+          for (i = 0; i < MAXWORDS; i++)
+          {
+            words[i] = (WordCountTag){0};
+          }
+          nWords = 0;
         }
       }
     }
