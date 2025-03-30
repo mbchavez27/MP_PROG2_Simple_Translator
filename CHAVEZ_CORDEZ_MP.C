@@ -1161,7 +1161,6 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
     char response;
 
     int success = 1;
-    *nEntry = 0;
     int tempPairs = 0;
 
     if (file == NULL)
