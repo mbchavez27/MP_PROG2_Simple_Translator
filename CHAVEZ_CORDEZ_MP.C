@@ -1391,7 +1391,10 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
   {
     while ((ch = fgetc(inputFile)) != EOF)
     {
-      sentence[index++] = ch;
+      if (index < 150)
+      {
+        sentence[index++] = ch;
+      }
 
       if (ch != ' ' && ch != '\t' && ch != '\n' && ch != '.' && ch != '?' && ch != '!')
       {
@@ -1489,6 +1492,125 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
   fclose(inputFile);
   fclose(outputFile);
 }
+
+// void TranslateFile(String20 sourceFileName, String20 outputFileName,
+//                    String20 sourceLanguage, String20 outputLanguage, EntryTag Entries[], int nEntry, String20 account)
+// {
+//   FILE *inputFile = fopen(sourceFileName, "r");
+//   FILE *outputFile = fopen(outputFileName, "w");
+
+//   String150 sentence;
+//   String150 transSentence;
+//   int index = 0;
+//   char ch, prevCh = '\0';
+//   int hasText = 0;
+
+//   if (inputFile == NULL)
+//   {
+//     printf("File: %s does not exist!!!\n", sourceFileName);
+//   }
+//   else
+//   {
+//     while ((ch = fgetc(inputFile)) != EOF)
+//     {
+//       sentence[index++] = ch;
+
+//       if (ch != ' ' && ch != '\t' && ch != '\n' && ch != '.' && ch != '?' && ch != '!')
+//       {
+//         hasText = 1;
+//       }
+
+//       if (index == MAXCHARS || (ch == '\n' || ch == '.' || ch == '?' || ch == '!'))
+//       {
+
+//         while ((ch = fgetc(inputFile)) != EOF && (ch == prevCh))
+//         {
+//           sentence[index++] = ch;
+//         }
+
+//         if (ch != EOF && ch != prevCh)
+//         {
+//           ungetc(ch, inputFile);
+//         }
+
+//         sentence[index] = '\0';
+//         index = 0;
+
+//         if (hasText)
+//         {
+//           TranslateText(sentence, transSentence, sourceLanguage, outputLanguage, Entries, nEntry, account);
+//         }
+//         else
+//         {
+//           strcpy(transSentence, sentence);
+//         }
+
+//         printf("%s\n", transSentence);
+
+//         if (
+//             hasText)
+//         {
+//           fprintf(outputFile, "%s\n", transSentence);
+
+//           String30 filename = "";
+//           strcat(filename, account);
+//           strcat(filename, "SHistory.txt");
+//           FILE *historyFile = fopen(filename, "a");
+//           if (historyFile == NULL)
+//           {
+//             printf("Error appending history!\n");
+//           }
+//           fprintf(historyFile, "%s\n", transSentence);
+//           fclose(historyFile);
+//         }
+
+//         hasText = 0;
+//       }
+//     }
+
+//     if (index > 0)
+//     {
+//       if (sentence[index - 1] != '.' && sentence[index - 1] != '?' && sentence[index - 1] != '!')
+//       {
+//         sentence[index++] = '.';
+//       }
+//       sentence[index] = '\0';
+
+//       if (hasText)
+//       {
+//         TranslateText(sentence, transSentence, sourceLanguage, outputLanguage, Entries, nEntry, account);
+//       }
+//       else
+//       {
+//         strcpy(transSentence, sentence);
+//       }
+
+//       printf("%s\n", transSentence);
+//       fprintf(outputFile, "%s\n", transSentence);
+
+//       String30 filename;
+//       snprintf(filename, sizeof(filename), "%sSHistory.txt", account);
+//       FILE *historyFile = fopen(filename, "a");
+//       if (historyFile != NULL)
+//       {
+//         fprintf(historyFile, "%s\n", transSentence);
+//         fclose(historyFile);
+//       }
+//       else
+//       {
+//         printf("Error appending history!\n");
+//       }
+//     }
+
+//     printf("\n");
+//     printf("Translation of file name: %s is done the output can be found at file name: %s", sourceFileName, outputFileName);
+//     printf("\n");
+//     printf("You can also view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
+//   }
+
+//   fclose(inputFile);
+//   fclose(outputFile);
+// }
 
 /*
 The ImportFile Function
