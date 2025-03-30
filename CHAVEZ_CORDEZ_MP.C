@@ -42,6 +42,32 @@ void DisplayPairs(EntryTag Entry)
 }
 
 /*HELPER
+The ProcessLanguage Function
+
+Converts a word to lowercase, except for the first letter, which is capitalized.
+
+@param word - string containing the word to be processed.
+*/
+void ProcessLanguage(String20 word)
+{
+  int i = 0;
+
+  while (word[i] != '\0')
+  {
+    if (word[i] >= 'A' && word[i] <= 'Z')
+    {
+      word[i] += 32;
+    }
+    i++;
+  }
+
+  if (word[0] >= 'a' && word[0] <= 'z')
+  {
+    word[0] -= 32;
+  }
+}
+
+/*HELPER
 the RemovePuncMarks function removes punctuation marks (, !, ?, .)
 
 @param word - string containing the word to be removed of puncmarks.
@@ -449,6 +475,7 @@ void ModifyEntryPair(EntryTag Entries[], int index)
     {
       nCancelled = 1;
     }
+    ProcessLanguage(language);
 
     if (!nCancelled)
     {
@@ -543,6 +570,8 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
     nCancelled = 1;
   }
 
+  ProcessLanguage(language);
+
   if (!nCancelled)
   {
     printf("Add Translation (STOP! to terminate command): ");
@@ -630,7 +659,6 @@ reached the limit of 10 translations.
 @param *nEntry - Pointer to the total number of entries.
 @param Entries[] - Array of entries containing language-translation pairs.
 */
-
 void AddTranslation(int *nEntry, EntryTag Entries[])
 {
   int numOfSameEntries = 0;
@@ -667,66 +695,59 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
       {
         char input = 'Y';
 
-        if (Entries[sameEntry].nEntryPairs < 10)
+        while ((input == 'Y' || input == 'y') && Entries[sameEntry].nEntryPairs < 10)
         {
-          while ((input == 'Y' || input == 'y') && Entries[sameEntry].nEntryPairs < 10)
-          {
-            nCancelled = 0;
+          nCancelled = 0;
 
-            printf("Given Entry Details\n\n");
-            printf("Language\tTranslation\n");
-            DisplayPairs(Entries[sameEntry]);
-            printf("Add Language (STOP! to terminate command): ");
-            scanf("%s", language);
-            if (strcmp(language, "STOP!") == 0)
+          printf("Given Entry Details\n\n");
+          printf("Language\tTranslation\n");
+          DisplayPairs(Entries[sameEntry]);
+          printf("Add Language (STOP! to terminate command): ");
+          scanf("%s", language);
+          if (strcmp(language, "STOP!") == 0)
+          {
+            nCancelled = 1;
+          }
+          ProcessLanguage(language);
+
+          if (!nCancelled)
+          {
+            printf("Add Translation (STOP! to terminate command): ");
+            scanf("%s", translation);
+
+            if (strcmp(translation, "STOP!") == 0)
             {
               nCancelled = 1;
             }
-
-            if (!nCancelled)
-            {
-              printf("Add Translation (STOP! to terminate command): ");
-              scanf("%s", translation);
-
-              if (strcmp(translation, "STOP!") == 0)
-              {
-                nCancelled = 1;
-              }
-              printf("\n");
-            }
-
-            if (!nCancelled)
-            {
-              strcpy(Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].language,
-                     language);
-              strcpy(
-                  Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].translation,
-                  translation);
-              Entries[sameEntry].nEntryPairs++;
-              printf("You have added translation %s: %s successfully\n", language, translation);
-            }
-            else
-            {
-              printf("Cancelled Command\n");
-            }
-
-            if (Entries[sameEntry].nEntryPairs < 10)
-            {
-              printf("----------------------------------------------\n");
-              printf("Add another translation? [y/n]: ");
-              scanf(" %c", &input);
-              printf("----------------------------------------------\n");
-            }
-            else
-            {
-              printf("Maximum Number of Translation Pairs Exceeded, Cant add anymore\n");
-              input = 'N';
-            }
+            printf("\n");
           }
-        }
-        else
-        {
-          printf("Maximum Number of Translation Pairs Exceeded, Cant add anymore\n");
+
+          if (!nCancelled)
+          {
+            strcpy(Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].language,
+                   language);
+            strcpy(
+                Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].translation,
+                translation);
+            Entries[sameEntry].nEntryPairs++;
+          }
+          else
+          {
+            printf("Cancelled Command\n");
+          }
+
+          if (Entries[sameEntry].nEntryPairs < 10)
+          {
+            printf("----------------------------------------------\n");
+            printf("Add another translation? [y/n]: ");
+            scanf(" %c", &input);
+            printf("----------------------------------------------\n");
+          }
+          else
+          {
+            printf("Maximum Number of Translation Pairs Exceeded, Cant add anymore\n");
+            input = 'N';
+          }
         }
       }
       else
@@ -747,14 +768,13 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
         } while (input < 0 || input > numOfSameEntries);
 
         char charInput = 'Y';
-
-        if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
+        while ((charInput == 'Y' || charInput == 'y'))
         {
-          while ((charInput == 'Y' || charInput == 'y') && Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
-          {
-            nCancelled = 0;
-            int index = EntryPairIndex[input - 1];
+          nCancelled = 0;
+          int index = EntryPairIndex[input - 1];
 
+          if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
+          {
             printf("Chosen Entry #%d\n", input);
 
             printf("Add Language (STOP! to terminate command): ");
@@ -763,6 +783,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
             {
               nCancelled = 1;
             }
+            ProcessLanguage(language);
             if (!nCancelled)
             {
               printf("Add Translation (STOP! to terminate command): ");
@@ -802,14 +823,17 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
             }
             else
             {
-              printf("Maximum Number of Translation Pairs Exceeded, Cant add anymore\n");
+              printf("Chosen Entry #%d has already reached the max translation pairs\n", input);
               charInput = 'N';
             }
           }
-        }
-        else
-        {
-          printf("Maximum Number of Translation Pairs Exceeded, Cant add anymore\n");
+          else
+          {
+            printf(
+                "Chosen Entry #%d has already have the max translation pairs\n",
+                input);
+            input = 'N';
+          }
         }
       }
     }
@@ -1421,15 +1445,14 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
         hasText = 0;
       }
     }
+    printf("\n");
+    printf("Translation of file name: %s is done the output can be found at file name: %s", sourceFileName, outputFileName);
+    printf("\n");
+    printf("You can also view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
   }
 
   fclose(inputFile);
   fclose(outputFile);
-
-  printf("\n");
-  printf("Translation of file name: %s is done the output can be found at file name: %s", sourceFileName, outputFileName);
-  printf("\n");
-  printf("You can also view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
 }
 
 /*

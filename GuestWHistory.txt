@@ -42,3 +42,5 @@ English: Change -> Filipino: Bago
 English: Rice -> Japanese: Gohan
 English: Fish -> Japanese: Sakana
 English: Bread -> Japanese: Pan
+English: Change -> Filipino: Bago
+English: Change -> Filipino: Bago
