@@ -669,7 +669,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
 
         if (Entries[sameEntry].nEntryPairs < 10)
         {
-          while ((input == 'Y' || input == 'y'))
+          while ((input == 'Y' || input == 'y') && Entries[sameEntry].nEntryPairs < 10)
           {
             nCancelled = 0;
 
@@ -747,9 +747,10 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
         } while (input < 0 || input > numOfSameEntries);
 
         char charInput = 'Y';
+
         if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
         {
-          while ((charInput == 'Y' || charInput == 'y'))
+          while ((charInput == 'Y' || charInput == 'y') && Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
           {
             nCancelled = 0;
             int index = EntryPairIndex[input - 1];
@@ -786,7 +787,6 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
                       .translation,
                   translation);
               Entries[EntryPairIndex[input - 1]].nEntryPairs++;
-              printf("You have added translation %s: %s successfully\n\n", language, translation);
             }
             else
             {
@@ -802,7 +802,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
             }
             else
             {
-              printf("Chosen Entry #%d has already reached the max translation pairs\n", input);
+              printf("Maximum Number of Translation Pairs Exceeded, Cant add anymore\n");
               charInput = 'N';
             }
           }
