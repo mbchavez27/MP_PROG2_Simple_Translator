@@ -64,7 +64,7 @@ is a punctuation mark (, !, ?, .) and returns it.
 
 @param word - string containing the word to be checked.
 */
-char ReturnPuncMarks(String20 word) 
+char ReturnPuncMarks(String20 word)
 {
   char puncMark = '\0';
   int length = strlen(word);
@@ -823,7 +823,7 @@ the DeleteEntryPair Function
 @param index
 */
 
-void DeleteEntryPair(EntryTag Entries[],int index, int *nEntry)
+void DeleteEntryPair(EntryTag Entries[], int index, int *nEntry)
 {
   int j = 0;
   index = index - 1;
@@ -932,6 +932,7 @@ the SearchWord Function
 void SearchWord(EntryTag Entries[], int nEntry)
 {
   String20 word;
+  char input = '\0';
   printf("Search word: ");
   scanf("%s", word);
   int i = 0;
@@ -951,6 +952,27 @@ void SearchWord(EntryTag Entries[], int nEntry)
         found++;
         DisplayPairs(Entries[i]);
         printf("\n");
+
+        printf("Action (L->Move Left Index, R->Move Right Index,Q->Stop): ");
+        scanf(" %c", &input);
+        if (input == 'L' || input == 'l')
+        {
+          if (i == 0)
+            printf("Already at the start index!\n");
+          else
+            i -= 2;
+        }
+        if (input == 'R' || input == 'r')
+        {
+          if (i == nEntry - 1)
+            printf("Already at the end index!\n");
+          else
+            i++;
+        }
+        if (input == 'Q' || input == 'q')
+        {
+          printf("Ending display!\n");
+        }
       }
     }
   }
@@ -1166,7 +1188,7 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
         }
       }
     }
-    
+
     if (tempPairs > 0)
     {
       printf("\nEntry #%d:\n", *nEntry + 1);

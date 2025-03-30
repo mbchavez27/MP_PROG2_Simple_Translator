@@ -39,3 +39,6 @@ English: Fish -> Filipino: Isda
 English: Bread -> Filipino: Tinapay
 English: Change -> Filipino: Bago
 English: Change -> Filipino: Bago
+English: Rice -> Japanese: Gohan
+English: Fish -> Japanese: Sakana
+English: Bread -> Japanese: Pan
