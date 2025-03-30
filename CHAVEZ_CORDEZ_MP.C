@@ -854,6 +854,7 @@ void DeleteEntryPair(EntryTag Entries[], int index, int *nEntry)
         scanf("%d", &indexPair);
         if (indexPair >= 1 && indexPair <= Entries[index].nEntryPairs)
         {
+            printf("Deleted Entry Pair #%d\n\n", indexPair);
             indexPair = indexPair - 1;
             for (k = indexPair; k < Entries[index].nEntryPairs - 1; k++)
             {
