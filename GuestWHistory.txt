@@ -76,3 +76,5 @@ English: Fish -> Filipino: Isda
 English: Fish -> Filipino: Isda
 English: Change -> Filipino: Bago
 English: Change -> Filipino: Bago
+English: Change -> Filipino: Bago
+English: Change -> Filipino: Bago
