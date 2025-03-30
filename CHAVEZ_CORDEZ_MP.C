@@ -1251,6 +1251,8 @@ The TranslateTextOption Function *TranslateTextInput, ayusin ko mamaya name
 
 void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
 {
+    String20 tempOutput;
+    String20 tempSource;
     String150 sourceText;
     String150 outputText = "";
     String20 sourceLanguage;
@@ -1264,13 +1266,65 @@ void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
     printf("Give Language of Source Text: ");
     scanf("%s", sourceLanguage);
     printf("\n");
+    getchar();
+    printf("Input the Text: ");
+    fgets(sourceText, MAXCHARS, stdin);
+    printf("\n");
     printf("Give Language of Output: ");
     scanf("%s", outputLanguage);
 
+    strcpy(tempSource, sourceLanguage);
+    strcpy(tempOutput, outputLanguage);
+
     printf("\n");
 
+    // First
+    printf("Text Given is: %s\n", sourceText);
+    sourceText[strlen(sourceText) - 1] = '\0';
+
+    TranslateText(sourceText, outputText, sourceLanguage, outputLanguage, Entries,
+                  nEntry, account);
+
+    printf("Translated Text given is: %s\n", outputText);
+
+    strcat(filename, account);
+    strcat(filename, "SHistory.txt");
+    FILE *historyFile = fopen(filename, "a");
+    if (historyFile == NULL)
+    {
+        printf("Error appending Sentence history!\n");
+    }
+    fprintf(historyFile, "%s\n", outputText);
+    fclose(historyFile);
+
+    printf("\n");
+    printf("You can view the previously used translated words and translated sentence in WordsHistory.txt and SentenceHistory.txt\n");
+    printf("----------------------------------------\n");
+    printf("\n");
+
+    printf("----------------------------------------\n");
+    printf("\n");
+    printf("Do you want to input again with same source and output language? [y/n]: ");
+    scanf(" %c", &input);
+    if (input == 'y')
+    {
+        printf("Ok!\n");
+        printf("\n");
+        printf("----------------------------------------\n");
+
+        printf("\n");
+        strcpy(outputLanguage, tempOutput);
+        strcpy(sourceLanguage, tempSource);
+    }
+    else
+    {
+        printf("Going Back to Menu\n");
+    }
+
+    // Recursion
     while (input == 'y' || input == 'Y')
     {
+
         getchar();
         printf("Input the Text: ");
         fgets(sourceText, MAXCHARS, stdin);
@@ -1309,6 +1363,8 @@ void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
             printf("----------------------------------------\n");
 
             printf("\n");
+            strcpy(outputLanguage, tempOutput);
+            strcpy(sourceLanguage, tempSource);
         }
         else
         {
