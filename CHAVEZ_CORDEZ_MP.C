@@ -1775,6 +1775,7 @@ int main()
           int index = 0;
           if (nEntry > 0)
           {
+            // Selects Entry Number to Edit
             printf("Select Entry Number to Edit:\n");
             DisplayAllEntries(Entries, nEntry);
             printf("Entry Index: ");
@@ -1799,6 +1800,7 @@ int main()
           int index = 0;
           if (nEntry > 0)
           {
+            // Selects Entry Number to Delete
             printf("Select Entry Number to Delete:\n");
             DisplayAllEntries(Entries, nEntry);
             printf("Entry Index: ");
@@ -1957,6 +1959,7 @@ int main()
         }
         if (translateInput == 2)
         {
+          // Asks for Prelim Parameters for the Translate File
           String30 sourceFileName, outputFileName;
           String20 sourceLanguage, outputLanguage;
           int successTranslateImport = -1;
@@ -2063,15 +2066,22 @@ int main()
       printf("Log In to your Account\n[type Guest if Log in as Guest]: ");
       scanf("%s", account);
       printf("\n");
-      int doesExist = checkAccount(account);
-      if (doesExist == 1)
+      if (strlen(account) > (MAXFILENAMELENGTH - 12))
       {
-        printf("Ok logged in!\n\nHello %s\n\n", account);
+        printf("Given account name %s exceeds max length!\n", account);
       }
-      else if (doesExist == -1)
+      else
       {
-        printf("New Account!\n\nHello %s\n\n", account);
-        CreateAccount(account);
+        int doesExist = checkAccount(account);
+        if (doesExist == 1)
+        {
+          printf("Ok logged in!\n\nHello %s\n\n", account);
+        }
+        else if (doesExist == -1)
+        {
+          printf("New Account!\n\nHello %s\n\n", account);
+          CreateAccount(account);
+        }
       }
     }
   }
