@@ -52,3 +52,4 @@ English: Bread -> Filipino: Tinapay
 English: Change -> Filipino: Bago
 English: Change -> Filipino: Bago
 English: Change -> Filipino: Bago
+English: Change -> Filipino: Bago
