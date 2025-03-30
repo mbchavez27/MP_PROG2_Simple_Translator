@@ -663,7 +663,9 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
     {
       if (numOfSameEntries == 1)
       {
-        if (Entries[sameEntry].nEntryPairs < 10)
+        char input = 'Y';
+
+        while ((input == 'Y' || input == 'y') && Entries[sameEntry].nEntryPairs < 10)
         {
           printf("Given Entry Detals\n\n");
           printf("Language\tTranslation\n");
@@ -700,10 +702,19 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
           {
             printf("Cancelled Command\n");
           }
-        }
-        else
-        {
-          printf("Maximum Number of Translation Pairs Exceeded");
+
+          if (Entries[sameEntry].nEntryPairs < 10)
+          {
+            printf("----------------------------------------------\n");
+            printf("Add another translation? [y/n]: ");
+            scanf(" %c", &input);
+            printf("----------------------------------------------\n");
+          }
+          else
+          {
+            printf("Maximum Number of Translation Pairs Exceeded");
+            input = 'N';
+          }
         }
       }
       else
@@ -722,6 +733,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
           printf("Pick a Entry to add translations...: ");
           scanf("%d", &input);
         } while (input < 0 || input > numOfSameEntries);
+
         if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
         {
           printf("Chosen Entry #%d\n", input);
@@ -778,19 +790,6 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
   if (nCancelled)
   {
     printf("Cancelled Command\n");
-  }
-  else
-  {
-    char input;
-    printf("----------------------------------------------\n");
-    printf("Add another translation? [y/n]: ");
-    scanf(" %c", &input);
-    printf("----------------------------------------------\n");
-    if (input == 'y' || input == 'Y')
-    {
-      AddTranslation(nEntry, Entries);
-      printf("\n");
-    }
   }
 }
 
