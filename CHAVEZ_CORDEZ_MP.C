@@ -994,6 +994,7 @@ void SearchTranslation(EntryTag Entries[], int nEntry)
   int j = 0;
   int found = 0;
   int nCancelled = 0;
+  char input = '\0';
 
   String20 language, translation;
   printf("Search Language: ");
@@ -1029,6 +1030,27 @@ void SearchTranslation(EntryTag Entries[], int nEntry)
           found++;
           DisplayPairs(Entries[i]);
           printf("\n");
+
+          printf("Action (L->Move Left Index, R->Move Right Index,Q->Stop): ");
+          scanf(" %c", &input);
+          if (input == 'L' || input == 'l')
+          {
+            if (i == 0)
+              printf("Already at the start index!\n");
+            else
+              i -= 2;
+          }
+          if (input == 'R' || input == 'r')
+          {
+            if (i == nEntry - 1)
+              printf("Already at the end index!\n");
+            else
+              i++;
+          }
+          if (input == 'Q' || input == 'q')
+          {
+            printf("Ending display!\n");
+          }
         }
       }
     }
