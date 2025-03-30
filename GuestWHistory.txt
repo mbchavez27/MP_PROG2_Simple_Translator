@@ -101,3 +101,9 @@ English: Fish -> Japanese: Sakana
 English: Rice -> Japanese: Gohan
 English: Bread -> Japanese: Pan
 English: Rice -> Japanese: Gohan
+English: love -> Tagalog: mahal
+English: love -> Tagalog: mahal
+English: love -> Tagalog: mahal
+English: big -> Tagalog: malaki
+Englsh: Fish -> Japanese: Sakana
+Filipino: Fish -> Japanese: Sakana

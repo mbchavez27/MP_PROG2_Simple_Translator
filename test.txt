@@ -1,1 +1,450 @@
-Life is a continuous journey of growth and adaptation The only constant in this world is Change, and those who embrace Change with an open mind find new opportunities, new perspectives, and endless possibilities for success and fulfillment
+English: afternoon
+Tagalog: hapon
+
+English: answer
+Tagalog: sagot
+
+English: ask
+Tagalog: tanong
+
+English: beef
+Tagalog: baka
+
+English: big
+Tagalog: malaki
+
+English: black
+Tagalog: itim
+
+English: blue
+Tagalog: asul
+
+English: bread
+Tagalog: tinapay
+
+English: breathe
+Tagalog: hinga
+
+English: brown
+Tagalog: kayumanggi
+
+English: chicken
+Tagalog: manok
+
+English: child
+Tagalog: anak
+
+English: child
+Tagalog: bata
+
+English: church
+Tagalog: simbahan
+
+English: clean
+Tagalog: linis
+
+English: closed
+Tagalog: sarado
+
+English: cold
+Tagalog: malamig
+
+English: cook
+Tagalog: luto
+
+English: correct
+Tagalog: tama
+
+English: cry
+Tagalog: iyak
+
+English: cup
+Tagalog: tasa
+
+English: day
+Tagalog: araw
+
+English: difficult
+Tagalog: mahirap
+
+English: dirt
+Tagalog: dumi
+
+English: do
+Tagalog: gawa
+
+English: doctor
+Tagalog: doktor
+
+English: drink
+Tagalog: inom
+
+English: dry
+Tagalog: tuyo
+
+English: early
+Tagalog: maaga
+
+English: easy
+Tagalog: madali
+
+English: eat
+Tagalog: kain
+
+English: egg
+Tagalog: itlog
+
+English: eight
+Tagalog: walo
+
+English: elder
+Tagalog: matanda
+
+English: family
+Tagalog: pamilya
+
+English: fast
+Tagalog: mabilis
+
+English: father
+Tagalog: tatay
+
+English: few
+Tagalog: kaunti
+
+English: fire
+Tagalog: apoy
+
+English: fish
+Tagalog: isda
+
+English: five
+Tagalog: lima
+
+English: fix
+Tagalog: ayos
+
+English: food
+Tagalog: pagkain
+
+English: forest
+Tagalog: gubat
+
+English: fork
+Tagalog: tinidor
+
+English: four
+Tagalog: apat
+
+English: friend
+Tagalog: kaibigan
+
+English: fruit
+Tagalog: prutas
+
+English: get
+Tagalog: kuha
+
+English: give
+Tagalog: bigay
+
+English: glass
+Tagalog: baso
+
+English: gold
+Tagalog: ginto
+
+English: grandfather
+Tagalog: lolo
+
+English: grandmother
+Tagalog: lola
+
+English: green
+Tagalog: berde
+
+English: happy
+Tagalog: masaya
+
+English: heavy
+Tagalog: mabigat
+
+English: help
+Tagalog: tulong
+
+English: hold
+Tagalog: hawak
+
+English: hospital
+Tagalog: ospital
+
+English: hot
+Tagalog: mainit
+
+English: house
+Tagalog: bahay
+
+English: hungry
+Tagalog: gutom
+
+English: hurt
+Tagalog: saktan
+
+English: ice
+Tagalog: yelo
+
+English: knife
+Tagalog: kutsilyo
+
+English: lake
+Tagalog: lawa
+
+English: late
+Tagalog: huli
+
+English: laugh
+Tagalog: tawa
+
+English: light
+Tagalog: magaan
+
+English: look
+Tagalog: tingin
+
+English: love
+Tagalog: mahal
+
+English: man
+Tagalog: lalaki
+
+English: many
+Tagalog: marami
+
+English: market
+Tagalog: palengke
+
+English: milk
+Tagalog: gatas
+
+English: moon
+Tagalog: buwan
+
+English: morning
+Tagalog: umaga
+
+English: mother
+Tagalog: nanay
+
+English: mountain
+Tagalog: bundok
+
+English: new
+Tagalog: bago
+
+English: night
+Tagalog: gabi
+
+English: nine
+Tagalog: siyam
+
+English: noon
+Tagalog: tanghali
+
+English: oil
+Tagalog: mantika
+
+English: old
+Tagalog: luma
+
+English: one
+Tagalog: isa
+
+English: open
+Tagalog: bukas
+
+English: pan
+Tagalog: kawali
+
+English: people
+Tagalog: tao
+
+English: pepper
+Tagalog: paminta
+
+English: person
+Tagalog: tao
+
+English: pink
+Tagalog: rosas
+
+English: plate
+Tagalog: plato
+
+English: play
+Tagalog: laro
+
+English: police
+Tagalog: pulis
+
+English: pork
+Tagalog: baboy
+
+English: pot
+Tagalog: kaldero
+
+English: purple
+Tagalog: lila
+
+English: rain
+Tagalog: ulan
+
+English: read
+Tagalog: basa
+
+English: red
+Tagalog: pula
+
+English: rice
+Tagalog: kanin
+
+English: river
+Tagalog: ilog
+
+English: rock
+Tagalog: bato
+
+English: run
+Tagalog: takbo
+
+English: sad
+Tagalog: malungkot
+
+English: salt
+Tagalog: asin
+
+English: school
+Tagalog: paaralan
+
+English: sea
+Tagalog: dagat
+
+English: see
+Tagalog: kita
+
+English: seven
+Tagalog: pito
+
+English: sibling
+Tagalog: kapatid
+
+English: silver
+Tagalog: pilak
+
+English: six
+Tagalog: anim
+
+English: sleep
+Tagalog: tulog
+
+English: slow
+Tagalog: mabagal
+
+English: small
+Tagalog: maliit
+
+English: smell
+Tagalog: amoy
+
+English: soil
+Tagalog: lupa
+
+English: spoon
+Tagalog: kutsara
+
+English: star
+Tagalog: bituin
+
+English: store
+Tagalog: tindahan
+
+English: strong
+Tagalog: malakas
+
+English: student
+Tagalog: estudyante
+
+English: study
+Tagalog: aral
+
+English: stupid
+Tagalog: bobo
+
+English: sugar
+Tagalog: asukal
+
+English: sun
+Tagalog: araw
+
+English: teacher
+Tagalog: guro
+
+English: ten
+Tagalog: sampu
+
+English: think
+Tagalog: isip
+
+English: thirsty
+Tagalog: uhaw
+
+English: three
+Tagalog: tatlo
+
+English: tired
+Tagalog: pagod
+
+English: two
+Tagalog: dalawa
+
+English: vegetable
+Tagalog: gulay
+
+English: vinegar
+Tagalog: suka
+
+English: wake
+Tagalog: gising
+
+English: walk
+Tagalog: lakad
+
+English: water
+Tagalog: tubig
+
+English: weak
+Tagalog: mahina
+
+English: wet
+Tagalog: basa
+
+English: white
+Tagalog: puti
+
+English: wind
+Tagalog: hangin
+
+English: woman
+Tagalog: babae
+
+English: work
+Tagalog: trabaho
+
+English: write
+Tagalog: sulat
+
+English: wrong
+Tagalog: mali
+
+English: yellow
+Tagalog: dilaw
+
