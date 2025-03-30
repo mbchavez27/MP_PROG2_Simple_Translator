@@ -1,3 +1,9 @@
 English: Fish -> Filipino: Isda
 English: love -> Tagalog: mahal
 Tagalog: mahal -> English: expensive
+English: Bread -> Japanese: Pan
+English: Rice -> Japanese: Gohan
+English: Rice -> Japanese: Gohan
+English: Bread -> Japanese: Pan
+English: Fruit -> Japanese: Kudamono
+English: Rice -> Japanese: Gohan

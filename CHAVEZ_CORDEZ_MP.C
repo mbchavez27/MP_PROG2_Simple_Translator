@@ -629,7 +629,9 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
                 strcpy(Entry->EntryPair[nEntryPairs].language, language);
                 Entry->nEntryPairs++;
                 (*nEntry)++;
-                printf("You have added entry %s: %s successfully\n", language, translation);
+                printf("You have added entry %s: %s successfully\n\n", language, translation);
+                printf("Language\tTranslation\n");
+                DisplayPairs(*Entry);
             }
         }
         else
@@ -638,7 +640,9 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
             strcpy(Entry->EntryPair[nEntryPairs].language, language);
             Entry->nEntryPairs++;
             (*nEntry)++;
-            printf("You have added entry %s: %s successfully\n", language, translation);
+            printf("You have added entry %s: %s successfully\n\n", language, translation);
+            printf("Language\tTranslation\n");
+            DisplayPairs(*Entry);
         }
     }
 
@@ -782,7 +786,9 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
                                     .translation,
                                 translation);
                             Entries[EntryPairIndex[input - 1]].nEntryPairs++;
-                            printf("You have added translation %s: %s successfully\n", language, translation);
+                            printf("You have added translation %s: %s successfully\n\n", language, translation);
+                            printf("Language\tTranslation\n");
+                            DisplayPairs(Entries[EntryPairIndex[input - 1]]);
                         }
                         else
                         {
@@ -1273,6 +1279,7 @@ void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
     printf("Give Language of Output: ");
     scanf("%s", outputLanguage);
 
+    // Sets as temp source and output
     strcpy(tempSource, sourceLanguage);
     strcpy(tempOutput, outputLanguage);
 

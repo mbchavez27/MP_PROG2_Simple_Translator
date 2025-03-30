@@ -99,3 +99,5 @@ English: Bread -> Japanese: Pan
 English: Fruit -> Japanese: Kudamono
 English: Fish -> Japanese: Sakana
 English: Rice -> Japanese: Gohan
+English: Bread -> Japanese: Pan
+English: Rice -> Japanese: Gohan
