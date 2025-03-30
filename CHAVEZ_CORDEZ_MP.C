@@ -667,6 +667,8 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
 
         while ((input == 'Y' || input == 'y') && Entries[sameEntry].nEntryPairs < 10)
         {
+          nCancelled = 0;
+
           printf("Given Entry Detals\n\n");
           printf("Language\tTranslation\n");
           DisplayPairs(Entries[sameEntry]);
@@ -734,51 +736,72 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
           scanf("%d", &input);
         } while (input < 0 || input > numOfSameEntries);
 
-        if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
+        char input = 'Y';
+        while ((input == 'Y' || input == 'y'))
         {
-          printf("Chosen Entry #%d\n", input);
+          nCancelled = 0;
+          int index = EntryPairIndex[input - 1];
 
-          printf("Add Language (STOP! to terminate command): ");
-          scanf("%s", language);
-          if (strcmp(language, "STOP!") == 0)
+          if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
           {
-            nCancelled = 1;
-          }
-          if (!nCancelled)
-          {
-            printf("Add Translation (STOP! to terminate command): ");
-            scanf("%s", translation);
-            if (strcmp(translation, "STOP!") == 0)
+            printf("Chosen Entry #%d\n", input);
+
+            printf("Add Language (STOP! to terminate command): ");
+            scanf("%s", language);
+            if (strcmp(language, "STOP!") == 0)
             {
               nCancelled = 1;
             }
-            printf("\n");
-          }
+            if (!nCancelled)
+            {
+              printf("Add Translation (STOP! to terminate command): ");
+              scanf("%s", translation);
+              if (strcmp(translation, "STOP!") == 0)
+              {
+                nCancelled = 1;
+              }
+              printf("\n");
+            }
 
-          if (!nCancelled)
-          {
-            strcpy(
-                Entries[EntryPairIndex[input - 1]]
-                    .EntryPair[Entries[EntryPairIndex[input - 1]].nEntryPairs]
-                    .language,
-                language);
-            strcpy(
-                Entries[EntryPairIndex[input - 1]]
-                    .EntryPair[Entries[EntryPairIndex[input - 1]].nEntryPairs]
-                    .translation,
-                translation);
-            Entries[EntryPairIndex[input - 1]].nEntryPairs++;
+            if (!nCancelled)
+            {
+              strcpy(
+                  Entries[EntryPairIndex[input - 1]]
+                      .EntryPair[Entries[EntryPairIndex[input - 1]].nEntryPairs]
+                      .language,
+                  language);
+              strcpy(
+                  Entries[EntryPairIndex[input - 1]]
+                      .EntryPair[Entries[EntryPairIndex[input - 1]].nEntryPairs]
+                      .translation,
+                  translation);
+              Entries[EntryPairIndex[input - 1]].nEntryPairs++;
+            }
+            else
+            {
+              printf("Cancelled Command\n");
+            }
+
+            if (Entries[index].nEntryPairs < 10)
+            {
+              printf("----------------------------------------------\n");
+              printf("Add another translation? [y/n]: ");
+              scanf(" %c", &input);
+              printf("----------------------------------------------\n");
+            }
+            else
+            {
+              printf("Chosen Entry #%d has already reached the max translation pairs\n", input);
+              input = 'N';
+            }
           }
           else
           {
-            printf("Cancelled Command\n");
+            printf(
+                "Chosen Entry #%d has already have the max translation pairs\n",
+                input);
+            input = 'N';
           }
-        }
-        else
-        {
-          printf(
-              "Chosen Entry #%d has already have the max translation pairs\n",
-              input);
         }
       }
     }
