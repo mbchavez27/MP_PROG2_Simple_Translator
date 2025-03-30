@@ -64,7 +64,7 @@ is a punctuation mark (, !, ?, .) and returns it.
 
 @param word - string containing the word to be checked.
 */
-char ReturnPuncMarks(String20 word)
+char ReturnPuncMarks(String20 word) 
 {
   char puncMark = '\0';
   int length = strlen(word);
@@ -427,7 +427,7 @@ void ModifyEntryPair(EntryTag Entries[], int index)
   int indexPair = 0;
   int nCancelled = 0;
 
-  printf("Given Entry Detals\n\n");
+  printf("Given Entry Details\n\n");
   printf("Language\tTranslation\n");
   for (j = 0; j < Entries[index].nEntryPairs; j++)
   {
@@ -669,7 +669,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
         {
           nCancelled = 0;
 
-          printf("Given Entry Detals\n\n");
+          printf("Given Entry Details\n\n");
           printf("Language\tTranslation\n");
           DisplayPairs(Entries[sameEntry]);
           printf("Add Language (STOP! to terminate command): ");
@@ -714,7 +714,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
           }
           else
           {
-            printf("Maximum Number of Translation Pairs Exceeded");
+            printf("Maximum Number of Translation Pairs Exceeded, Cant add anymore\n");
             input = 'N';
           }
         }
@@ -725,7 +725,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
 
         do
         {
-          printf("Given Entry Detals\n\n");
+          printf("Given Entry Details\n\n");
           printf("Language\tTranslation\n");
           for (i = 0; i < numOfSameEntries; i++)
           {
@@ -807,7 +807,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
     }
     else
     {
-      printf("No Entry Yet... Add Entry an entry first\n\n");
+      printf("ERROR. No Entry Found. Please add an Entry first.\n\n");
     }
   }
   if (nCancelled)
@@ -823,7 +823,7 @@ the DeleteEntryPair Function
 @param index
 */
 
-void DeleteEntryPair(EntryTag Entries[], int index)
+void DeleteEntryPair(EntryTag Entries[],int index, int *nEntry)
 {
   int j = 0;
   index = index - 1;
@@ -832,7 +832,7 @@ void DeleteEntryPair(EntryTag Entries[], int index)
 
   if (Entries[index].nEntryPairs > 1)
   {
-    printf("Given Entry Detals\n\n");
+    printf("Given Entry Details\n\n");
     printf("Language\tTranslation\n");
     for (j = 0; j < Entries[index].nEntryPairs; j++)
     {
@@ -861,7 +861,8 @@ void DeleteEntryPair(EntryTag Entries[], int index)
   }
   else
   {
-    printf("Given Entry Index #%d has only one entry pair\n\n", index + 1);
+    DeleteEntry(Entries, nEntry, index);
+    printf("Entry Deleted Succesfully\n");
   }
 }
 
@@ -1132,11 +1133,19 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
           }
 
           printf("\n");
-          printf("Confirm adding this entry? (y/n): ");
-          scanf(" %c", &response);
-          if (response == 'y' || response == 'Y')
+
+          if (*nEntry < 150)
           {
-            (*nEntry)++;
+            printf("Confirm adding this entry? (y/n): ");
+            scanf(" %c", &response);
+            if (response == 'y' || response == 'Y')
+            {
+              (*nEntry)++;
+            }
+            else
+            {
+              Entries[*nEntry].nEntryPairs = 0;
+            }
           }
           else
           {
@@ -1157,7 +1166,7 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
         }
       }
     }
-
+    
     if (tempPairs > 0)
     {
       printf("\nEntry #%d:\n", *nEntry + 1);
@@ -1714,7 +1723,7 @@ int main()
             }
             else
             {
-              printf("Cant delete given index %d\n\n", index);
+              printf("Can't Delete Entry #%d That does not exist!\n\n", index);
             }
           }
           else
@@ -1733,12 +1742,12 @@ int main()
             scanf("%d", &index);
             if (index >= 1 && index <= (nEntry))
             {
-              DeleteEntryPair(Entries, index);
+              DeleteEntryPair(Entries, index, &nEntry);
               SortEntry(Entries, nEntry);
             }
             else
             {
-              printf("Cant delete given index %d\n\n", index);
+              printf("Can't delete given index %d\n\n", index);
             }
           }
           else
