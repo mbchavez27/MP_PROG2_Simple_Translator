@@ -1458,6 +1458,41 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
         hasText = 0;
       }
     }
+
+    if (index > 0)
+    {
+      if (sentence[index - 1] != '.' && sentence[index - 1] != '?' && sentence[index - 1] != '!')
+      {
+        sentence[index++] = '.';
+      }
+      sentence[index] = '\0';
+
+      if (hasText)
+      {
+        TranslateText(sentence, transSentence, sourceLanguage, outputLanguage, Entries, nEntry, account);
+      }
+      else
+      {
+        strcpy(transSentence, sentence);
+      }
+
+      printf("%s\n", transSentence);
+      fprintf(outputFile, "%s\n", transSentence);
+
+      String30 filename;
+      snprintf(filename, sizeof(filename), "%sSHistory.txt", account);
+      FILE *historyFile = fopen(filename, "a");
+      if (historyFile != NULL)
+      {
+        fprintf(historyFile, "%s\n", transSentence);
+        fclose(historyFile);
+      }
+      else
+      {
+        printf("Error appending history!\n");
+      }
+    }
+
     printf("\n");
     printf("Translation of file name: %s is done the output can be found at file name: %s", sourceFileName, outputFileName);
     printf("\n");
