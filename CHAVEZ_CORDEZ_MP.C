@@ -210,12 +210,12 @@ int IncludesEnglish(EntryTag Entry) // Checks if Entry has English Pair
 /*
 The TranslateWord Function
 
-@param word
-@param sourceLanguage
-@param outputLanguage
-@param Entries[]
-@param nEntry
-@param account
+@param word - word to translate
+@param sourceLanguage - source language
+@param outputLanguage - language to be used
+@param Entries[] - the dictionary
+@param nEntry - number of entries
+@param account - account name
 
 */
 
@@ -265,13 +265,13 @@ void TranslateWord(String20 word, String20 sourceLanguage,
 /*
 The TranslateText Function
 
-@param sourceText
-@param outputText
-@param sourceLanguage
-@param outputLanguage
-@param Entries[]
-@param nEntry
-@param account
+@param sourceText - the source text
+@param outputText - the output text
+@param sourceLanguage - the source language
+@param outputLanguage - output language
+@param Entries[] - entries
+@param nEntry - n entry
+@param account - account
 
 */
 
@@ -330,8 +330,8 @@ void TranslateText(String150 sourceText, String150 outputText,
 /*
 the SplitEntryPair Function
 
-@param line[]
-@param words[]
+@param line[] - the line from import
+@param words[] - the words
 
 Splits into Translation and Language
 */
@@ -373,8 +373,8 @@ void SplitEntryPair(char line[], String20 words[])
 /*
 The SortEntry Function
 
-@param Entries[]
-@param nEntry
+@param Entries[] - dictionary
+@param nEntry - num of entries
 */
 void SortEntry(EntryTag Entries[], int nEntry)
 {
@@ -427,7 +427,7 @@ void SortEntry(EntryTag Entries[], int nEntry)
 /*
 The SortEntryPairs Function
 
-@param *Entry
+@param *Entry - one specific entry
 */
 void SortEntryPairs(EntryTag *Entry)
 {
@@ -456,8 +456,8 @@ void SortEntryPairs(EntryTag *Entry)
 /*
 The ModifyEntryPair Function
 
-@param Entries[]
-@param index
+@param Entries[] - dictionary
+@param index - index number of the entry
 */
 void ModifyEntryPair(EntryTag Entries[], int index)
 {
@@ -503,6 +503,7 @@ void ModifyEntryPair(EntryTag Entries[], int index)
 
         if (!nCancelled)
         {
+            // edits the pair
             strcpy(Entries[index].EntryPair[indexPair].language, language);
             strcpy(Entries[index].EntryPair[indexPair].translation, translation);
             printf("Entry Pair has been edited!\n");
@@ -523,7 +524,7 @@ void ModifyEntryPair(EntryTag Entries[], int index)
 /* Bonus
 The ViewSentenceHistory Function
 
-@param account
+@param account - account name
 */
 
 void ViewSentenceHistory(String20 account)
@@ -583,6 +584,7 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
         nCancelled = 1;
     }
 
+    // Process Texts well
     ProcessLanguage(language);
 
     if (!nCancelled)
@@ -744,7 +746,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
             } while (input < 0 || input > numOfSameEntries);
 
             char charInput = 'Y';
-            if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10)
+            if (Entries[EntryPairIndex[input - 1]].nEntryPairs < 10) // only upto 10
             {
                 while ((charInput == 'Y' || charInput == 'y'))
                 {
@@ -834,8 +836,8 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
 /*
 the DeleteEntryPair Function
 
-@param Entries[]
-@param index
+@param Entries[] - dictionary
+@param index - index to be deleted
 */
 
 void DeleteEntryPair(EntryTag Entries[], int index, int *nEntry)
@@ -845,6 +847,7 @@ void DeleteEntryPair(EntryTag Entries[], int index, int *nEntry)
     int indexPair = 0;
     int k = 0;
 
+    // asks for entry then asks for entry pair then deletes said entry pair
     if (Entries[index].nEntryPairs > 1)
     {
         printf("Given Entry Details\n\n");
@@ -867,6 +870,8 @@ void DeleteEntryPair(EntryTag Entries[], int index, int *nEntry)
                 Entries[index].EntryPair[k] = Entries[index].EntryPair[k + 1];
             }
             Entries[index].nEntryPairs--;
+            printf("Language\tTranslation\n");
+            DisplayPairs(Entries[index]);
         }
         else
         {
@@ -885,8 +890,8 @@ void DeleteEntryPair(EntryTag Entries[], int index, int *nEntry)
 /*
 The DisplayAllEntries Function
 
-@param Entry[]
-@param nEntry
+@param Entry[] - dictonary
+@param nEntry - num of entries
 */
 
 void DisplayAllEntries(EntryTag Entry[], int nEntry)
@@ -908,7 +913,7 @@ void DisplayAllEntries(EntryTag Entry[], int nEntry)
             DisplayPairs(Entry[i]);
             printf("----------------------------------------\n");
             printf("\n");
-            printf("Action (L->Move Left Index, R->Move Right Index,Q->Stop): ");
+            printf("Action (L->Move Left Index, R->Move Right Index,Q->Stop): "); // for the movement
             scanf(" %c", &input);
             if (input == 'L' || input == 'l')
             {
@@ -940,8 +945,8 @@ void DisplayAllEntries(EntryTag Entry[], int nEntry)
 /*
 the SearchWord Function
 
-@param Entries[]
-@param nEntry
+@param Entries[] - the dictionary
+@param nEntry - num of entries
 
 */
 
@@ -963,6 +968,7 @@ void SearchWord(EntryTag Entries[], int nEntry)
     {
         for (j = 0; j < Entries[i].nEntryPairs; j++)
         {
+            // checks if word exists in given entry pair
             if (strcmp(word, Entries[i].EntryPair[j].translation) == 0)
             {
                 found++;
@@ -1000,8 +1006,8 @@ void SearchWord(EntryTag Entries[], int nEntry)
 /*
 the SearchTranslation Functions
 
-@param Entries[]
-@param nEntry
+@param Entries[] - dict
+@param nEntry - num of entries
 */
 
 void SearchTranslation(EntryTag Entries[], int nEntry)
@@ -1041,6 +1047,7 @@ void SearchTranslation(EntryTag Entries[], int nEntry)
         {
             for (j = 0; j < Entries[i].nEntryPairs; j++)
             {
+                // check if entry pair exists
                 if (strcmp(translation, Entries[i].EntryPair[j].translation) == 0 && strcmp(language, Entries[i].EntryPair[j].language) == 0)
                 {
                     found++;
@@ -1085,9 +1092,9 @@ void SearchTranslation(EntryTag Entries[], int nEntry)
 /*
 the Export Function
 
-@param filename
-@param Entries[]
-@param nEntry
+@param filename - the file name for the file
+@param Entries[] - entries
+@param nEntry - num of entries
 */
 
 void Export(String20 filename, EntryTag Entries[], int nEntry)
@@ -1120,17 +1127,17 @@ void Export(String20 filename, EntryTag Entries[], int nEntry)
             fprintf(file, "\n");
         }
         fclose(file);
-        printf("File: %s successfully saved\n", filename);
+        printf("File: %s successfully saved\n", filename); // exports once it reads all
     }
 }
 
 /*
 The ImportTranslateText Function
 
-@param sourceFileName
-@param outputFileName
-@param sourceLanguage
-@param outputLanguage
+@param sourceFileName - the file to import
+@param outputFileName - ouput file name
+@param sourceLanguage - language from
+@param outputLanguage - language to
 */
 
 int ImportTranslateText(String20 sourceFileName, String20 outputFileName,
@@ -1148,15 +1155,15 @@ int ImportTranslateText(String20 sourceFileName, String20 outputFileName,
     {
         success = 1;
     }
-    return success;
+    return success; // just checks if it can read the file
 }
 
 /*
 The Import Function
 
-@param filename
-@param Entries[]
-@param *nEntry
+@param filename - file to import
+@param Entries[] - dict
+@param *nEntry - num of entries
 */
 
 int Import(String20 filename, EntryTag Entries[], int *nEntry)
@@ -1250,9 +1257,9 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
 /*
 The TranslateTextOption Function *TranslateTextInput, ayusin ko mamaya name
 
-@param Entries[]
-@param nEntry
-@param account
+@param Entries[] - dict
+@param nEntry - num of entry
+@param account - account name
 */
 
 void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
@@ -1385,13 +1392,13 @@ void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
 /*
 the TranslateFile Function  (TranslateTextFile**)
 
-@param sourceFileName
-@param outputFileName
-@param sourceLanguage
-@param outputLanguage
-@param Entries[]
-@param nEntry
-@param account
+@param sourceFileName - filename
+@param outputFileName - output file name
+@param sourceLanguage - source language
+@param outputLanguage - output language
+@param Entries[] - entries
+@param nEntry - num of entry
+@param account - account
 */
 
 void TranslateFile(String20 sourceFileName, String20 outputFileName,
@@ -1412,7 +1419,7 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
     }
     else
     {
-        while ((ch = fgetc(inputFile)) != EOF)
+        while ((ch = fgetc(inputFile)) != EOF) // reads until end of file
         {
             if (index < MAXCHARS)
             {
@@ -1519,9 +1526,9 @@ void TranslateFile(String20 sourceFileName, String20 outputFileName,
 /*
 The ImportFile Function
 
-@param filename
-@param Entries[]
-@param *nEntry
+@param filename - file
+@param Entries[] - dict
+@param *nEntry - num of entry
 */
 int ImportFile(String20 filename, EntryTag Entries[], int *nEntry)
 {
@@ -1580,7 +1587,9 @@ int ImportFile(String20 filename, EntryTag Entries[], int *nEntry)
 /*BONUS
 The check Word Count Functioin
 
-@param
+@param WordCountTag words - words
+@param nWords - num of words
+@param word - word
 
 */
 void checkWordCount(WordCountTag words[], int *nWords, String20 word)
@@ -1639,6 +1648,9 @@ void ViewWordsHistory(String20 account)
 /*BONUS
 The UpdateMostTranslatedWord
 
+@param WordCountTag words
+@param nWords
+@param word
 
 */
 
@@ -1686,6 +1698,9 @@ void UpdateMostTranslatedWord(String20 account, WordCountTag words[], int *nWord
 /*BONUS
 The ViewMostTranslatedWord
 
+@param account
+@param WordCountTag words
+@param nWords
 
 */
 void ViewMostTranslatedWord(String20 account, WordCountTag words[], int *nWords)
@@ -1711,6 +1726,7 @@ void ViewMostTranslatedWord(String20 account, WordCountTag words[], int *nWords)
 The checkAccount Function
 
 @param account
+
 */
 int checkAccount(String20 account)
 {
@@ -1770,6 +1786,7 @@ int main()
     WordCountTag words[MAXWORDS] = {0};
     int nWords = 0;
 
+    // repeats until input is not 5
     while (input != 5)
     {
         printTitle(account);
@@ -1883,6 +1900,7 @@ int main()
                     int index = 0;
                     if (nEntry > 0)
                     {
+                        // asks for entry index first
                         printf("Select Entry Number:\n");
                         DisplayAllEntries(Entries, nEntry);
                         printf("Entry Index: ");
@@ -1904,6 +1922,7 @@ int main()
                 }
                 if (input == 6)
                 {
+                    // sorts before displaying
                     SortEntry(Entries, nEntry);
                     DisplayAllEntries(Entries, nEntry);
                 }
@@ -1918,6 +1937,7 @@ int main()
                 }
                 if (input == 9)
                 {
+                    // asks for file name first then validating it
                     String30 fileName;
                     printf("Give Filename for the Exported Data: ");
                     scanf("%s", fileName);
@@ -1972,6 +1992,7 @@ int main()
         // Translate Menu
         if (input == 2)
         {
+            // imports data first
             int translateInput = 0;
             int successImport = -1;
             String30 fileName;
@@ -2077,6 +2098,7 @@ int main()
         {
             int analyticsInput = 0;
 
+            // check for most updated word first
             UpdateMostTranslatedWord(account, words, &nWords);
 
             while (analyticsInput != 4)
@@ -2119,6 +2141,7 @@ int main()
                 }
             }
         }
+        // change user
         if (input == 4)
         {
             printf("Log In to your Account\n[type Guest if Log in as Guest]: ");
