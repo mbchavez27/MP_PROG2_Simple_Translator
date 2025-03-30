@@ -2,19 +2,26 @@
 #define MAXENTRIES 150
 #define MAXCHARS 151
 #define MAXFILENAMELENGTH 30
+#define MAXWORDS 100
 
 typedef char String20[21];
 typedef char String30[31];
 typedef char String150[151];
 
-typedef struct {
+typedef struct
+{
   String20 language;
   String20 translation;
 } EntryPairTag;
 
-typedef struct {
+typedef struct
+{
   int nEntryPairs;
   EntryPairTag EntryPair[MAXPAIRS];
 } EntryTag;
 
-void AddEntry(EntryTag Entry, int *nEntry);
+typedef struct
+{
+  String20 word;
+  int count;
+} WordCountTag;
