@@ -587,6 +587,7 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
         strcpy(Entry->EntryPair[nEntryPairs].language, language);
         Entry->nEntryPairs++;
         (*nEntry)++;
+        printf("You have added entry %s: %s successfully\n", language, translation);
       }
     }
     else
@@ -595,6 +596,7 @@ void AddEntry(EntryTag *Entry, int *nEntry, EntryTag Entries[])
       strcpy(Entry->EntryPair[nEntryPairs].language, language);
       Entry->nEntryPairs++;
       (*nEntry)++;
+      printf("You have added entry %s: %s successfully\n", language, translation);
     }
   }
 
@@ -699,6 +701,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
                 Entries[sameEntry].EntryPair[Entries[sameEntry].nEntryPairs].translation,
                 translation);
             Entries[sameEntry].nEntryPairs++;
+            printf("You have added translation %s: %s successfully\n", language, translation);
           }
           else
           {
@@ -774,6 +777,7 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
                     .translation,
                 translation);
             Entries[EntryPairIndex[input - 1]].nEntryPairs++;
+            printf("You have added translation %s: %s successfully\n\n", language, translation);
           }
           else
           {
