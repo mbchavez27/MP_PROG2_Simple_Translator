@@ -19,3 +19,5 @@ English: Rice -> Japanese: Gohan
 English: Fish -> Japanese: Sakana
 English: Fruit -> Japanese: Kudamono
 English: Fish -> Japanese: Sakana
+English: love -> Tagalog: mahal
+English: expensive -> Tagalog: mahal

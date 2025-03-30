@@ -736,8 +736,8 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
           scanf("%d", &input);
         } while (input < 0 || input > numOfSameEntries);
 
-        char input = 'Y';
-        while ((input == 'Y' || input == 'y'))
+        char charInput = 'Y';
+        while ((charInput == 'Y' || charInput == 'y'))
         {
           nCancelled = 0;
           int index = EntryPairIndex[input - 1];
@@ -786,13 +786,13 @@ void AddTranslation(int *nEntry, EntryTag Entries[])
             {
               printf("----------------------------------------------\n");
               printf("Add another translation? [y/n]: ");
-              scanf(" %c", &input);
+              scanf(" %c", &charInput);
               printf("----------------------------------------------\n");
             }
             else
             {
               printf("Chosen Entry #%d has already reached the max translation pairs\n", input);
-              input = 'N';
+              charInput = 'N';
             }
           }
           else
@@ -1211,7 +1211,7 @@ void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
   String20 sourceLanguage;
   String20 outputLanguage;
   String30 filename = "";
-  char input;
+  char input = 'Y';
 
   printf("----------------------------------------\n");
   printf("\n");
@@ -1224,7 +1224,7 @@ void TranslateTextInput(EntryTag Entries[], int nEntry, String20 account)
 
   printf("\n");
 
-  while (input != 'n' || input != 'N')
+  while (input == 'y' || input == 'Y')
   {
     getchar();
     printf("Input the Text: ");
