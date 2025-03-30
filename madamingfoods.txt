@@ -265,4 +265,3 @@ Japanese: Karee
 English: Seaweed
 Filipino: Lato
 Japanese: Nori
-

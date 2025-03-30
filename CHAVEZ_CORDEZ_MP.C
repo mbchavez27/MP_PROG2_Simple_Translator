@@ -332,30 +332,35 @@ Splits into Translation and Language
 
 void SplitEntryPair(char line[], String20 words[])
 {
-  int i = 0;
-  int character = 0;
-  int word = 0;
-  while (line[i] != '\0')
+
+  int i = 0, j = 0, word = 0;
+  int foundColon = 0;
+
+  // Initialize words
+  words[0][0] = words[1][0] = '\0';
+
+  while (line[i] != '\0' && line[i] != '\n')
   {
-    if (line[i] == ' ' || line[i] == '\n')
+    if (line[i] == ':')
     {
-      if (character > 0)
-      {
-        words[word][character] = '\0';
-        word++;
-        character = 0;
-      }
+      foundColon = 1;
+      words[word][j] = '\0';
+      word = 1;
+      j = 0;
+      i++;
     }
-    else if (line[i] != ':')
+    else if (foundColon && line[i] == ' ' && j == 0)
     {
-      words[word][character++] = line[i];
     }
+    else if (word < 2 && j < 19)
+    {
+      words[word][j++] = line[i];
+    }
+
     i++;
   }
-  if (character > 0)
-  {
-    words[word][character] = '\0';
-  }
+
+  words[word][j] = '\0';
 }
 
 /*
@@ -1206,9 +1211,9 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
   }
   else
   {
-    while (fgets(buffer, sizeof(buffer), file) != NULL)
+    while ((fgets(buffer, sizeof(buffer), file) != NULL) && *nEntry < MAXENTRIES)
     {
-      if (buffer[0] == '\n' || buffer[0] == '\0')
+      if (strspn(buffer, " \t\r\n") == strlen(buffer))
       {
         if (tempPairs > 0)
         {
@@ -1221,24 +1226,11 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
                    Entries[*nEntry].EntryPair[i].translation);
           }
 
-          printf("\n");
-
-          if (*nEntry < 150)
+          printf("\nConfirm adding this entry? (y/n): ");
+          scanf(" %c", &response);
+          if ((response == 'y' || response == 'Y') && *nEntry < MAXENTRIES)
           {
-            printf("Confirm adding this entry? (y/n): ");
-            scanf(" %c", &response);
-            if (response == 'y' || response == 'Y')
-            {
-              (*nEntry)++;
-            }
-            else
-            {
-              Entries[*nEntry].nEntryPairs = 0;
-            }
-          }
-          else
-          {
-            Entries[*nEntry].nEntryPairs = 0;
+            (*nEntry)++;
           }
           tempPairs = 0;
         }
@@ -1267,16 +1259,11 @@ int Import(String20 filename, EntryTag Entries[], int *nEntry)
                Entries[*nEntry].EntryPair[i].translation);
       }
 
-      printf("\n");
-      printf("Confirm adding this entry? (y/n): ");
+      printf("\nConfirm adding this entry? (y/n): ");
       scanf(" %c", &response);
-      if (response == 'y' || response == 'Y')
+      if ((response == 'y' || response == 'Y') && *nEntry < MAXENTRIES)
       {
         (*nEntry)++;
-      }
-      else
-      {
-        Entries[*nEntry].nEntryPairs = 0;
       }
       tempPairs = 0;
     }
@@ -1995,14 +1982,14 @@ int main()
           String30 sourceFileName, outputFileName;
           String20 sourceLanguage, outputLanguage;
           int successTranslateImport = -1;
-          printf("Give Filename to Read: ");
-          scanf("%s", sourceFileName);
           printf("Give Language of Source File: ");
           scanf("%s", sourceLanguage);
-          printf("Give Filename to Output: ");
-          scanf("%s", outputFileName);
+          printf("Give Filename to Read: ");
+          scanf("%s", sourceFileName);
           printf("Give Language of Output File: ");
           scanf("%s", outputLanguage);
+          printf("Give Filename to Output: ");
+          scanf("%s", outputFileName);
           printf("\n");
 
           if (strlen(sourceFileName) > (MAXFILENAMELENGTH - 4))
