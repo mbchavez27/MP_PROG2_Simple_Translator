@@ -16,3 +16,9 @@ Japanese: Pan
 English: Fruit
 Filipino: Prutas
 Japanese: Kudamono
+Spanish: Fruta
+French: Fruit
+German: Obst
+Italian: Frutta
+Korean: Gwail
+Mandarin: Shuǐguǒ
